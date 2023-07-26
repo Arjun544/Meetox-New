@@ -9,8 +9,10 @@ environment:
 
 dependencies:
   animate_do: ^3.0.2
+  cached_network_image: ^3.2.3
   crypto: ^3.0.3
   cupertino_icons: ^1.0.2
+  file_picker: ^5.3.3
   fl_query: ^1.0.0-alpha.3
   fl_query_hooks: ^1.0.0-alpha.3
   flutter:
@@ -24,8 +26,10 @@ dependencies:
   get: ^5.0.0-release-candidate-4
   get_storage: ^2.1.1
   loading_animation_widget: ^1.2.0+4
+  smooth_page_indicator: ^1.1.0
   supabase_flutter: ^1.10.9
   flutter_svg: ^2.0.7
+  image_picker: ^1.0.1
   timeago: ^3.5.0
   timeago_flutter: ^3.5.0
 

@@ -3,9 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/core/time_ago_messages.dart';
-import 'package:meetox/screens/auth_screens/auth_screen.dart';
-import 'package:meetox/screens/auth_screens/splash_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: QueryClientProvider(
+          maxRetries: 1,
           child: GetMaterialApp(
             title: 'Meetox',
             debugShowCheckedModeBanner: false,
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
                 : currentTheme == 'dark'
                     ? ThemeMode.dark
                     : ThemeMode.system,
-            home: const AuthScreen(),
+            home: const SplashScreen(),
           ),
         ),
       ),

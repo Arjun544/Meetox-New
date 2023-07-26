@@ -9,7 +9,7 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import '../core/imports/core_imports.dart';
 
 class AuthServices {
- static String generateRandomString() {
+  static String generateRandomString() {
     final random = Random.secure();
     return base64Url.encode(List<int>.generate(16, (_) => random.nextInt(256)));
   }
@@ -59,6 +59,7 @@ class AuthServices {
         scopes: [
           'openid',
           'email',
+          'profile',
         ],
       ),
     );
@@ -75,15 +76,4 @@ class AuthServices {
       nonce: rawNonce,
     );
   }
-
-  // static Future<void> logout() async {
-  //   try {
-  //     await googleSignIn.signOut();
-  //     await SecureStorageServices.deleleValue(key: 'accessToken');
-  //     await Get.offAll(() => const AuthScreen());
-  //   } catch (e) {
-  //     logError(e.toString());
-  //     showToast("Can't logout, try again");
-  //   }
-  // }
 }

@@ -2,6 +2,7 @@ import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:meetox/controllers/auth_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/helpers/show_toast.dart';
 import 'package:meetox/services/auth_services.dart';
 import 'package:meetox/widgets/custom_button.dart';
 import 'package:meetox/widgets/loaders/botton_loader.dart';
@@ -11,16 +12,18 @@ class AuthScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AuthController(), permanent: true);
+    Get.put(AuthController());
 
     final loginWithGoogleMutation = useMutation(
       'loginWithGoogle',
       (variables) async => await AuthServices.signInWithGoogle(),
       onData: (data, recoveryData) {
         logSuccess(data.toString());
+        showToast('Signed in successfully');
       },
       onError: (error, recoveryData) {
         logError(error.toString());
+        showToast('Sign in failed');
       },
     );
 
