@@ -11,4 +11,9 @@ export 'package:loading_animation_widget/loading_animation_widget.dart';
 export 'package:smooth_page_indicator/smooth_page_indicator.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 export 'package:latlong2/latlong.dart';
+export 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+export 'package:flutter_map/flutter_map.dart';
+export 'package:permission_handler/permission_handler.dart';
+export 'package:geocoding/geocoding.dart';
+export 'package:ficonsax/ficonsax.dart';
 

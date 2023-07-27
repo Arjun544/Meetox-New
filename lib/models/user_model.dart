@@ -4,9 +4,10 @@ class UserModel {
   String? id;
   String? name;
   String? photo;
+  String? address;
   bool? isPremium;
   Map<String, dynamic>? socials;
-  Location? location;
+  LocationModel? location;
   DateTime? dob;
   DateTime? createdAt;
 
@@ -14,6 +15,7 @@ class UserModel {
     this.id,
     this.name,
     this.photo,
+    this.address,
     this.isPremium,
     this.socials,
     this.location,
@@ -26,10 +28,12 @@ class UserModel {
       id: json['id'],
       name: json['name'],
       photo: json['photo'],
+      address: json['address'],
       isPremium: json['ispremium'],
       socials: json['socials'],
-      location:
-          json['location'] != null ? Location.fromJSON(json['location']) : null,
+      location: json['location'] != null
+          ? LocationModel.fromJSON(json['location'])
+          : null,
       dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
@@ -42,6 +46,7 @@ class UserModel {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (photo != null) 'photo': photo,
+      if (address != null) 'address': address,
       if (isPremium != null) 'ispremium': isPremium,
       if (socials != null) 'socials': socials,
       if (location != null) 'location': toPostGISPoint(location),
@@ -51,19 +56,19 @@ class UserModel {
   }
 }
 
-class Location {
+class LocationModel {
   double? longitude;
   double? latitude;
 
-  Location({
+  LocationModel({
     this.longitude,
     this.latitude,
   });
 
-  factory Location.fromJSON(Map<String, dynamic>? json) {
-    if (json == null) return Location();
+  factory LocationModel.fromJSON(Map<String, dynamic>? json) {
+    if (json == null) return LocationModel();
 
-    return Location(
+    return LocationModel(
       longitude: json['coordinates'][0],
       latitude: json['coordinates'][1],
     );

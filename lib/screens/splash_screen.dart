@@ -26,6 +26,7 @@ class SplashScreen extends HookWidget {
         if (data.name == null) {
           Get.offAll(() => const AddProfileScreen());
         } else {
+          currentUser(data);
           Get.offAll(() => const RootScreen());
         }
       },

@@ -49,7 +49,7 @@ final Rx<UserModel> currentUser = UserModel(
   name: '',
   photo: '',
   isPremium: false,
-  location: Location(),
+  location: LocationModel(),
   socials: {},
   createdAt: DateTime.now(),
 ).obs;
