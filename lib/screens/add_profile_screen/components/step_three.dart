@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meetox/controllers/add_profile_controller.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
+import '../../../controllers/add_profile_controller.dart';
+import '../../../core/imports/core_imports.dart';
+import '../../../core/imports/packages_imports.dart';
 
 class StepThree extends GetView<AddProfileController> {
   const StepThree({super.key});

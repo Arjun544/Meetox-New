@@ -1,4 +1,4 @@
-import 'package:meetox/core/imports/packages_imports.dart';
+import 'imports/packages_imports.dart';
 
 // const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 

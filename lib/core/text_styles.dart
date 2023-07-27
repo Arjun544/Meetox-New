@@ -1,4 +1,4 @@
-import 'package:meetox/core/imports/core_imports.dart';
+import 'imports/core_imports.dart';
 
 
 TextStyle globalTextStyle({

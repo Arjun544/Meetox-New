@@ -10,3 +10,5 @@ export 'package:image_picker/image_picker.dart';
 export 'package:loading_animation_widget/loading_animation_widget.dart';
 export 'package:smooth_page_indicator/smooth_page_indicator.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
+export 'package:latlong2/latlong.dart';
+

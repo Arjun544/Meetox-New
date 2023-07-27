@@ -1,5 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
+import '../core/imports/packages_imports.dart';
 
 late SupabaseClient supabase;
 

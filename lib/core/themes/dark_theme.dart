@@ -1,7 +1,6 @@
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/core/text_styles.dart';
-import 'package:meetox/utils/constants.dart';
+import '../imports/core_imports.dart';
+import '../imports/packages_imports.dart';
+import '../text_styles.dart';
 
 final ThemeData darkTheme = ThemeData.light().copyWith(
   brightness: Brightness.dark,

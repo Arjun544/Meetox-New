@@ -1,9 +1,12 @@
-
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:fl_query/fl_query.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
 
+import '../core/imports/core_imports.dart';
+import '../core/imports/packages_imports.dart';
+import '../helpers/get_asset_image.dart';
+import '../helpers/url_to_file.dart';
 import 'global_controller.dart';
 
 class AddProfileController extends GetxController
@@ -15,9 +18,7 @@ class AddProfileController extends GetxController
   late TabController tabController;
   final RxInt selectedTab = 0.obs;
 
-  final RxString currentLoginProvider = ''.obs;
-  final RxBool isSocialProfileLoading = false.obs;
-
+  final RxBool isLoading = false.obs;
   final RxString socialProfile = ''.obs;
 
   final TextEditingController nameController = TextEditingController();
@@ -47,46 +48,55 @@ class AddProfileController extends GetxController
     super.onInit();
   }
 
- 
-
   Future<void> handleSubmit(
-      Mutation<UserResponse, Object?, Object?> addProfileMutation) async {
-    // String? base64Profile;
-    // if (socialProfile.value.isEmpty &&
-    //     capturedImage.value.path.isEmpty &&
-    //     selectedImage.value.files.isNotEmpty) {
-    //   log('slected Imageg called');
+      Mutation<void, Object?, Map<String, dynamic>> addProfileMutation) async {
+    File? base64Profile;
+    if (socialProfile.value.isEmpty &&
+        capturedImage.value.path.isEmpty &&
+        selectedImage.value.files.isNotEmpty) {
+      log('slected Imageg called');
 
-    //   base64Profile =
-    //       convertIntoBase64Image(selectedImage.value.files[0].path!);
-    // }
+      base64Profile = File(selectedImage.value.files[0].path!);
+    }
 
-    // if (socialProfile.value.isEmpty &&
-    //     selectedImage.value.files.isEmpty &&
-    //     capturedImage.value.path.isNotEmpty) {
-    //   log('captured Imageg called');
+    if (socialProfile.value.isEmpty &&
+        selectedImage.value.files.isEmpty &&
+        capturedImage.value.path.isNotEmpty) {
+      log('captured Imageg called');
 
-    //   base64Profile = convertIntoBase64Image(capturedImage.value.path);
-    // }
-    // if (socialProfile.value.isEmpty &&
-    //     selectedImage.value.files.isEmpty &&
-    //     capturedImage.value.path.isEmpty) {
-    //   log('Avatar Imageg called');
+      base64Profile = File(capturedImage.value.path);
+    }
+    if (socialProfile.value.isEmpty &&
+        selectedImage.value.files.isEmpty &&
+        capturedImage.value.path.isEmpty) {
+      log('Avatar Imageg called');
 
-    //   final imageFromAsset = await getImageFileFromAssets(
-    //     globalController.userAvatars[selectedAvatar.value],
-    //   );
-    //   log(imageFromAsset.path);
+      final imageFromAsset = await getImageFileFromAssets(
+        globalController.userAvatars[selectedAvatar.value],
+      );
+      log(imageFromAsset.path);
 
-    //   base64Profile = convertIntoBase64Image(imageFromAsset.path);
-    // }
+      base64Profile = File(imageFromAsset.path);
+    }
 
+    isLoading(true);
+    await addProfileMutation.mutate({
+      'isLoading': isLoading,
+      'name': nameController.text.trim(),
+      'dob': birthDate.value.toUtc().toIso8601String(),
+      'file': socialProfile.value.isNotEmpty
+          ? await urlToFile(socialProfile.value)
+          : base64Profile,
+    });
+  }
 
-    // addProfileMutation.mutate({
-    //   'name': nameController.text.trim(),
-    //   'birthDate': birthDate.value.toUtc().toString(),
-    //   'profile':
-    //       socialProfile.value.isNotEmpty ? socialProfile.value : base64Profile,
-    // });
+  @override
+  void dispose() {
+    tabController.dispose();
+    nameController.dispose();
+    nameFocusNode.dispose();
+    selectedImage.dispose();
+    capturedImage.dispose();
+    super.dispose();
   }
 }

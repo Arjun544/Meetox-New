@@ -1,4 +1,4 @@
-import 'package:meetox/core/imports/core_imports.dart';
+import '../core/imports/core_imports.dart';
 
 class SplashController extends GetxController {
   @override

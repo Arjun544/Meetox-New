@@ -1,5 +1,5 @@
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
+import '../../core/imports/core_imports.dart';
+import '../../core/imports/packages_imports.dart';
 
 class AvatarsSheet extends StatelessWidget {
   const AvatarsSheet({

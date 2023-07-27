@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
+import '../core/imports/packages_imports.dart';
 
 import '../core/imports/core_imports.dart';
 
@@ -14,66 +14,75 @@ class AuthServices {
     return base64Url.encode(List<int>.generate(16, (_) => random.nextInt(256)));
   }
 
-  static Future<AuthResponse> signInWithGoogle() async {
-    final rawNonce = generateRandomString();
-    final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+  static Future<AuthResponse> signInWithGoogle(RxBool isLoading) async {
+    try {
+      isLoading(true);
 
-    final clientId = Platform.isIOS
-        ? '81060931160-mtf9ddlk7hofqg3ua54jomgb3nu3c2r9.apps.googleusercontent.com'
-        : '81060931160-3end1kftav59msgolumc56j0arj60hos.apps.googleusercontent.com';
+      final rawNonce = generateRandomString();
+      final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
 
-    final redirectUrl = '${clientId.split('.').reversed.join('.')}:/';
+      final clientId = Platform.isIOS
+          ? '81060931160-mtf9ddlk7hofqg3ua54jomgb3nu3c2r9.apps.googleusercontent.com'
+          : '81060931160-3end1kftav59msgolumc56j0arj60hos.apps.googleusercontent.com';
 
-    const discoveryUrl =
-        'https://accounts.google.com/.well-known/openid-configuration';
+      final redirectUrl = '${clientId.split('.').reversed.join('.')}:/';
 
-    const appAuth = FlutterAppAuth();
+      const discoveryUrl =
+          'https://accounts.google.com/.well-known/openid-configuration';
 
-    final result = await appAuth.authorize(
-      AuthorizationRequest(
-        clientId,
-        redirectUrl,
-        discoveryUrl: discoveryUrl,
-        nonce: hashedNonce,
-        scopes: [
-          'openid',
-          'email',
-          'profile',
-        ],
-      ),
-    );
+      const appAuth = FlutterAppAuth();
 
-    if (result == null) {
-      throw 'No result';
+      final result = await appAuth.authorize(
+        AuthorizationRequest(
+          clientId,
+          redirectUrl,
+          discoveryUrl: discoveryUrl,
+          nonce: hashedNonce,
+          scopes: [
+            'openid',
+            'email',
+            'profile',
+          ],
+        ),
+      );
+
+      if (result == null) {
+        throw 'No result';
+      }
+
+      // Request the access and id token to google
+      final tokenResult = await appAuth.token(
+        TokenRequest(
+          clientId,
+          redirectUrl,
+          authorizationCode: result.authorizationCode,
+          discoveryUrl: discoveryUrl,
+          codeVerifier: result.codeVerifier,
+          nonce: result.nonce,
+          scopes: [
+            'openid',
+            'email',
+            'profile',
+          ],
+        ),
+      );
+
+      final idToken = tokenResult?.idToken;
+
+      if (idToken == null) {
+        throw 'No idToken';
+      }
+     
+
+      return supabase.auth.signInWithIdToken(
+        provider: Provider.google,
+        idToken: idToken,
+        nonce: rawNonce,
+      );
+    } catch (e) {
+      isLoading(false);
+      logError(e.toString());
+      rethrow;
     }
-
-    // Request the access and id token to google
-    final tokenResult = await appAuth.token(
-      TokenRequest(
-        clientId,
-        redirectUrl,
-        authorizationCode: result.authorizationCode,
-        discoveryUrl: discoveryUrl,
-        codeVerifier: result.codeVerifier,
-        nonce: result.nonce,
-        scopes: [
-          'openid',
-          'email',
-          'profile',
-        ],
-      ),
-    );
-
-    final idToken = tokenResult?.idToken;
-
-    if (idToken == null) {
-      throw 'No idToken';
-    }
-
-    return supabase.auth.signInWithIdToken(
-      provider: Provider.google,
-      idToken: idToken,
-      nonce: rawNonce,
-    );
   }
 }

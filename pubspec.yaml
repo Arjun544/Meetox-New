@@ -15,6 +15,7 @@ dependencies:
   file_picker: ^5.3.3
   fl_query: ^1.0.0-alpha.3
   fl_query_hooks: ^1.0.0-alpha.3
+  fl_query_connectivity_plus_adapter: ^0.1.0-alpha.2
   flutter:
     sdk: flutter
   flutter_appauth: ^6.0.1
@@ -23,8 +24,12 @@ dependencies:
   flutter_map_tile_caching: ^9.0.0-dev.3
   flutter_remix: ^0.0.3
   flutter_screenutil: ^5.9.0-beta
+  geolocator: ^9.0.2
   get: ^5.0.0-release-candidate-4
   get_storage: ^2.1.1
+  google_maps_flutter: ^2.4.0
+  http: ^1.1.0
+  latlong2: ^0.9.0
   loading_animation_widget: ^1.2.0+4
   smooth_page_indicator: ^1.1.0
   supabase_flutter: ^1.10.9
@@ -32,6 +37,7 @@ dependencies:
   image_picker: ^1.0.1
   timeago: ^3.5.0
   timeago_flutter: ^3.5.0
+  path_provider: ^2.0.15
 
 
 dev_dependencies:

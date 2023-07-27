@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:meetox/core/text_styles.dart';
-import 'package:meetox/core/themes/colors.dart';
-import 'package:meetox/utils/constants.dart';
+import '../text_styles.dart';
+import 'colors.dart';
+import '../../utils/constants.dart';
 
 final ThemeData lightTheme = ThemeData.light().copyWith(
   brightness: Brightness.light,

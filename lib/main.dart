@@ -1,10 +1,12 @@
 import 'package:fl_query/fl_query.dart';
+import 'package:fl_query_connectivity_plus_adapter/fl_query_connectivity_plus_adapter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/core/time_ago_messages.dart';
+import 'core/imports/core_imports.dart';
+import 'core/imports/packages_imports.dart';
+import 'core/time_ago_messages.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'models/user_model.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
@@ -12,7 +14,10 @@ void main() async {
   await dotenv.load();
   await supabaseInit();
   timeago.setLocaleMessages('en', TimeAgoMessages());
-  await QueryClient.initialize(cachePrefix: 'meetox');
+  await QueryClient.initialize(
+    cachePrefix: 'meetox',
+    connectivity: FlQueryConnectivityPlusAdapter(),
+  );
 
   // if (getStorage.read('first_run') ?? true) {
   //   await SecureStorageServices.clearAll();
@@ -38,6 +43,16 @@ void main() async {
   await mapMeetox.manage.createAsync();
   runApp(const MyApp());
 }
+
+final Rx<UserModel> currentUser = UserModel(
+  id: '',
+  name: '',
+  photo: '',
+  isPremium: false,
+  location: Location(),
+  socials: {},
+  createdAt: DateTime.now(),
+).obs;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

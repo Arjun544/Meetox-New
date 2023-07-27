@@ -1,52 +1,78 @@
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
-
-import 'dart:convert';
+import '../helpers/to_postgis_point.dart';
 
 class UserModel {
   String? id;
-  dynamic name;
-  dynamic photo;
-  bool? ispremium;
-  dynamic location;
-  dynamic socials;
+  String? name;
+  String? photo;
+  bool? isPremium;
+  Map<String, dynamic>? socials;
+  Location? location;
+  DateTime? dob;
   DateTime? createdAt;
 
   UserModel({
     this.id,
     this.name,
     this.photo,
-    this.ispremium,
-    this.location,
+    this.isPremium,
     this.socials,
+    this.location,
+    this.dob,
     this.createdAt,
   });
 
-  factory UserModel.fromRawJson(String str) =>
-      UserModel.fromJson(json.decode(str));
+  factory UserModel.fromJSON(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'],
+      name: json['name'],
+      photo: json['photo'],
+      isPremium: json['ispremium'],
+      socials: json['socials'],
+      location:
+          json['location'] != null ? Location.fromJSON(json['location']) : null,
+      dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+    );
+  }
 
-  String toRawJson() => json.encode(toJson());
+  Map<String, dynamic> toJSON() {
+    return {
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (photo != null) 'photo': photo,
+      if (isPremium != null) 'ispremium': isPremium,
+      if (socials != null) 'socials': socials,
+      if (location != null) 'location': toPostGISPoint(location),
+      if (dob != null) 'dob': dob!.toUtc().toIso8601String(),
+      if (createdAt != null) 'created_at': createdAt!.toUtc().toIso8601String(),
+    };
+  }
+}
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id: json["id"],
-        name: json["name"],
-        photo: json["photo"],
-        ispremium: json["ispremium"],
-        location: json["location"],
-        socials: json["socials"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-      );
+class Location {
+  double? longitude;
+  double? latitude;
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "photo": photo,
-        "ispremium": ispremium,
-        "location": location,
-        "socials": socials,
-        "created_at": createdAt?.toIso8601String(),
-      };
+  Location({
+    this.longitude,
+    this.latitude,
+  });
+
+  factory Location.fromJSON(Map<String, dynamic>? json) {
+    if (json == null) return Location();
+
+    return Location(
+      longitude: json['coordinates'][0],
+      latitude: json['coordinates'][1],
+    );
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      if (longitude != null && latitude != null) 'type': 'Point',
+      'coordinates': [longitude!, latitude!],
+    };
+  }
 }

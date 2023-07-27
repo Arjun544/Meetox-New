@@ -1,25 +1,39 @@
 import 'package:fl_query_hooks/fl_query_hooks.dart';
-import 'package:meetox/controllers/auth_controller.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/helpers/show_toast.dart';
-import 'package:meetox/services/auth_services.dart';
-import 'package:meetox/widgets/custom_button.dart';
-import 'package:meetox/widgets/loaders/botton_loader.dart';
+import '../../controllers/auth_controller.dart';
+import '../../core/imports/core_imports.dart';
+import '../../core/imports/packages_imports.dart';
+import '../../helpers/show_toast.dart';
+import '../../models/user_model.dart';
+import '../../services/auth_services.dart';
+import '../../services/user_services.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/loaders/botton_loader.dart';
+
+import '../add_profile_screen/add_profile_screen.dart';
+import '../root_screen.dart';
 
 class AuthScreen extends HookWidget {
   const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AuthController());
+    final AuthController authController = Get.put(AuthController());
 
     final loginWithGoogleMutation = useMutation(
       'loginWithGoogle',
-      (variables) async => await AuthServices.signInWithGoogle(),
-      onData: (data, recoveryData) {
-        logSuccess(data.toString());
-        showToast('Signed in successfully');
+      (Map<String, dynamic> variables) async =>
+          await AuthServices.signInWithGoogle(
+        variables['isLoading'],
+      ),
+      onData: (data, recoveryData) async {
+        final UserModel user = await UserServices.getCurrentUser();
+        currentUser(user);
+        if (currentUser.value.name == null) {
+          Get.offAll(() => const AddProfileScreen());
+        } else {
+          Get.offAll(() => const RootScreen());
+        }
+        authController.isLoading(false);
       },
       onError: (error, recoveryData) {
         logError(error.toString());
@@ -50,7 +64,10 @@ class AuthScreen extends HookWidget {
                     child: SvgPicture.asset(
                       AssetsManager.appLogo,
                       height: 70.h,
-                      color: AppColors.primaryYellow,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.primaryYellow,
+                        BlendMode.darken,
+                      ),
                     ),
                   ),
                   SizedBox(height: 50.sp),
@@ -135,124 +152,30 @@ class AuthScreen extends HookWidget {
                     delay: const Duration(seconds: 1),
                     duration: const Duration(milliseconds: 400),
                     from: 330,
-                    child: loginWithGoogleMutation.isMutating
-                        ? ButtonLoader(
-                            width: Get.width * 0.9,
-                            color: Colors.redAccent[100]!,
-                            loaderColor: Colors.white,
-                          )
-                        : CustomButton(
-                            width: Get.width * 0.9,
-                            text: 'Continue with Google',
-                            hasIcon: true,
-                            color: Colors.redAccent[100]!,
-                            icon: IconTheme(
-                              data: context.theme.iconTheme,
-                              child: const Icon(
-                                FlutterRemix.google_fill,
+                    child: Obx(
+                      () => authController.isLoading.value
+                          ? ButtonLoader(
+                              width: Get.width * 0.9,
+                              color: Colors.redAccent[100]!,
+                              loaderColor: Colors.white,
+                            )
+                          : CustomButton(
+                              width: Get.width * 0.9,
+                              text: 'Continue with Google',
+                              hasIcon: true,
+                              color: Colors.redAccent[100]!,
+                              icon: IconTheme(
+                                data: context.theme.iconTheme,
+                                child: const Icon(
+                                  FlutterRemix.google_fill,
+                                ),
                               ),
+                              onPressed: () async =>
+                                  await loginWithGoogleMutation.mutate({
+                                'isLoading': authController.isLoading,
+                              }),
                             ),
-                            onPressed: () async =>
-                                await loginWithGoogleMutation.mutate({}),
-                            // onPressed: () =>
-                            //     controller.handleLoginWithGmail(
-                            //   runMutation,
-                            //   result,
-                            // ),
-                          ),
-                    // child: Mutation(
-                    //   options: MutationOptions(
-                    //     document: gql(loginWithGmail),
-                    //     fetchPolicy: FetchPolicy.networkOnly,
-                    //     update: (cache, result) => cache,
-                    //     onCompleted: (Map<String, dynamic>? resultData) async {
-                    //       logSuccess(json.encode(resultData));
-                    //       logError(
-                    //         resultData!['loginWithGmail']['token'].toString(),
-                    //       );
-                    //       final token =
-                    //           resultData['loginWithGmail']['token'].toString();
-                    //       final user = User.fromJson(
-                    //         resultData['loginWithGmail']['user']
-                    //             as Map<String, dynamic>,
-                    //       );
-
-                    //       await SecureStorageServices.putValue(
-                    //         key: 'accessToken',
-                    //         value: token,
-                    //       );
-                    //       await SecureStorageServices.putValue(
-                    //         key: 'currentLoginProvider',
-                    //         value: 'Google',
-                    //       );
-
-                    //       if (user.name!.isEmpty) {
-                    //         await Get.offAll(() => const AddProfileScreen());
-                    //       } else {
-                    //         await Get.offAll(() => const DrawerScreen());
-                    //       }
-                    //       currentUser.value = user;
-                    //       final authLink = AuthLink(
-                    //         getToken: () async => 'Bearer $token',
-                    //       );
-                    //       graphqlClient!.value.link.concat(authLink);
-                    //       final websocketLink = WebSocketLink(
-                    //         'ws://192.168.1.181:4000/graphql/subscriptions',
-                    //         config: SocketClientConfig(
-                    //           initialPayload: {
-                    //             'id': currentUser.value.id,
-                    //             'token': token,
-                    //           },
-                    //         ),
-                    //       );
-                    //       final httpLink = HttpLink(
-                    //         'http://192.168.1.181:4000/graphql',
-                    //       );
-
-                    //       final link =
-                    //           httpLink.concat(authLink).concat(websocketLink);
-                    //       final newLink = Link.split(
-                    //         (request) => request.isSubscription,
-                    //         websocketLink,
-                    //         link,
-                    //       );
-                    //       graphqlClient = ValueNotifier(
-                    //         GraphQLClient(
-                    //           link: newLink,
-                    //           cache: GraphQLCache(store: HiveStore()),
-                    //         ),
-                    //       );
-                    //     },
-                    //     onError: (error) => logError('Unable to login'),
-                    //   ),
-                    //   builder: (runMutation, result) {
-                    //     return Obx(
-                    //       () => controller.isLoading.value || result!.isLoading
-                    //           ? ButtonLoader(
-                    //               width: Get.width * 0.9,
-                    //               color: Colors.redAccent[100]!,
-                    //               loaderColor: Colors.white,
-                    //             )
-                    //           : CustomButton(
-                    //               width: Get.width * 0.9,
-                    //               text: 'Continue with Google',
-                    //               hasIcon: true,
-                    //               color: Colors.redAccent[100]!,
-                    //               icon: IconTheme(
-                    //                 data: context.theme.iconTheme,
-                    //                 child: const Icon(
-                    //                   FlutterRemix.google_fill,
-                    //                 ),
-                    //               ),
-                    //               onPressed: () =>
-                    //                   controller.handleLoginWithGmail(
-                    //                 runMutation,
-                    //                 result,
-                    //               ),
-                    //             ),
-                    //     );
-                    //   },
-                    // ),
+                    ),
                   ),
                 ),
               ),

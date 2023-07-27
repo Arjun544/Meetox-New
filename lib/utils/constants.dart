@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
+import '../core/imports/core_imports.dart';
+import '../core/imports/packages_imports.dart';
 
 double headingLargeFontSize = 24.sp;
 double headingOneFontSize = 20.sp;

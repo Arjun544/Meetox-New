@@ -58,6 +58,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>location</string>
+		<string>nearby-interaction</string>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
 	<!-- Permission options for the `location` group -->
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Meetox need location when in use</string>
@@ -67,5 +75,12 @@
     <string>Meetox need location.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Meetox need Always location</string>
+	 <!-- Permission options for the `camera` group -->
+    <key>NSCameraUsageDescription</key>
+    <string>Meetox want to access your camera</string>
+
+	<!-- Permission options for the `photos` group -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Meetox want to access your photos</string>
 </dict>
 </plist>

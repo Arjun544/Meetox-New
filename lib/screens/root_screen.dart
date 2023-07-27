@@ -1,5 +1,5 @@
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/widgets/custom_button.dart';
+import '../core/imports/core_imports.dart';
+import '../widgets/custom_button.dart';
 
 class RootScreen extends StatelessWidget {
   const RootScreen({super.key});

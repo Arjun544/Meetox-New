@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/add_profile_controller.dart';
-import 'package:meetox/core/imports/core_imports.dart';
-import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/widgets/custom_button.dart';
-import 'package:meetox/widgets/custom_sheet.dart';
-import 'package:meetox/widgets/sheets/avatars_sheet.dart';
-
+import '../../../controllers/add_profile_controller.dart';
+import '../../../core/imports/core_imports.dart';
+import '../../../core/imports/packages_imports.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_sheet.dart';
+import '../../../widgets/sheets/avatars_sheet.dart';
 
 class StepTwo extends GetView<AddProfileController> {
   const StepTwo({super.key});
@@ -51,14 +50,8 @@ class StepTwo extends GetView<AddProfileController> {
               style: context.theme.textTheme.labelSmall,
             ),
           ),
-          Obx(
-            () => SizedBox(
-              height: (controller.currentLoginProvider.value == 'Facebook' ||
-                          controller.currentLoginProvider.value == 'Google') &&
-                      controller.socialProfile.value.isEmpty
-                  ? 30.sp
-                  : 50.sp,
-            ),
+          SizedBox(
+            height: 50.sp,
           ),
           Center(
             child: Obx(
@@ -66,11 +59,7 @@ class StepTwo extends GetView<AddProfileController> {
                 maxRadius: 60.sp,
                 backgroundColor: AppColors.primaryYellow,
                 // If login provider is Facebook or Google, then show the profile image of Facebook or Google. otherwise, show the selected avatar or image.
-                backgroundImage: (controller.currentLoginProvider.value ==
-                                'Facebook' ||
-                            controller.currentLoginProvider.value ==
-                                'Google') &&
-                        controller.socialProfile.value.isNotEmpty
+                backgroundImage: controller.socialProfile.value.isNotEmpty
                     ? CachedNetworkImageProvider(controller.socialProfile.value)
                     : controller.selectedImage.value.files.isEmpty &&
                             controller.capturedImage.value.path.isEmpty
@@ -92,60 +81,30 @@ class StepTwo extends GetView<AddProfileController> {
           ),
           Obx(
             () => SizedBox(
-              height: (controller.currentLoginProvider.value == 'Facebook' ||
-                          controller.currentLoginProvider.value == 'Google') &&
-                      controller.socialProfile.value.isEmpty
-                  ? 30.sp
-                  : 50.sp,
+              height: controller.socialProfile.value.isEmpty ? 30.sp : 50.sp,
             ),
           ),
           Column(
             children: [
               Obx(
-                () => controller.isSocialProfileLoading.value
-                    ? LoadingAnimationWidget.staggeredDotsWave(
-                        color: AppColors.primaryYellow,
-                        size: 35.sp,
+                () => controller.socialProfile.value.isEmpty
+                    ? CustomButton(
+                        width: Get.width * 0.9,
+                        text: 'Set social profile',
+                        hasIcon: true,
+                        color: context.theme.indicatorColor,
+                        icon: IconTheme(
+                          data: context.theme.iconTheme,
+                          child: const Icon(
+                            FlutterRemix.user_4_fill,
+                          ),
+                        ),
+                        onPressed: () => controller.socialProfile(
+                          supabase
+                              .auth.currentUser!.userMetadata!['avatar_url'],
+                        ),
                       )
-                    : (controller.currentLoginProvider.value == 'Facebook' ||
-                                controller.currentLoginProvider.value ==
-                                    'Google') &&
-                            controller.socialProfile.value.isEmpty
-                        ? CustomButton(
-                            width: Get.width * 0.9,
-                            text: 'Set social profile',
-                            hasIcon: true,
-                            color:
-                                context.theme.indicatorColor,
-                            icon: IconTheme(
-                              data: context.theme.iconTheme,
-                              child: const Icon(
-                                FlutterRemix.user_4_fill,
-                              ),
-                            ),
-                            onPressed: () async {
-                              // controller.isSocialProfileLoading.value = true;
-                              // controller.capturedImage.value = XFile('');
-                              // controller.selectedImage.value =
-                              //     const FilePickerResult([]);
-                              // if (controller.currentLoginProvider.value ==
-                              //     'Facebook') {
-                              //   final fbUser = await facebookAuth.getUserData();
-
-                              //   controller.socialProfile.value =
-                              //       fbUser['picture']['data']['url'] as String;
-                              // } else if (controller
-                              //         .currentLoginProvider.value ==
-                              //     'Google') {
-                              //   await googleSignIn.signInSilently();
-
-                              //   controller.socialProfile.value =
-                              //       googleSignIn.currentUser!.photoUrl!;
-                              // }
-                              // controller.isSocialProfileLoading.value = false;
-                            },
-                          )
-                        : const SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ),
               SizedBox(height: 20.sp),
               CustomButton(

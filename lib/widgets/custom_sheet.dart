@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:meetox/core/imports/core_imports.dart';
+import '../core/imports/core_imports.dart';
 
 Future<void> Function({
   required BuildContext context,
