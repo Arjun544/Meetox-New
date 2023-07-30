@@ -50,5 +50,24 @@ class UserServices {
     }
   }
 
-  
+  static Future<bool> updateLocation({
+    required double lat,
+    required double long,
+    required String address,
+  }) async {
+    try {
+      await supabase.from('profiles').update({
+        'address': address,
+        'location': LocationModel(
+          latitude: lat,
+          longitude: long,
+        ).toJSON(),
+      }).eq('id', supabase.auth.currentUser!.id);
+
+      return true;
+    } catch (e) {
+      logError('Location ${e.toString()}');
+      rethrow;
+    }
+  }
 }

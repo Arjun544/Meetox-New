@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/services/user_services.dart';
 
 import '../core/imports/core_imports.dart';
 import '../helpers/has_location_permission.dart';
@@ -68,30 +69,27 @@ class RootController extends GetxController {
 
         currentPosition.value = newPostion;
 
-        // TODO: add address
-        // final placemarks = await placemarkFromCoordinates(
-        //   currentPosition.value.latitude,
-        //   currentPosition.value.longitude,
-        // );
+        final placemarks = await placemarkFromCoordinates(
+          currentPosition.value.latitude,
+          currentPosition.value.longitude,
+        );
 
-        // final address =
-        //     '${placemarks[0].administrativeArea}, ${placemarks[0].isoCountryCode}';
+        final address =
+            '${placemarks[0].administrativeArea}, ${placemarks[0].isoCountryCode}';
 
         log('Updated Address');
         currentUser.value.location = LocationModel(
-            longitude: currentPosition.value.longitude,
-            latitude: currentPosition.value.latitude);
+          longitude: currentPosition.value.longitude,
+          latitude: currentPosition.value.latitude,
+        );
 
         currentUser.refresh();
 
-        // TODO: update location
-        // await UserServices.updateUserLocation(
-        //   address: address,
-        //   coordinates: [
-        //     currentPosition.value.latitude,
-        //     currentPosition.value.longitude
-        //   ],
-        // );
+        await UserServices.updateLocation(
+          address: address,
+          long: currentPosition.value.latitude,
+          lat: currentPosition.value.longitude,
+        );
 
         mapBounds.value = !currentUser.value.isPremium!
             // Approx 300 kms
