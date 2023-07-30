@@ -3,12 +3,16 @@ import 'dart:io';
 import '../core/imports/core_imports.dart';
 
 class StorageServices {
-  static Future<String> uploadImage(
-      RxBool isLoading, String folder, File file) async {
+  static Future<String> uploadImage({
+    required RxBool isLoading,
+    required String folder,
+    required String subFolder,
+    required File file,
+  }) async {
     try {
       isLoading(true);
       await supabase.storage.from(folder).upload(
-            '${supabase.auth.currentUser!.id}/profile',
+            subFolder,
             file,
           );
 

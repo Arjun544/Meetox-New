@@ -32,8 +32,12 @@ class UserServices {
       required File file}) async {
     try {
       isLoading(true);
-      final photoUrl =
-          await StorageServices.uploadImage(isLoading, 'user profiles', file);
+      final photoUrl = await StorageServices.uploadImage(
+        isLoading: isLoading,
+        folder: 'circle profiles',
+        subFolder: '${supabase.auth.currentUser!.id}/profile',
+        file: file,
+      );
       if (photoUrl.isNotEmpty) {
         await supabase.from('profiles').update({
           'name': name,

@@ -1,6 +1,8 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 
+import '../../screens/add_circle_screen/add_circle_screen.dart';
+
 class AddOptionsSheet extends StatelessWidget {
   const AddOptionsSheet({super.key});
 
@@ -55,9 +57,7 @@ class AddOptionsSheet extends StatelessWidget {
               'Create circle',
               style: context.theme.textTheme.labelMedium,
             ),
-            // TODO: Add circle screen
-            onTap: () {},
-            // onTap: () => Get.to(() => const AddCircleScreen()),
+            onTap: () => Get.to(() => const AddCircleScreen()),
           ),
           SizedBox(height: 20.sp),
           ListTile(
