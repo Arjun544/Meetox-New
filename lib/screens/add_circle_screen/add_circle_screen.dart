@@ -31,7 +31,8 @@ class AddCircleScreen extends HookWidget {
       ),
       onData: (data, recoveryData) {
         if (data == true) {
-          logSuccess('Circle created');
+          Get.back();
+          showToast('Create circle successfully');
         }
       },
       onError: (error, recoveryData) {

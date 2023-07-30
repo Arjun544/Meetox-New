@@ -33,11 +33,14 @@ class CircleServices {
           'updated_at': DateTime.now().toString(),
         }).select('id');
 
-        for (var member in data['members']) {
-          await supabase.from('circle_members').insert({
-            'circle_id': newCircle[0]['id'],
-            'member_id': member,
-          });
+        if (newCircle.isNotEmpty) {
+          // Add members
+          for (var member in data['members']) {
+            await supabase.from('circle_members').insert({
+              'circle_id': newCircle[0]['id'],
+              'member_id': member,
+            });
+          }
         }
       }
 
