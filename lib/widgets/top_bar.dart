@@ -8,6 +8,7 @@ import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 
 import '../core/imports/core_imports.dart';
+import '../services/user_services.dart';
 import 'user_initials.dart';
 
 class TopBar extends GetView<MapScreenController> {
@@ -23,6 +24,8 @@ class TopBar extends GetView<MapScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    final rootController = Get.find<RootController>();
+
     // ignore: avoid_positional_boolean_parameters
     Future<void> onPreciseChange(bool val) async {
       isPrecise.value = val;
@@ -41,11 +44,11 @@ class TopBar extends GetView<MapScreenController> {
           '${placemarks[0].administrativeArea}, ${placemarks[0].isoCountryCode}';
       controller.rootController.currentAddress.value = address;
 
-      // final UserModel userData = await UserServices.addLocation(
-      //   address: address,
-      //   latitude: controller.rootController.currentPosition.value.latitude,
-      //   longitude: controller.rootController.currentPosition.value.longitude,
-      // );
+      await UserServices.updateLocation(
+        address: address,
+        lat: controller.rootController.currentPosition.value.latitude,
+        long: controller.rootController.currentPosition.value.longitude,
+      );
 
       // currentUser.value = userData.user;
       controller.animatedMapMove(
@@ -56,8 +59,6 @@ class TopBar extends GetView<MapScreenController> {
         15,
       );
     }
-
-    final rootController = Get.find<RootController>();
 
     return Container(
       height: 55.sp,
@@ -72,7 +73,8 @@ class TopBar extends GetView<MapScreenController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           InkWell(
-            onTap: () => rootController.zoomDrawerController.open!(),
+            onTap: () async =>
+                await rootController.zoomDrawerController.open!(),
             child: currentUser.value.photo == null
                 ? UserInititals(name: currentUser.value.name!)
                 : Obx(

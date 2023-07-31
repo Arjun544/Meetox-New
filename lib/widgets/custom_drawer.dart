@@ -1,5 +1,6 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/screens/circles_screen/circles_screen.dart';
 import 'package:meetox/widgets/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -44,8 +45,7 @@ class CustomDrawer extends StatelessWidget {
                 DrawerTile(
                   icon: FlutterRemix.bubble_chart_fill,
                   title: 'Circles',
-                  onPressed: (){},
-                  // onPressed: () => Get.to(() => const CirclesScreen()),
+                  onPressed: () => Get.to(() => const CirclesScreen()),
                 ),
                 DrawerTile(
                   icon: FlutterRemix.question_fill,

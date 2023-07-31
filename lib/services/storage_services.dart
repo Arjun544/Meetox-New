@@ -16,9 +16,8 @@ class StorageServices {
             file,
           );
 
-      final String publicUrl = supabase.storage.from(folder).getPublicUrl(
-            '/${supabase.auth.currentUser!.id}/profile',
-          );
+      final String publicUrl =
+          supabase.storage.from(folder).getPublicUrl(subFolder);
       isLoading(false);
       return publicUrl;
     } catch (e) {

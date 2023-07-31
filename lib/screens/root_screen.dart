@@ -9,8 +9,8 @@ import 'package:meetox/widgets/lazyload_stack.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/navigation_bar.dart';
 
-class DrawerScreen extends GetView<RootController> {
-  const DrawerScreen({super.key});
+class RootScreen extends GetView<RootController> {
+  const RootScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class DrawerScreen extends GetView<RootController> {
       body: ZoomDrawer(
         controller: controller.zoomDrawerController,
         menuScreen: const CustomDrawer(),
-        mainScreen: const RootScreen(),
+        mainScreen: const SubRootScreen(),
         borderRadius: 24,
         showShadow: true,
         angle: 0,
@@ -36,8 +36,8 @@ class DrawerScreen extends GetView<RootController> {
   }
 }
 
-class RootScreen extends HookWidget {
-  const RootScreen({super.key});
+class SubRootScreen extends HookWidget {
+  const SubRootScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
