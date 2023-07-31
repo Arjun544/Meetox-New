@@ -5,7 +5,7 @@ import 'package:meetox/models/user_model.dart';
 import 'package:meetox/services/storage_services.dart';
 
 class CircleServices {
-  static Future<bool> addCircle({
+  static Future<CircleModel> addCircle({
     required RxBool isLoading,
     required Map<String, dynamic> data,
     required double lat,
@@ -19,8 +19,9 @@ class CircleServices {
         subFolder: '${DateTime.now().millisecondsSinceEpoch}',
         file: data['file'],
       );
+      late dynamic newCircle;
       if (photoUrl.isNotEmpty) {
-        final newCircle = await supabase.from('circles').insert({
+        newCircle = await supabase.from('circles').insert({
           'name': data['name'],
           'description': data['description'],
           'photo': photoUrl,
@@ -33,7 +34,7 @@ class CircleServices {
             longitude: long,
           ).toJSON(),
           'updated_at': DateTime.now().toString(),
-        }).select('id');
+        }).select('*, circle_members(count)');
 
         if (newCircle.isNotEmpty) {
           // Add members
@@ -45,8 +46,19 @@ class CircleServices {
           }
         }
       }
+      // Updating members count manually
+      final CircleModel editedCircle = CircleModel.fromJson(
+        {
+          ...newCircle[0],
+          'circle_members': [
+            CircleMember(
+              count: data['members'].length,
+            ).toJson()
+          ],
+        },
+      );
       isLoading(false);
-      return true;
+      return editedCircle;
     } catch (e) {
       isLoading(false);
       logError('Circle created error ${e.toString()}');
@@ -68,7 +80,7 @@ class CircleServices {
                   count: CountOption.exact,
                 ),
               )
-              .textSearch('fts', query)
+              .textSearch('name', query)
               .eq('admin_id', supabase.auth.currentUser!.id)
               .order('created_at')
               .limit(10 * limit)

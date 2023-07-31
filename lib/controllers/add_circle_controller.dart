@@ -7,6 +7,10 @@ import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_asset_image.dart';
+import 'package:meetox/helpers/show_toast.dart';
+import 'package:meetox/models/circle_model.dart';
+
+import 'circles_controller.dart';
 
 class AddCircleController extends GetxController {
   final GlobalController globalController = Get.find();
@@ -125,34 +129,32 @@ class AddCircleController extends GetxController {
     });
   }
 
-  // void onComplete(Map<String, dynamic>? resultData) {
-  //   if (resultData != null) {
-  //     logSuccess(resultData.toString());
-  //     final bool hasCirclesController = Get.isRegistered<CirclesController>();
-  //     if (hasCirclesController) {
-  //       final circle_model.Circle newCircle = circle_model.Circle.fromJson(
-  //           resultData['addCircle'] as Map<String, dynamic>);
-  //       final CirclesController circlesController = Get.find();
+  void oData(CircleModel newCircle) {
+    if (newCircle.id != null) {
+      final bool hasCirclesController = Get.isRegistered<CirclesController>();
+      if (hasCirclesController) {
+        final CirclesController circlesController = Get.find();
 
-  //       circlesController.circlesPagingController.itemList!
-  //           .insert(0, newCircle);
-  //       circlesController.circlesPagingController
-  //           // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-  //           .notifyListeners();
-  //     }
+        circlesController.circlesPagingController.itemList!
+            .insert(0, newCircle);
+        circlesController.circlesPagingController
+            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+            .notifyListeners();
+      }
 
-  //     currentStep.value = 0;
-  //     nameController.clear();
-  //     descController.clear();
-  //     isPrivate.value = false;
-  //     limit.value = 50.0;
-  //     selectedAvatar.value = 0;
-  //     capturedImage.value = XFile('');
-  //     selectedImage.value = const FilePickerResult([]);
-  //     selectedMembers.clear();
-  //     Get.back();
-  //   }
-  // }
+      currentStep.value = 0;
+      nameController.clear();
+      descController.clear();
+      isPrivate.value = false;
+      limit.value = 50.0;
+      selectedAvatar.value = 0;
+      capturedImage.value = XFile('');
+      selectedImage.value = const FilePickerResult([]);
+      selectedMembers.clear();
+      Get.back();
+      showToast('Circle created successfully');
+    }
+  }
 
   @override
   void dispose() {

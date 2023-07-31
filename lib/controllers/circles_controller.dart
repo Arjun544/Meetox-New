@@ -35,8 +35,6 @@ class CirclesController extends GetxController {
       final newItems = newPage;
       final hasNextPage = newPage.isEmpty;
 
-      logSuccess(hasNextPage.toString());
-
       if (!hasNextPage) {
         circlesPagingController.appendLastPage(newItems);
       } else if (hasNextPage) {
@@ -50,7 +48,7 @@ class CirclesController extends GetxController {
 
   @override
   void onClose() {
-    // circlesPagingController.dispose();
+    circlesPagingController.dispose();
     searchDebounce.dispose();
     super.onClose();
   }

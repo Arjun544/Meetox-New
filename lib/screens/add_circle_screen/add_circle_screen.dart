@@ -30,9 +30,9 @@ class AddCircleScreen extends HookWidget {
         data: {...variables},
       ),
       onData: (data, recoveryData) {
-        if (data == true) {
-          Get.back();
-          showToast('Create circle successfully');
+        if (data.id != null) {
+          controller.oData(data);
+          
         }
       },
       onError: (error, recoveryData) {
