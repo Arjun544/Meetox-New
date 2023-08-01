@@ -1,18 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meetox/controllers/circles_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/helpers/show_toast.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/services/circle_services.dart';
 
 class CircleTile extends HookWidget {
   const CircleTile({
+    required this.index,
     required this.circle,
     required this.onTap,
     this.circlesController,
     super.key,
     this.isShowingOnMap = false,
   });
+  final int index;
   final CircleModel circle;
   final bool isShowingOnMap;
   final CirclesController? circlesController;
@@ -20,6 +25,22 @@ class CircleTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deleteCircleMutation = useMutation(
+      CacheKeys.addCircle,
+      (Map<String, dynamic> variables) async =>
+          await CircleServices.deleteCircle(
+        id: variables['id'],
+      ),
+      onData: (data, recoveryData) {
+        circlesController!.onCircleDelete(context, data, index);
+        Navigator.pop(context);
+      },
+      onError: (error, recoveryData) {
+        logError(error.toString());
+        showToast('Delete circle failed');
+      },
+    );
+
     return InkWell(
       onTap: onTap,
       splashColor: Colors.transparent,
@@ -85,55 +106,38 @@ class CircleTile extends HookWidget {
                           style: context.theme.textTheme.labelMedium,
                         ),
                       ),
-                      actions: const [
-                        // CupertinoActionSheetAction(
-                        //   onPressed: () {},
-                        //   child: Text(
-                        //     'View profile',
-                        //     style: context.theme.textTheme.labelMedium,
-                        //   ),
-                        // ),
-                        // // TODO: Add Delete Mutation
-                        // Mutation(
-                        //   options: MutationOptions(
-                        //     document: gql(deleteCircle),
-                        //     fetchPolicy: FetchPolicy.networkOnly,
-                        //     onCompleted: (Map<String, dynamic>? resultData) =>
-                        //         circlesController!.onDeleteCompleted(
-                        //       resultData,
-                        //       context,
-                        //     ),
-                        //     onError: (error) =>
-                        //         showToast('Failed to delete circle'),
-                        //   ),
-                        //   builder: (runMutation, result) {
-                        //     return result!.isLoading
-                        //         ? Padding(
-                        //             padding: EdgeInsets.symmetric(
-                        //                 horizontal: Get.width * 0.42,
-                        //                 vertical: 8.h),
-                        //             child: LoadingAnimationWidget
-                        //                 .staggeredDotsWave(
-                        //               color: AppColors.primaryYellow,
-                        //               size: 25.sp,
-                        //             ),
-                        //           )
-                        //         : CupertinoActionSheetAction(
-                        //             isDestructiveAction: true,
-                        //             onPressed: () => runMutation({
-                        //               "id": circle.id,
-                        //             }),
-                        //             child: Text(
-                        //               'Delete',
-                        //               style: context
-                        //                   .theme.textTheme.labelMedium!
-                        //                   .copyWith(
-                        //                 color: Colors.redAccent,
-                        //               ),
-                        //             ),
-                        //           );
-                        //   },
-                        // ),
+                      actions: [
+                        CupertinoActionSheetAction(
+                          onPressed: () {},
+                          child: Text(
+                            'View profile',
+                            style: context.theme.textTheme.labelMedium,
+                          ),
+                        ),
+                        deleteCircleMutation.isMutating
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Get.width * 0.42,
+                                    vertical: 8.h),
+                                child: LoadingAnimationWidget.staggeredDotsWave(
+                                  color: AppColors.primaryYellow,
+                                  size: 25.sp,
+                                ),
+                              )
+                            : CupertinoActionSheetAction(
+                                isDestructiveAction: true,
+                                onPressed: () async =>
+                                    await deleteCircleMutation.mutate({
+                                  'id': circle.id!,
+                                }),
+                                child: Text(
+                                  'Delete',
+                                  style: context.theme.textTheme.labelMedium!
+                                      .copyWith(
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                   ),

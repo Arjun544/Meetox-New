@@ -18,5 +18,9 @@ export 'package:geocoding/geocoding.dart';
 export 'package:ficonsax/ficonsax.dart';
 export 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 export 'package:shimmer/shimmer.dart';
+export 'package:fl_query/fl_query.dart';
+export 'package:fl_query_hooks/fl_query_hooks.dart';
+
+
 
 

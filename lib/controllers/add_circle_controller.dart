@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:fl_query/fl_query.dart';
 import 'package:meetox/controllers/global_controller.dart';
 import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
@@ -89,8 +88,10 @@ class AddCircleController extends GetxController {
   //   }
   // }
 
-  Future<void> handleAddCircle(BuildContext context,
-      Mutation<void, Object?, Map<String, dynamic>> addCircleMutation) async {
+  Future<void> handleAddCircle(
+      BuildContext context,
+      Mutation<CircleModel, Object?, Map<String, dynamic>>
+          addCircleMutation) async {
     File? base64Profile;
     if (capturedImage.value.path.isEmpty &&
         selectedImage.value.files.isNotEmpty) {

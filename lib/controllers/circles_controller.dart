@@ -1,5 +1,6 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/helpers/show_toast.dart';
 import 'package:meetox/models/circle_model.dart';
 import 'package:meetox/services/circle_services.dart';
 
@@ -12,7 +13,6 @@ class CirclesController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     circlesPagingController.addPageRequestListener((page) async {
       await fetchCircles(page);
       searchDebounce = debounce(
@@ -23,6 +23,7 @@ class CirclesController extends GetxController {
         time: const Duration(seconds: 2),
       );
     });
+    super.onInit();
   }
 
   Future<void> fetchCircles(int pageKey) async {
@@ -43,6 +44,16 @@ class CirclesController extends GetxController {
     } catch (e) {
       logError(e.toString());
       circlesPagingController.error = e;
+    }
+  }
+
+  void onCircleDelete(BuildContext context, String newId, int index) {
+    if (newId.isNotEmpty) {
+      circlesPagingController.itemList!.removeAt(index);
+      circlesPagingController
+          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+          .notifyListeners();
+      showToast('Deleted circle successfully');
     }
   }
 

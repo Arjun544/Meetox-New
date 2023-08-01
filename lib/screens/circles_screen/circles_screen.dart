@@ -112,6 +112,7 @@ class CirclesScreen extends GetView<CirclesController> {
                       },
                     ),
                     itemBuilder: (context, item, index) => CircleTile(
+                      index: index,
                       circle: item,
                       circlesController: controller,
                       onTap: () {},

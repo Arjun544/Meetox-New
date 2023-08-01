@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:meetox/controllers/add_circle_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
@@ -32,7 +31,6 @@ class AddCircleScreen extends HookWidget {
       onData: (data, recoveryData) {
         if (data.id != null) {
           controller.oData(data);
-          
         }
       },
       onError: (error, recoveryData) {

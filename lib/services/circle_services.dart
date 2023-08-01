@@ -112,4 +112,18 @@ class CircleServices {
       rethrow;
     }
   }
+
+  static Future<String> deleteCircle({required String id}) async {
+    try {
+      final List<Map<String, dynamic>> data = await supabase
+          .from('circles')
+          .delete()
+          .match({'id': id}).select('id');
+      logError(data[0].toString());
+      return data[0].toString();
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
 }
