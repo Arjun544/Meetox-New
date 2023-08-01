@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meetox/controllers/circles_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
@@ -111,6 +110,13 @@ class CircleTile extends HookWidget {
                           onPressed: () {},
                           child: Text(
                             'View profile',
+                            style: context.theme.textTheme.labelMedium,
+                          ),
+                        ),
+                        CupertinoActionSheetAction(
+                          onPressed: () {},
+                          child: Text(
+                            'Chat',
                             style: context.theme.textTheme.labelMedium,
                           ),
                         ),
