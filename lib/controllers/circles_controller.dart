@@ -47,9 +47,9 @@ class CirclesController extends GetxController {
     }
   }
 
-  void onCircleDelete(BuildContext context, String newId, int index) {
+  void onCircleDelete(BuildContext context, String newId) {
     if (newId.isNotEmpty) {
-      circlesPagingController.itemList!.removeAt(index);
+      circlesPagingController.itemList!.removeWhere((element) => element.id == newId);
       circlesPagingController
           // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
           .notifyListeners();

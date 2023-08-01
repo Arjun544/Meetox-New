@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:meetox/screens/auth_screens/auth_screen.dart';
 import '../core/imports/packages_imports.dart';
 
 import '../core/imports/core_imports.dart';
@@ -72,7 +73,6 @@ class AuthServices {
       if (idToken == null) {
         throw 'No idToken';
       }
-     
 
       return supabase.auth.signInWithIdToken(
         provider: Provider.google,
@@ -83,6 +83,15 @@ class AuthServices {
       isLoading(false);
       logError(e.toString());
       rethrow;
+    }
+  }
+
+  static Future logout() async {
+    try {
+      await supabase.auth.signOut();
+      Get.offAll(() => const AuthScreen());
+    } catch (e) {
+      logError(e.toString());
     }
   }
 }

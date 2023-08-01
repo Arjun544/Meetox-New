@@ -27,4 +27,17 @@ class StorageServices {
       rethrow;
     }
   }
+
+  static Future<bool> deleteImage({
+    required String folder,
+    required String name,
+  }) async {
+    try {
+      await supabase.storage.from(folder).remove([name]);
+      return true;
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
 }

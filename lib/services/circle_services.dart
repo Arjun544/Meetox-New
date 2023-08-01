@@ -1,5 +1,6 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/helpers/get_file_name.dart';
 import 'package:meetox/models/circle_model.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/services/storage_services.dart';
@@ -118,9 +119,13 @@ class CircleServices {
       final List<Map<String, dynamic>> data = await supabase
           .from('circles')
           .delete()
-          .match({'id': id}).select('id');
-      logError(data[0].toString());
-      return data[0].toString();
+          .match({'id': id}).select('id, photo');
+      logSuccess('Delete circle ${data[0]}');
+      await StorageServices.deleteImage(
+        folder: 'circle profiles',
+        name: getFileName(data[0]['photo']),
+      );
+      return data[0]['id'].toString();
     } catch (e) {
       logError(e.toString());
       rethrow;

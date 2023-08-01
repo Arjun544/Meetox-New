@@ -9,14 +9,12 @@ import 'package:meetox/services/circle_services.dart';
 
 class CircleTile extends HookWidget {
   const CircleTile({
-    required this.index,
     required this.circle,
     required this.onTap,
     this.circlesController,
     super.key,
     this.isShowingOnMap = false,
   });
-  final int index;
   final CircleModel circle;
   final bool isShowingOnMap;
   final CirclesController? circlesController;
@@ -31,7 +29,7 @@ class CircleTile extends HookWidget {
         id: variables['id'],
       ),
       onData: (data, recoveryData) {
-        circlesController!.onCircleDelete(context, data, index);
+        circlesController!.onCircleDelete(context, data);
         Navigator.pop(context);
       },
       onError: (error, recoveryData) {
