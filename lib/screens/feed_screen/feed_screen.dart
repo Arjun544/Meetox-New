@@ -8,6 +8,7 @@ class FeedScreen extends GetView<FeedsController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(FeedsController());
     return Scaffold(
       body: Column(
         children: [

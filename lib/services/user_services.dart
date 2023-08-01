@@ -74,4 +74,44 @@ class UserServices {
       rethrow;
     }
   }
+
+  static Future<List<UserModel>> getNearByUsers({
+    required double lat,
+    required double long,
+    required double distanceInKm,
+  }) async {
+    try {
+      final List<dynamic> data = await supabase.rpc(
+        'nearby_users',
+        params: {
+          'lat': lat,
+          'long': long,
+          'distanceinkm': distanceInKm,
+        },
+      );
+
+
+      final List<UserModel> users = data
+          .map((e) => UserModel.fromJSON({
+                'id': e['id'],
+                'name': e['name'],
+                'photo': e['photo'],
+                'address': e['address'],
+                'isPremium': e['ispremium'],
+                'socials': e['socials'],
+                'location': LocationModel.fromJSON(
+                        jsonDecode(e['location']) as Map<String, dynamic>)
+                    .toJSON(),
+                'dob': e['dob'],
+                'createdAt': e['created_at'],
+              }))
+          .toList();
+      return users;
+
+      // return List<UserModel>.from(jsonList.map((x) => UserModel.fromJSON(x)));
+    } catch (e) {
+      logError('Nearby Users ${e.toString()}');
+      rethrow;
+    }
+  }
 }
