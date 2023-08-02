@@ -5,6 +5,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/widgets/custom_area_field.dart';
 import 'package:meetox/widgets/custom_field.dart';
+import 'package:meetox/widgets/mini_map.dart';
 
 class CircleDetails extends GetView<AddCircleController> {
   const CircleDetails({super.key});
@@ -89,19 +90,18 @@ class CircleDetails extends GetView<AddCircleController> {
                     style: context.theme.textTheme.labelSmall,
                   ),
                   SizedBox(height: 15.sp),
-                  // TODO: Add Mini Map
-                  // ClipRRect(
-                  //   borderRadius: BorderRadius.circular(20),
-                  //   child: SizedBox(
-                  //     height: 150.sp,
-                  //     width: Get.width,
-                  //     child: MiniMap(
-                  //       latitude: rootController.currentPosition.value.latitude,
-                  //       longitude:
-                  //           rootController.currentPosition.value.longitude,
-                  //     ),
-                  //   ),
-                  // ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: SizedBox(
+                      height: 150.sp,
+                      width: Get.width,
+                      child: MiniMap(
+                        latitude: rootController.currentPosition.value.latitude,
+                        longitude:
+                            rootController.currentPosition.value.longitude,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 80.sp),
                 ],
               ),
