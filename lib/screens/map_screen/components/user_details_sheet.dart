@@ -15,8 +15,7 @@ class UserDetailsSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MapScreenController>();
-    // final followers = useState(user.followers!);
-    final followers = useState(0);
+    final followers = useState(user.followers ?? 0);
     final isFollowLoading = useState(false);
 
     final currentLatitude =
@@ -276,8 +275,7 @@ class UserDetailsSheet extends HookWidget {
                     child: Column(
                       children: [
                         Text(
-                          "0",
-                          // user.followings.toString(),
+                          user.followings.toString(),
                           style: context.theme.textTheme.labelMedium,
                         ),
                         Text(

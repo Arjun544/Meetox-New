@@ -99,6 +99,8 @@ class UserServices {
                 'address': e['address'],
                 'isPremium': e['ispremium'],
                 'socials': e['socials'],
+                'followers': e['followers'],
+                'followings': e['followings'],
                 'location': LocationModel.fromJSON(
                         jsonDecode(e['location']) as Map<String, dynamic>)
                     .toJSON(),

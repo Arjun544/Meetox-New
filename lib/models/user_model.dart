@@ -6,6 +6,8 @@ class UserModel {
   String? photo;
   String? address;
   bool? isPremium;
+  int? followers;
+  int? followings;
   Map<String, dynamic>? socials;
   LocationModel? location;
   DateTime? dob;
@@ -17,6 +19,8 @@ class UserModel {
     this.photo,
     this.address,
     this.isPremium,
+    this.followers,
+    this.followings,
     this.socials,
     this.location,
     this.dob,
@@ -31,6 +35,8 @@ class UserModel {
       address: json['address'],
       isPremium: json['ispremium'],
       socials: json['socials'],
+      followers: json['followers'] ?? 0,
+      followings: json['followings'] ?? 0,
       location: json['location'] != null
           ? LocationModel.fromJSON(json['location'])
           : null,
@@ -49,6 +55,8 @@ class UserModel {
       if (address != null) 'address': address,
       if (isPremium != null) 'ispremium': isPremium,
       if (socials != null) 'socials': socials,
+      if (followers != null) 'followers': followers,
+      if (followings != null) 'followings': followings,
       if (location != null) 'location': toPostGISPoint(location),
       if (dob != null) 'dob': dob!.toUtc().toIso8601String(),
       if (createdAt != null) 'created_at': createdAt!.toUtc().toIso8601String(),
