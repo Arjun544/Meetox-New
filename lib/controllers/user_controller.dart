@@ -4,9 +4,9 @@ import '../models/user_model.dart';
 
 class UserController extends GetxController {
   @override
-  void onInit() {
+  void onReady() {
     setupUserListener();
-    super.onInit();
+    super.onReady();
   }
 
   void setupUserListener() {

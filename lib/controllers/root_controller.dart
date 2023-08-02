@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/screens/map_screen/map_screen.dart';
 import 'package:meetox/services/user_services.dart';
 
 import '../core/imports/core_imports.dart';
@@ -17,8 +18,7 @@ class RootController extends GetxController {
   final selectedTab = 1.obs;
 
   final List<Widget> items = [
-    // const MapScreen(),
-    const SizedBox.shrink(),
+    const MapScreen(),
     const FeedScreen(),
     const SizedBox.shrink(),
     const SizedBox.shrink(),
@@ -26,8 +26,7 @@ class RootController extends GetxController {
     const NotificationScreen(),
   ];
 
-  Rx<LatLngBounds> mapBounds =
-      LatLngBounds(const LatLng(0, 0), const LatLng(0, 0)).obs;
+  Rx<LatLngBounds> mapBounds = LatLngBounds(LatLng(0, 0), LatLng(0, 0)).obs;
   Rx<LocationPermission> locationPermission = LocationPermission.denied.obs;
 
   RxString currentAddress = ''.obs;
@@ -87,8 +86,8 @@ class RootController extends GetxController {
 
         await UserServices.updateLocation(
           address: address,
-          long: currentPosition.value.latitude,
-          lat: currentPosition.value.longitude,
+          long: currentPosition.value.longitude,
+          lat: currentPosition.value.latitude,
         );
 
         mapBounds.value = !currentUser.value.isPremium!

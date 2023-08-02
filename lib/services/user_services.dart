@@ -89,7 +89,7 @@ class UserServices {
           'distanceinkm': distanceInKm,
         },
       );
-
+      logError(data.toString());
 
       final List<UserModel> users = data
           .map((e) => UserModel.fromJSON({
@@ -106,6 +106,7 @@ class UserServices {
                 'createdAt': e['created_at'],
               }))
           .toList();
+      logError(users.length.toString());
       return users;
 
       // return List<UserModel>.from(jsonList.map((x) => UserModel.fromJSON(x)));

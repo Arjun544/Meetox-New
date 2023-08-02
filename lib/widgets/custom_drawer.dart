@@ -2,6 +2,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/screens/auth_screens/auth_screen.dart';
 import 'package:meetox/screens/circles_screen/circles_screen.dart';
+import 'package:meetox/services/auth_services.dart';
 import 'package:meetox/widgets/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -63,8 +64,7 @@ class CustomDrawer extends StatelessWidget {
                   icon: FlutterRemix.logout_circle_fill,
                   title: 'Logout',
                   onPressed: () async {
-                    // await SecureStorageServices.clearAll();
-                    Get.offAll(() => const AuthScreen());
+                    await AuthServices.logout();
                   },
                 ),
               ],

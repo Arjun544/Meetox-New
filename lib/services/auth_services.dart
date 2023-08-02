@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:meetox/screens/auth_screens/auth_screen.dart';
-import '../core/imports/packages_imports.dart';
 
 import '../core/imports/core_imports.dart';
+import '../core/imports/packages_imports.dart';
 
 class AuthServices {
   static String generateRandomString() {
