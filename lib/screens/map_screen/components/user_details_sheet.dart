@@ -17,6 +17,7 @@ class UserDetailsSheet extends HookWidget {
     final controller = Get.find<MapScreenController>();
     // final followers = useState(user.followers!);
     final followers = useState(0);
+    final isFollowLoading = useState(false);
 
     final currentLatitude =
         controller.rootController.currentPosition.value.latitude;
@@ -42,6 +43,7 @@ class UserDetailsSheet extends HookWidget {
       CacheKeys.followUser,
       (varibles) async => await FollowServices.followUser(
         targetUserId: varibles['id'],
+        isLoading: isFollowLoading,
       ),
       onData: (data, _) async {
         if (data == true) {
@@ -55,6 +57,7 @@ class UserDetailsSheet extends HookWidget {
       CacheKeys.unFollowUser,
       (varibles) async => await FollowServices.unFollowUser(
         targetUserId: varibles['id'],
+        isLoading: isFollowLoading,
       ),
       onData: (data, _) async {
         if (data == true) {
@@ -186,9 +189,7 @@ class UserDetailsSheet extends HookWidget {
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: InkWell(
-                      onTap: checkIsFollowed.isLoading ||
-                              followUser.isMutating ||
-                              unFollowUser.isMutating
+                      onTap: checkIsFollowed.isLoading || isFollowLoading.value
                           ? () {}
                           : () async {
                               if (checkIsFollowed.data == true) {
@@ -203,8 +204,8 @@ class UserDetailsSheet extends HookWidget {
                             },
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: checkIsFollowed.data == null
-                              ? AppColors.primaryYellow
+                          color: checkIsFollowed.isLoading
+                              ? AppColors.customGrey
                               : checkIsFollowed.data == true
                                   ? Colors.redAccent
                                   : AppColors.primaryYellow,
@@ -215,7 +216,8 @@ class UserDetailsSheet extends HookWidget {
                             horizontal: 12.sp,
                             vertical: 6.sp,
                           ),
-                          child: checkIsFollowed.isLoading
+                          child: checkIsFollowed.isLoading ||
+                                  isFollowLoading.value
                               ? LoadingAnimationWidget.staggeredDotsWave(
                                   color: AppColors.customBlack,
                                   size: 20.sp,
