@@ -4,6 +4,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/services/follow_services.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 
 class UserDetailsSheet extends HookWidget {
@@ -15,7 +16,7 @@ class UserDetailsSheet extends HookWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<MapScreenController>();
     // final followers = useState(user.followers!);
-    final followers = useState([]);
+    final followers = useState(0);
 
     final currentLatitude =
         controller.rootController.currentPosition.value.latitude;
@@ -31,26 +32,37 @@ class UserDetailsSheet extends HookWidget {
       userLongitude,
     );
 
-    // final checkIsFollowed = useQuery(
-    //   QueryOptions(
-    //     document: gql(isFollowed),
-    //     fetchPolicy: FetchPolicy.networkOnly,
-    //     variables: {
-    //       "id": user.id,
-    //     },
-    //   ),
-    // );
-    // final followUser = useMutation(
-    //   MutationOptions(
-    //     document: gql(follow),
-    //     onCompleted: (data) {
-    //       if (data != null && data['follow'] != null) {
-    //         followers.value += 1;
-    //         checkIsFollowed.refetch();
-    //       }
-    //     },
-    //   ),
-    // );
+    final checkIsFollowed = useQuery<bool, dynamic>(
+      CacheKeys.isFollowed,
+      () async => await FollowServices.isFollowed(targetUserId: user.id!),
+      onError: (value) => logError(value.toString()),
+    );
+    final followUser =
+        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
+      CacheKeys.followUser,
+      (varibles) async => await FollowServices.followUser(
+        targetUserId: varibles['id'],
+      ),
+      onData: (data, _) async {
+        if (data == true) {
+          followers.value += 1;
+          await checkIsFollowed.refresh();
+        }
+      },
+    );
+    final unFollowUser =
+        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
+      CacheKeys.unFollowUser,
+      (varibles) async => await FollowServices.unFollowUser(
+        targetUserId: varibles['id'],
+      ),
+      onData: (data, _) async {
+        if (data == true) {
+          followers.value -= 1;
+          await checkIsFollowed.refresh();
+        }
+      },
+    );
     // final unFollowUser = useMutation(
     //   MutationOptions(
     //     document: gql(unFollow),
@@ -174,33 +186,28 @@ class UserDetailsSheet extends HookWidget {
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: InkWell(
-                      onTap: (){},
-                      // TODO: Add isFollowed
-                      // onTap: checkIsFollowed.result.isLoading ||
-                      //         followUser.result.isLoading ||
-                      //         unFollowUser.result.isLoading
-                      //     ? () {}
-                      //     : () async {
-                      //         if (checkIsFollowed.result.data!['isFollowed']) {
-                      //           unFollowUser.runMutation({
-                      //             "id": user.id,
-                      //           });
-                      //         } else {
-                      //           followUser.runMutation({
-                      //             "id": user.id,
-                      //           });
-                      //         }
-                      //       },
+                      onTap: checkIsFollowed.isLoading ||
+                              followUser.isMutating ||
+                              unFollowUser.isMutating
+                          ? () {}
+                          : () async {
+                              if (checkIsFollowed.data == true) {
+                                unFollowUser.mutate({
+                                  "id": user.id,
+                                });
+                              } else {
+                                followUser.mutate({
+                                  "id": user.id,
+                                });
+                              }
+                            },
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                      // TODO: Add isFollowed Color
-                      color: AppColors.primaryYellow,
-                          // color:
-                          //     checkIsFollowed.result.data?['isFollowed'] == null
-                          //         ? AppColors.primaryYellow
-                          //         : checkIsFollowed.result.data?['isFollowed']
-                          //             ? Colors.redAccent
-                          //             : AppColors.primaryYellow,
+                          color: checkIsFollowed.data == null
+                              ? AppColors.primaryYellow
+                              : checkIsFollowed.data == true
+                                  ? Colors.redAccent
+                                  : AppColors.primaryYellow,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
@@ -208,39 +215,28 @@ class UserDetailsSheet extends HookWidget {
                             horizontal: 12.sp,
                             vertical: 6.sp,
                           ),
-                          child: 
-                          // checkIsFollowed.result.isLoading
-                          //     ? LoadingAnimationWidget.staggeredDotsWave(
-                          //         color: AppColors.customBlack,
-                          //         size: 20.sp,
-                          //       )
-                          //     :
-                               Row(
+                          child: checkIsFollowed.isLoading
+                              ? LoadingAnimationWidget.staggeredDotsWave(
+                                  color: AppColors.customBlack,
+                                  size: 20.sp,
+                                )
+                              : Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                          FlutterRemix.user_add_fill,
+                                      checkIsFollowed.data == true
+                                          ? FlutterRemix.user_unfollow_fill
+                                          : FlutterRemix.user_add_fill,
                                       size: 16.sp,
                                       color: context.theme.iconTheme.color,
                                     ),
-                                    // Icon(
-                                    //   checkIsFollowed.result.data!['isFollowed']
-                                    //       ? FlutterRemix.user_unfollow_fill
-                                    //       : FlutterRemix.user_add_fill,
-                                    //   size: 16.sp,
-                                    //   color: context.theme.iconTheme.color,
-                                    // ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Follow',
+                                      checkIsFollowed.data == true
+                                          ? 'Unfollow'
+                                          : 'Follow',
                                       style: context.theme.textTheme.labelSmall,
                                     ),
-                                    // Text(
-                                    //   checkIsFollowed.result.data!['isFollowed']
-                                    //       ? 'Unfollow'
-                                    //       : 'Follow',
-                                    //   style: context.theme.textTheme.labelSmall,
-                                    // ),
                                   ],
                                 ),
                         ),
@@ -325,9 +321,7 @@ class UserDetailsSheet extends HookWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: InkWell(
-                        onTap: () {
-                          
-                        },
+                        onTap: () {},
                         // onTap: checkHasConversation.result.isLoading
                         //     ? () {}
                         //     : () {
@@ -341,19 +335,19 @@ class UserDetailsSheet extends HookWidget {
                           width: 50.sp,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 0,
-                              // horizontal: checkHasConversation.result.isLoading
-                              //     ? 25.w
-                              //     : 0
-                                  ),
+                            // horizontal: checkHasConversation.result.isLoading
+                            //     ? 25.w
+                            //     : 0
+                          ),
                           decoration: BoxDecoration(
                             color: context.theme.indicatorColor,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
-                                  FlutterRemix.chat_3_fill,
-                                  size: 22.sp,
-                                  color: context.theme.iconTheme.color,
-                                ),
+                            FlutterRemix.chat_3_fill,
+                            size: 22.sp,
+                            color: context.theme.iconTheme.color,
+                          ),
                           // child: checkHasConversation.result.isLoading
                           //     ? LoadingAnimationWidget.staggeredDotsWave(
                           //         color: AppColors.primaryYellow,
@@ -370,7 +364,7 @@ class UserDetailsSheet extends HookWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: GestureDetector(
-                        onTap: (){},
+                        onTap: () {},
                         // onTap: () => Get.to(
                         //   () => UserProfileScreen(
                         //       user: user, followers: followers),
