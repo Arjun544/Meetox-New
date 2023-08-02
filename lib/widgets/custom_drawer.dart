@@ -1,6 +1,5 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/screens/auth_screens/auth_screen.dart';
 import 'package:meetox/screens/circles_screen/circles_screen.dart';
 import 'package:meetox/services/auth_services.dart';
 import 'package:meetox/widgets/drawer_tile.dart';
