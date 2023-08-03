@@ -144,7 +144,7 @@ class CircleMembers extends GetView<AddCircleController> {
             //     ),
             //     builderDelegate: PagedChildBuilderDelegate<User>(
             //       animateTransitions: true,
-            //       transitionDuration: const Duration(milliseconds: 500),
+            //       transitionDuration: const Duration(milliseconds: 300),
             //       firstPageProgressIndicatorBuilder: (_) =>
             //           const FollowersLoader(hasCheckBox: false),
             //       newPageProgressIndicatorBuilder: (_) =>

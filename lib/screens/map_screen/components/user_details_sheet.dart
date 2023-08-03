@@ -5,7 +5,6 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/followers_screen/followers_screen.dart';
-import 'package:meetox/services/follow_services.dart';
 import 'package:meetox/widgets/follow_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 
@@ -168,9 +167,7 @@ class UserDetailsSheet extends HookWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // Get.to(() => FollowersScreen(user, true));
-                    },
+                    onTap: () => Get.to(() => FollowersScreen(user, true)),
                     child: Column(
                       children: [
                         Text(

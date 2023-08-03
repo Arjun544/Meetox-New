@@ -36,16 +36,16 @@ class FollowersController extends GetxController
         time: const Duration(seconds: 2),
       );
     });
-    // followingPagingController.addPageRequestListener((page) async {
-    //   await fetchFollowing(page);
-    //   followingSearchDebounce = debounce(
-    //     followingSearchQuery,
-    //     (value) {
-    //       followingPagingController.refresh();
-    //     },
-    //     time: const Duration(seconds: 2),
-    //   );
-    // });
+    followingPagingController.addPageRequestListener((page) async {
+      await fetchFollowing(page);
+      followingSearchDebounce = debounce(
+        followingSearchQuery,
+        (value) {
+          followingPagingController.refresh();
+        },
+        time: const Duration(seconds: 2),
+      );
+    });
   }
 
   Future<void> fetchFollowers(int pageKey) async {
@@ -72,30 +72,29 @@ class FollowersController extends GetxController
     }
   }
 
-  // Future<void> fetchFollowing(int pageKey) async {
-  //   try {
-  //     final newPage = await FollowServices.userFollowing(
-  //       id: id,
-  //       page: pageKey,
-  //       name: followingSearchQuery.value.isEmpty
-  //           ? null
-  //           : followingSearchQuery.value,
-  //     );
+  Future<void> fetchFollowing(int pageKey) async {
+    try {
+      final newPage = await FollowServices.getFollowings(
+        id: id,
+        limit: pageKey,
+        query: followersSearchQuery.value.isEmpty
+            ? null
+            : followersSearchQuery.value,
+      );
 
-  //     final newItems = newPage.following;
+      final newItems = newPage;
+      final hasNextPage = newPage.isEmpty;
 
-  //     if (newPage.nextPage == null &&
-  //         !newPage.hasNextPage! &&
-  //         newPage.nextPage == newPage.page) {
-  //       followingPagingController.appendLastPage(newItems!);
-  //     } else if (followingPagingController.nextPageKey != newPage.nextPage) {
-  //       followingPagingController.appendPage(newItems!, newPage.nextPage);
-  //     }
-  //   } catch (e) {
-  //     logError(e.toString());
-  //     followingPagingController.error = e;
-  //   }
-  // }
+      if (!hasNextPage) {
+        followingPagingController.appendLastPage(newItems);
+      } else if (hasNextPage) {
+        followingPagingController.appendPage(newItems, pageKey + 1);
+      }
+    } catch (e) {
+      logError(e.toString());
+      followingPagingController.error = e;
+    }
+  }
 
   // void onDeleteCompleted(
   //     Map<String, dynamic>? resultData, BuildContext context) {

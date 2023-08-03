@@ -46,7 +46,7 @@ class FollowersView extends GetView<FollowersController> {
               ),
               builderDelegate: PagedChildBuilderDelegate<UserModel>(
                 animateTransitions: true,
-                transitionDuration: const Duration(milliseconds: 500),
+                transitionDuration: const Duration(milliseconds: 300),
                 firstPageProgressIndicatorBuilder: (_) =>
                     const FollowersLoader(hasCheckBox: false),
                 newPageProgressIndicatorBuilder: (_) =>

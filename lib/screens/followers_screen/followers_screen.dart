@@ -5,6 +5,7 @@ import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/custom_tabbar.dart';
 
 import 'components/followers_view.dart';
+import 'components/following_view.dart';
 
 class FollowersScreen extends GetView<FollowersController> {
   final UserModel user;
@@ -48,9 +49,7 @@ class FollowersScreen extends GetView<FollowersController> {
                 controller: controller.tabController,
                 children: const [
                   FollowersView(),
-                  SizedBox(),
-                  // TODO: Add Followinng view
-                  // FollowingView(),
+                  FollowingView(),
                 ],
               ),
             ),

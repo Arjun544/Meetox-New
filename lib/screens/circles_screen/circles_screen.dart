@@ -83,7 +83,7 @@ class CirclesScreen extends GetView<CirclesController> {
                   pagingController: controller.circlesPagingController,
                   builderDelegate: PagedChildBuilderDelegate<CircleModel>(
                     animateTransitions: true,
-                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionDuration: const Duration(milliseconds: 300),
                     firstPageProgressIndicatorBuilder: (_) =>
                         const CirclesLoader(),
                     newPageProgressIndicatorBuilder: (_) =>
