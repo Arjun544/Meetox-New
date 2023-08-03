@@ -18,9 +18,11 @@ class CustomDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            currentUser.value.name == '' ? 'Unknown' : currentUser.value.name!,
-            style: context.theme.textTheme.titleLarge,
+          Obx(
+            () => Text(
+              currentUser.value.name ?? 'Unknown',
+              style: context.theme.textTheme.titleLarge,
+            ),
           ),
           Text(
             'Menu',

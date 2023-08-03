@@ -1,4 +1,5 @@
 import 'package:meetox/core/imports/core_imports.dart';
+import 'package:meetox/models/user_model.dart';
 
 class FollowServices {
   static Future<bool> isFollowed({required String targetUserId}) async {
@@ -59,6 +60,44 @@ class FollowServices {
       return true;
     } catch (e) {
       isLoading.value = false;
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<List<UserModel>> getFollowers({
+    required String id,
+    required int limit,
+    String? query,
+  }) async {
+    try {
+      final followers = query != null
+          ? await supabase
+              .from('follow')
+              .select(
+                'profiles!follow_following_user_id_fkey!inner(id, name, photo, address)',
+              )
+              .textSearch('profiles.fts', query)
+              .eq('follower_user_id', id)
+              .limit(10 * limit)
+              .withConverter((data) => List<UserModel>.from(
+                    data!.map((x) => UserModel.fromJSON(x['profiles'])),
+                  ))
+          : await supabase
+              .from('follow')
+              .select(
+                'profiles!follow_following_user_id_fkey!inner(id, name, photo, address)',
+              )
+              .eq('follower_user_id', id)
+              .limit(10 * limit)
+              .withConverter((data) => List<UserModel>.from(
+                    data!.map((x) => UserModel.fromJSON(x['profiles'])),
+                  ));
+
+      logSuccess(followers.toString());
+
+      return followers;
+    } catch (e) {
       logError(e.toString());
       rethrow;
     }

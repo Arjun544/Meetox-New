@@ -81,7 +81,7 @@ class CircleServices {
                   count: CountOption.exact,
                 ),
               )
-              .textSearch('name', query)
+              .textSearch('fts', query)
               .eq('admin_id', supabase.auth.currentUser!.id)
               .order('created_at')
               .limit(10 * limit)

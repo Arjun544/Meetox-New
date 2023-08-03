@@ -75,10 +75,10 @@ class TopBar extends GetView<MapScreenController> {
           InkWell(
             onTap: () async =>
                 await rootController.zoomDrawerController.open!(),
-            child: currentUser.value.photo == null
-                ? UserInititals(name: currentUser.value.name!)
-                : Obx(
-                    () => Container(
+            child: Obx(
+              () => currentUser.value.photo == null
+                  ? UserInititals(name: currentUser.value.name ?? 'Unknown')
+                  : Container(
                       height: 45.sp,
                       width: 45.sp,
                       decoration: BoxDecoration(
@@ -100,7 +100,7 @@ class TopBar extends GetView<MapScreenController> {
                         ),
                       ),
                     ),
-                  ),
+            ),
           ),
           if (isMapScreen)
             Row(

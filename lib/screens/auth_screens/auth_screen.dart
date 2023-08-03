@@ -36,6 +36,7 @@ class AuthScreen extends HookWidget {
         authController.isLoading(false);
       },
       onError: (error, recoveryData) {
+        authController.isLoading(false);
         logError(error.toString());
         showToast('Sign in failed');
       },

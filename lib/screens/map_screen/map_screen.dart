@@ -27,6 +27,13 @@ class MapScreen extends HookWidget {
         long: currentUser.value.location!.longitude!,
         distanceInKm: currentUser.value.isPremium! ? 600 : 300,
       ),
+      refreshConfig: const RefreshConfig(
+        staleDuration: Duration(minutes: 5),
+        refreshInterval: Duration(minutes: 5),
+        refreshOnMount: false,
+        refreshOnQueryFnChange: false,
+        refreshOnNetworkStateChange: true,
+      ),
       onData: (value) {
         if (value.isNotEmpty) {
           logSuccess('latitude ${value[0].location!.latitude.toString()}');

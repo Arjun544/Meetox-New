@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: QueryClientProvider(
           maxRetries: 1,
+          refreshOnMount: false,
           child: GetMaterialApp(
             title: 'Meetox',
             debugShowCheckedModeBanner: false,
