@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../core/imports/core_imports.dart';
 import '../core/imports/packages_imports.dart';
 import '../models/user_model.dart';
@@ -20,7 +22,7 @@ class UserController extends GetxController {
               table: 'profiles',
               filter: 'id=eq.${supabase.auth.currentUser!.id}',
             ), (payload, [ref]) {
-      logSuccess('Change received: ${payload['new'].toString()}');
+      logSuccess('Change received: ${jsonEncode(payload['new'])}');
       final UserModel newUser = UserModel.fromJSON(payload['new']);
       currentUser(newUser);
     }).subscribe();

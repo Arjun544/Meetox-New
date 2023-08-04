@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/user_initials.dart';
 
 class CurrentUserMarker extends StatelessWidget {
-  const CurrentUserMarker({super.key, this.isMiniMap = false});
+  const CurrentUserMarker(
+      {super.key, this.isMiniMap = false, required this.user});
   final bool isMiniMap;
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -34,29 +37,51 @@ class CurrentUserMarker extends StatelessWidget {
               clipBehavior: Clip.none,
               alignment: Alignment.bottomCenter,
               children: [
-                Obx(
-                  () => currentUser.value.photo == null
-                      ? UserInititals(name: currentUser.value.name!)
-                      : Container(
-                          width: isMiniMap ? 40.sp : 50.sp,
-                          height: isMiniMap ? 40.sp : 50.sp,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                            color: AppColors.customGrey,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              width: isMiniMap ? 3 : 4,
-                              color: AppColors.primaryYellow,
+                user.photo == null
+                    ? UserInititals(name: user.name!)
+                    : user.id == currentUser.value.id
+                        ? Obx(
+                            () => Container(
+                              width: isMiniMap ? 40.sp : 50.sp,
+                              height: isMiniMap ? 40.sp : 50.sp,
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color: AppColors.customGrey,
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  width: isMiniMap ? 3 : 4,
+                                  color: AppColors.primaryYellow,
+                                ),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(
+                                    user.id == currentUser.value.id
+                                        ? currentUser.value.photo!
+                                        : user.photo!,
+                                  ),
+                                ),
+                              ),
                             ),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                currentUser.value.photo!,
+                          )
+                        : Container(
+                            width: isMiniMap ? 40.sp : 50.sp,
+                            height: isMiniMap ? 40.sp : 50.sp,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              color: AppColors.customGrey,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                width: isMiniMap ? 3 : 4,
+                                color: AppColors.primaryYellow,
+                              ),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(
+                                  user.photo!,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                ),
                 Positioned(
                   bottom: -18,
                   child: Icon(

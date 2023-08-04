@@ -8,4 +8,5 @@ class CacheKeys {
   static const String isFollowed = 'isFollowed';
   static const String followUser = 'follow user';
   static const String unFollowUser = 'unfollow user';
+  static const String userSocials = 'user socials';
 }

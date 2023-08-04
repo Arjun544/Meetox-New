@@ -1,4 +1,3 @@
-import 'package:fl_query/fl_query.dart';
 import 'package:fl_query_connectivity_plus_adapter/fl_query_connectivity_plus_adapter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/imports/core_imports.dart';
@@ -50,7 +49,7 @@ final Rx<UserModel> currentUser = UserModel(
   photo: '',
   isPremium: false,
   location: LocationModel(),
-  socials: {},
+  socials: <Social>[],
   createdAt: DateTime.now(),
 ).obs;
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../helpers/to_postgis_point.dart';
 
 class UserModel {
@@ -8,7 +10,7 @@ class UserModel {
   bool? isPremium;
   int? followers;
   int? followings;
-  Map<String, dynamic>? socials;
+  List<Social>? socials;
   LocationModel? location;
   DateTime? dob;
   DateTime? createdAt;
@@ -34,7 +36,9 @@ class UserModel {
       photo: json['photo'],
       address: json['address'],
       isPremium: json['ispremium'],
-      socials: json['socials'],
+      socials: json["socials"] == null
+          ? null
+          : List<Social>.from(json["socials"]!.map((x) => Social.fromJson(x))),
       followers: json['followers'] ?? 0,
       followings: json['followings'] ?? 0,
       location: json['location'] != null
@@ -54,7 +58,8 @@ class UserModel {
       if (photo != null) 'photo': photo,
       if (address != null) 'address': address,
       if (isPremium != null) 'ispremium': isPremium,
-      if (socials != null) 'socials': socials,
+      if (socials != null)
+        'socials': List<Social>.from(socials!.map((x) => x.toJson())),
       if (followers != null) 'followers': followers,
       if (followings != null) 'followings': followings,
       if (location != null) 'location': toPostGISPoint(location),
@@ -88,4 +93,28 @@ class LocationModel {
       'coordinates': [longitude!, latitude!],
     };
   }
+}
+
+class Social {
+  String? type;
+  String? url;
+
+  Social({
+    this.type,
+    this.url,
+  });
+
+  factory Social.fromRawJson(String str) => Social.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Social.fromJson(Map<String, dynamic> json) => Social(
+        type: json["type"],
+        url: json["url"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "url": url,
+      };
 }

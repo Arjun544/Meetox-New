@@ -8,6 +8,8 @@ import 'package:meetox/screens/followers_screen/followers_screen.dart';
 import 'package:meetox/widgets/follow_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 
+import '../../user_profile_screen/user_profile_screen.dart';
+
 class UserDetailsSheet extends HookWidget {
   const UserDetailsSheet(this.user, this.tappedUser, {super.key});
   final UserModel user;
@@ -260,11 +262,10 @@ class UserDetailsSheet extends HookWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
-                        // onTap: () => Get.to(
-                        //   () => UserProfileScreen(
-                        //       user: user, followers: followers),
-                        // ),
+                        onTap: () => Get.to(
+                          () => UserProfileScreen(
+                              user: user, followers: followers),
+                        ),
                         child: Container(
                           height: 45.sp,
                           decoration: BoxDecoration(

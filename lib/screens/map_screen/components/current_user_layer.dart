@@ -17,7 +17,9 @@ class CurrentUserLayer extends GetView<MapScreenController> {
           ),
           width: 60.sp,
           height: 60.sp,
-          builder: (context) => const CurrentUserMarker(),
+          builder: (context) =>  CurrentUserMarker(
+            user: currentUser.value,
+          ),
         ),
       ],
     );

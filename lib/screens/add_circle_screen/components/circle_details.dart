@@ -1,6 +1,4 @@
-
 import 'package:meetox/controllers/add_circle_controller.dart';
-import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/widgets/custom_area_field.dart';
@@ -12,8 +10,6 @@ class CircleDetails extends GetView<AddCircleController> {
 
   @override
   Widget build(BuildContext context) {
-    final rootController = Get.find<RootController>();
-
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -96,9 +92,7 @@ class CircleDetails extends GetView<AddCircleController> {
                       height: 150.sp,
                       width: Get.width,
                       child: MiniMap(
-                        latitude: rootController.currentPosition.value.latitude,
-                        longitude:
-                            rootController.currentPosition.value.longitude,
+                        user: currentUser.value,
                       ),
                     ),
                   ),

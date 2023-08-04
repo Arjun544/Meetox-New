@@ -10,7 +10,7 @@ class UserServices {
     try {
       final data = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, name, photo, address, ispremium, location')
           .eq('id', supabase.auth.currentUser!.id)
           .single()
           .withConverter((data) {
@@ -98,22 +98,37 @@ class UserServices {
                 'photo': e['photo'],
                 'address': e['address'],
                 'isPremium': e['ispremium'],
-                'socials': e['socials'],
                 'followers': e['followers'],
                 'followings': e['followings'],
                 'location': LocationModel.fromJSON(
                         jsonDecode(e['location']) as Map<String, dynamic>)
                     .toJSON(),
                 'dob': e['dob'],
-                'createdAt': e['created_at'],
+                'created_at': e['created_at'],
               }))
           .toList();
-      logError(users.length.toString());
       return users;
-
-      // return List<UserModel>.from(jsonList.map((x) => UserModel.fromJSON(x)));
     } catch (e) {
       logError('Nearby Users ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  static Future<List<Social>> getSocials() async {
+    try {
+      final socials = await supabase
+          .from('profiles')
+          .select('socials')
+          .eq('id', supabase.auth.currentUser!.id)
+          .single()
+          .withConverter(
+            (data) => List<Social>.from(
+                data['socials']!.map((x) => Social.fromJson(x))),
+          );
+
+      return socials;
+    } catch (e) {
+      logError(e.toString());
       rethrow;
     }
   }

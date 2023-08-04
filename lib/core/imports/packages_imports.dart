@@ -21,7 +21,7 @@ export 'package:shimmer/shimmer.dart';
 export 'package:fl_query/fl_query.dart';
 export 'package:fl_query_hooks/fl_query_hooks.dart';
 export 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-
+export 'package:url_launcher/url_launcher.dart';
 
 
 
