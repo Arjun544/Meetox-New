@@ -8,7 +8,9 @@ import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 
 import '../core/imports/core_imports.dart';
+import '../screens/map_screen/components/map_options.dart';
 import '../services/user_services.dart';
+import 'custom_sheet.dart';
 import 'user_initials.dart';
 
 class TopBar extends GetView<MapScreenController> {
@@ -155,12 +157,10 @@ class TopBar extends GetView<MapScreenController> {
             children: [
               if (isMapScreen)
                 InkWell(
-                  onTap: () {},
-                  // TODO: show custom sheet
-                  // onTap: () => showCustomSheet(
-                  //   context: context,
-                  //   child: const CustomMapOptions(),
-                  // ),
+                  onTap: () => showCustomSheet(
+                    context: context,
+                    child: const CustomMapOptions(),
+                  ),
                   child: Container(
                     height: 40.sp,
                     width: 40.sp,
