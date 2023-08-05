@@ -8,13 +8,15 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_asset_image.dart';
 import 'package:meetox/helpers/show_toast.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/services/follow_services.dart';
 
+import '../models/user_model.dart';
 import 'circles_controller.dart';
 
 class AddCircleController extends GetxController {
   final GlobalController globalController = Get.find();
-  // final followersPagingController =
-  //     PagingController<int, User>(firstPageKey: 1);
+  final followersPagingController =
+      PagingController<int, UserModel>(firstPageKey: 1);
   final RootController rootController = Get.find();
   final PageController pageController = PageController();
 
@@ -34,23 +36,23 @@ class AddCircleController extends GetxController {
   final RxInt selectedAvatar = 0.obs;
   Rx<XFile> capturedImage = XFile('').obs;
   Rx<FilePickerResult> selectedImage = const FilePickerResult([]).obs;
-  final RxList<User> selectedMembers = <User>[].obs;
+  final RxList<UserModel> selectedMembers = <UserModel>[].obs;
 
   final RxString followersSearchQuery = ''.obs;
   late Worker followersSearchDebounce;
 
   @override
   void onInit() {
-    // followersPagingController.addPageRequestListener((page) async {
-    //   await fetchFollowers(page);
-    //   followersSearchDebounce = debounce(
-    //     followersSearchQuery,
-    //     (value) {
-    //       followersPagingController.refresh();
-    //     },
-    //     time: const Duration(seconds: 2),
-    //   );
-    // });
+    followersPagingController.addPageRequestListener((page) async {
+      await fetchFollowers(page);
+      followersSearchDebounce = debounce(
+        followersSearchQuery,
+        (value) {
+          followersPagingController.refresh();
+        },
+        time: const Duration(seconds: 2),
+      );
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       nameFocusNode.addListener(() {
         hasNameFocus.value = nameFocusNode.hasFocus;
@@ -63,30 +65,29 @@ class AddCircleController extends GetxController {
     super.onInit();
   }
 
-  // Future<void> fetchFollowers(int pageKey) async {
-  //   try {
-  //     final newPage = await FollowServices.userFollowers(
-  //       id: currentUser.value.id!,
-  //       page: pageKey,
-  //       name: followersSearchQuery.value.isEmpty
-  //           ? null
-  //           : followersSearchQuery.value,
-  //     );
+  Future<void> fetchFollowers(int pageKey) async {
+    try {
+      final newPage = await FollowServices.getFollowersFollowings(
+        id: supabase.auth.currentUser!.id,
+        limit: pageKey,
+        query: followersSearchQuery.value.isEmpty
+            ? null
+            : followersSearchQuery.value,
+      );
 
-  //     final newItems = newPage.followers;
+      final newItems = newPage;
+      final hasNextPage = newPage.isEmpty;
 
-  //     if (newPage.nextPage == null &&
-  //         !newPage.hasNextPage! &&
-  //         newPage.nextPage == newPage.page) {
-  //       followersPagingController.appendLastPage(newItems!);
-  //     } else if (followersPagingController.nextPageKey != newPage.nextPage) {
-  //       followersPagingController.appendPage(newItems!, newPage.nextPage);
-  //     }
-  //   } catch (e) {
-  //     logError(e.toString());
-  //     followersPagingController.error = e;
-  //   }
-  // }
+      if (!hasNextPage) {
+        followersPagingController.appendLastPage(newItems);
+      } else if (hasNextPage) {
+        followersPagingController.appendPage(newItems, pageKey + 1);
+      }
+    } catch (e) {
+      logError(e.toString());
+      followersPagingController.error = e;
+    }
+  }
 
   Future<void> handleAddCircle(
       BuildContext context,
@@ -113,7 +114,7 @@ class AddCircleController extends GetxController {
 
     // Takes selected members and maps each element to its id, then creates a new list with the ids and inserts the current user's id at the beginning of the list.
     final members = selectedMembers
-        .map<String>((element) => element.id)
+        .map<String>((element) => element.id!)
         .toList()
       ..insert(0, currentUser.value.id!);
 
