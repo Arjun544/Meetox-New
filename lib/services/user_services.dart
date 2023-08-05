@@ -86,7 +86,7 @@ class UserServices {
         params: {
           'lat': lat,
           'long': long,
-          'distanceinkm': 600,
+          'distanceinkm': distanceInKm,
         },
       );
       logError(data.toString());

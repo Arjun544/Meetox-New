@@ -18,7 +18,7 @@ class UserDetailsSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MapScreenController>();
-    final followers = useState(user.followers ?? 0);
+    final followers = useState(user.followers!);
 
     final currentLatitude =
         controller.rootController.currentPosition.value.latitude;
