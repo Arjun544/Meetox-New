@@ -13,12 +13,13 @@ import 'package:meetox/widgets/loaders/socials_loaders.dart';
 class UserDetails extends HookWidget {
   final UserModel user;
   final TabController tabController;
-  final ValueNotifier<int> followers;
+  final int followers;
 
   const UserDetails(this.user, this.tabController, this.followers, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final totalFollowers = useState(followers);
     final getSocials = useQuery<List<Social>, dynamic>(
       CacheKeys.userSocials,
       () async => await UserServices.getSocials(),
@@ -76,7 +77,7 @@ class UserDetails extends HookWidget {
                     child: Column(
                       children: [
                         Text(
-                          followers.value.toString(),
+                          totalFollowers.value.toString(),
                           style: context.theme.textTheme.labelMedium,
                         ),
                         Text(
@@ -116,7 +117,7 @@ class UserDetails extends HookWidget {
                 children: [
                   FollowButton(
                     id: user.id!,
-                    followers: followers,
+                    followers: totalFollowers,
                   ),
                   getSocials.isLoading
                       ? const SocialsLoaders()

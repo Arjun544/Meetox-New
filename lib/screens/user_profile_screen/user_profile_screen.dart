@@ -22,7 +22,7 @@ class UserProfileScreen extends HookWidget {
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            UserDetails(user, tabController, followers),
+            UserDetails(user, tabController, followers.value),
           ];
         },
         body: TabBarView(
