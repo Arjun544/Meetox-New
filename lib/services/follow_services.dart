@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/models/user_model.dart';
 
@@ -7,8 +9,8 @@ class FollowServices {
       final data = await supabase
           .from('follow')
           .select()
-          .eq('follower_user_id', targetUserId)
-          .eq('following_user_id', supabase.auth.currentUser!.id);
+          .eq('following_user_id', supabase.auth.currentUser!.id)
+          .eq('follower_user_id', targetUserId);
 
       logSuccess(data.toString());
 
@@ -30,8 +32,8 @@ class FollowServices {
       isLoading.value = true;
       await supabase.from('follow').insert(
         {
-          'follower_user_id': targetUserId,
-          'following_user_id': supabase.auth.currentUser!.id,
+          'follower_user_id': supabase.auth.currentUser!.id,
+          'following_user_id': targetUserId,
         },
       );
       isLoading.value = false;
@@ -133,6 +135,46 @@ class FollowServices {
       return followings;
     } catch (e) {
       logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<List<UserModel>> getNearByFollowersFollowings({
+    required double lat,
+    required double long,
+    required double distanceInKm,
+  }) async {
+    try {
+      final List<dynamic> data = await supabase.rpc(
+        'nearby_followers_followings',
+        params: {
+          'lat': lat,
+          'long': long,
+          'distanceinkm': distanceInKm,
+        },
+      );
+
+      logError('Nearby Followers ${data.toString()}');
+
+      final List<UserModel> users = data
+          .map((e) => UserModel.fromJSON({
+                'id': e['id'],
+                'name': e['name'],
+                'photo': e['photo'],
+                'address': e['address'],
+                'isPremium': e['ispremium'],
+                'followers': e['followers'],
+                'followings': e['followings'],
+                'location': LocationModel.fromJSON(
+                        jsonDecode(e['location']) as Map<String, dynamic>)
+                    .toJSON(),
+                'dob': e['dob'],
+                'created_at': e['created_at'],
+              }))
+          .toList();
+      return users;
+    } catch (e) {
+      logError('Nearby Users ${e.toString()}');
       rethrow;
     }
   }

@@ -4,11 +4,13 @@ import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/services/follow_services.dart';
 import 'package:meetox/services/user_services.dart';
 import 'package:meetox/widgets/top_bar.dart';
 
 import 'components/current_user_layer.dart';
 import 'components/custom_tile_layer.dart';
+import 'components/followers_cluster_layer.dart';
 import 'components/main_filters.dart';
 import 'components/users_cluster_layer.dart';
 
@@ -34,13 +36,7 @@ class MapScreen extends HookWidget {
         refreshOnQueryFnChange: false,
         refreshOnNetworkStateChange: true,
       ),
-      onData: (value) {
-        if (value.isNotEmpty) {
-          logSuccess('latitude ${value[0].location!.latitude.toString()}');
-          logSuccess('longitude ${value[0].location!.longitude.toString()}');
-        }
-        // logSuccess('longitude ${value[0].location!.longitude}');
-      },
+      onData: (value) {},
       onError: (error) {
         logError(error.toString());
       },
@@ -70,17 +66,25 @@ class MapScreen extends HookWidget {
     //   ),
     // );
 
-    // final followersResult = useQuery(
-    //   QueryOptions(
-    //     document: gql(getNearByFollowers),
-    //     pollInterval: const Duration(minutes: 5),
-    //     variables: {
-    //       'latitude': currentUser.value.location!.coordinates![0],
-    //       'longitude': currentUser.value.location!.coordinates![1],
-    //       'distanceInKM': currentUser.value.isPremium! ? 600 : 300,
-    //     },
-    //   ),
-    // );
+    final followersResult = useQuery<List<UserModel>, dynamic>(
+      CacheKeys.nearByFollowers,
+      () async => await FollowServices.getNearByFollowersFollowings(
+        lat: currentUser.value.location!.latitude!,
+        long: currentUser.value.location!.longitude!,
+        distanceInKm: currentUser.value.isPremium! ? 600 : 300,
+      ),
+      refreshConfig: const RefreshConfig(
+        staleDuration: Duration(minutes: 5),
+        refreshInterval: Duration(minutes: 5),
+        refreshOnMount: false,
+        refreshOnQueryFnChange: false,
+        refreshOnNetworkStateChange: true,
+      ),
+      onData: (value) {},
+      onError: (error) {
+        logError(error.toString());
+      },
+    );
 
     return Scaffold(
       body: Stack(
@@ -124,7 +128,7 @@ class MapScreen extends HookWidget {
                   // children: circlesResult.result.isNotLoading ||
                   //         questionsResult.result.isNotLoading ||
                   //         followersResult.result.isNotLoading ||
-                  !usersResult.isLoading
+                  !usersResult.isLoading || !followersResult.isLoading
                       ? controller.currentMainFilter.value == 'All'
                           ? [
                               const CustomTileLayer(),
@@ -153,16 +157,10 @@ class MapScreen extends HookWidget {
                               //         )
                               //         .toList() as List<Question>,
                               //   ),
-                              // if (followersResult.result.data != null)
-                              //   FollowersClusterlayer(
-                              //     followersResult
-                              //         .result.data!['nearByFollowers']
-                              //         .map<User>(
-                              //           (user) =>
-                              //               User.fromRawJson(json.encode(user)),
-                              //         )
-                              //         .toList() as List<User>,
-                              //   ),
+                              if (followersResult.data != null)
+                                FollowersClusterlayer(
+                                  followersResult.data!,
+                                ),
                             ]
                           : controller.currentMainFilter.value == 'Circles'
                               ? [
@@ -196,19 +194,13 @@ class MapScreen extends HookWidget {
                                       // ),
                                     ]
                                   : controller.currentMainFilter.value ==
-                                          'Followers'
+                                          'Followers/Followings'
                                       ? [
                                           const CustomTileLayer(),
                                           const CurrentUserLayer(),
-                                          // FollowersClusterlayer(
-                                          //   followersResult
-                                          //       .result.data!['nearByFollowers']
-                                          //       .map<User>(
-                                          //         (user) => User.fromRawJson(
-                                          //             json.encode(user)),
-                                          //       )
-                                          //       .toList() as List<User>,
-                                          // )
+                                          FollowersClusterlayer(
+                                            followersResult.data!,
+                                          )
                                         ]
                                       : [
                                           const CustomTileLayer(),
@@ -273,7 +265,7 @@ class MapScreen extends HookWidget {
             child:
                 // circlesResult.result.isLoading ||
                 //         circlesResult.result.data == null ||
-                usersResult.isLoading
+                usersResult.isLoading || followersResult.isLoading
                     // questionsResult.result.isLoading ||
                     // questionsResult.result.data == null
                     ? Container(

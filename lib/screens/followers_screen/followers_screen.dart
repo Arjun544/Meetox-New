@@ -47,6 +47,7 @@ class FollowersScreen extends GetView<FollowersController> {
             Expanded(
               child: TabBarView(
                 controller: controller.tabController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: const [
                   FollowersView(),
                   FollowingView(),

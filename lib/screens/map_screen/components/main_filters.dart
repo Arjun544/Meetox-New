@@ -154,7 +154,7 @@ class MainFilters extends GetView<MapScreenController> {
                         InkWell(
                           onTap: () {
                             if (controller.currentMainFilter.value !=
-                                'Followers') {
+                                'Followers/Followings') {
                               controller.isCurrentFilterMarkVisible(true);
                               Timer.periodic(const Duration(seconds: 2),
                                   (timer) {
@@ -162,7 +162,7 @@ class MainFilters extends GetView<MapScreenController> {
                                 timer.cancel();
                               });
                             }
-                            controller.currentMainFilter.value = 'Followers';
+                            controller.currentMainFilter.value = 'Followers/Followings';
                           },
                           child: SizedBox(
                             width: Get.width,
@@ -171,7 +171,7 @@ class MainFilters extends GetView<MapScreenController> {
                                 IconsaxBold.profile_2user,
                                 size: 22.sp,
                                 color: controller.currentMainFilter.value ==
-                                        'Followers'
+                                        'Followers/Followings'
                                     ? AppColors.primaryYellow
                                     : context.theme.iconTheme.color,
                               ),

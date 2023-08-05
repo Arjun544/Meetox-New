@@ -40,8 +40,8 @@ class FollowersClusterlayer extends GetView<MapScreenController> {
                     .map(
                       (follower) => Marker(
                         point: LatLng(
-                          tappedFollower.value.location!.latitude!,
-                          tappedFollower.value.location!.longitude!,
+                          follower.location!.latitude!,
+                          follower.location!.longitude!,
                         ),
                         width: 60.sp,
                         height: 60.sp,

@@ -89,7 +89,7 @@ class UserServices {
           'distanceinkm': distanceInKm,
         },
       );
-      logError(data.toString());
+      logError('Nearby Users ${data.toString()}');
 
       final List<UserModel> users = data
           .map((e) => UserModel.fromJSON({
