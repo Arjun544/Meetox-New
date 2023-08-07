@@ -10,7 +10,7 @@ class CustomField extends StatelessWidget {
     required this.keyboardType,
     required this.isPasswordVisible,
     required this.hasFocus,
-    required this.prefixIcon,
+    this.prefixIcon,
     super.key,
     this.isPassword = false,
     this.isNumber = false,
@@ -23,7 +23,7 @@ class CustomField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final FocusNode focusNode;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
   final bool isPassword;
   final bool isNumber;
   final bool autoFocus;
@@ -70,10 +70,12 @@ class CustomField extends StatelessWidget {
             minHeight: 40,
             minWidth: 20,
           ),
-          prefixIcon: IconTheme(
-            data: context.theme.iconTheme.copyWith(color: Colors.grey),
-            child: Icon(prefixIcon),
-          ),
+          prefixIcon: prefixIcon != null
+              ? IconTheme(
+                  data: context.theme.iconTheme.copyWith(color: Colors.grey),
+                  child: Icon(prefixIcon),
+                )
+              : null,
           suffixIcon: IconTheme(
             data: context.theme.iconTheme.copyWith(color: Colors.grey),
             child: Padding(

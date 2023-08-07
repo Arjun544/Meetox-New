@@ -25,6 +25,7 @@ class UserController extends GetxController {
       logSuccess('Change received: ${jsonEncode(payload['new'])}');
       final UserModel newUser = UserModel.fromJSON(payload['new']);
       currentUser(newUser);
+      currentUser.refresh();
     }).subscribe();
     //  supabase.channel('public:profiles').on(RealtimeListenTypes.postgresChanges,
     //       ChannelFilter(event: 'INSERT', schema: 'public', table: 'profiles'),

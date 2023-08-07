@@ -5,7 +5,6 @@ import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/custom_error_widget.dart';
 import 'package:meetox/widgets/custom_field.dart';
 import 'package:meetox/widgets/loaders/followers_loader.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'follower_tile.dart';
 

@@ -1,4 +1,3 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import '../controllers/global_controller.dart';
 import '../controllers/splash_controller.dart';
 import '../core/imports/core_imports.dart';

@@ -153,7 +153,11 @@ class UserDetailsSheet extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
-                    onTap: () => Get.to(() => FollowersScreen(user, false)),
+                    onTap: () {
+                      if (followers.value != 0) {
+                        Get.to(() => FollowersScreen(user, false));
+                      }
+                    },
                     child: Column(
                       children: [
                         Text(
@@ -169,7 +173,11 @@ class UserDetailsSheet extends HookWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => Get.to(() => FollowersScreen(user, true)),
+                    onTap: () {
+                      if (followers.value != 0) {
+                        Get.to(() => FollowersScreen(user, true));
+                      }
+                    },
                     child: Column(
                       children: [
                         Text(

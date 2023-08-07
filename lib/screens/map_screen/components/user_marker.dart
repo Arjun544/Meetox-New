@@ -3,7 +3,6 @@ import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
-import 'package:meetox/utils/constants.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 
 import 'user_details_sheet.dart';

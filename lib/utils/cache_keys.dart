@@ -1,4 +1,3 @@
-
 class CacheKeys {
   static const String currentUser = 'current user';
   static const String uploadImage = 'upload image';
@@ -10,4 +9,6 @@ class CacheKeys {
   static const String followUser = 'follow user';
   static const String unFollowUser = 'unfollow user';
   static const String userSocials = 'user socials';
+  static const String userProfileDetails = 'user profile details';
+  static const String addSocial = 'add social';
 }

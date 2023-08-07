@@ -13,6 +13,7 @@ dependencies:
   crypto: ^3.0.3
   cupertino_icons: ^1.0.2
   custom_navigation_bar: ^0.8.2
+  date_format: ^2.0.7
   ficonsax: ^0.0.3
   file_picker: ^5.3.3
   fl_query: ^1.0.0-alpha.3
@@ -34,8 +35,10 @@ dependencies:
   get_storage: ^2.1.1
   http: ^0.13.5
   infinite_scroll_pagination: ^4.0.0-dev.1
+  flutter_keyboard_visibility: ^5.4.1
   latlong2: ^0.8.1
   loading_animation_widget: ^1.2.0+4
+  lottie: ^2.5.0
   permission_handler: ^10.4.3
   shimmer: ^3.0.0
   smooth_page_indicator: ^1.1.0
@@ -68,6 +71,7 @@ flutter:
     - assets/avatars/
     - assets/circle_avatars/
     - assets/images/
+    - assets/animations/
 
   fonts:
     - family: Poppins

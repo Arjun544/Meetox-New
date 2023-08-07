@@ -82,6 +82,7 @@ class FollowServices {
               .textSearch('profiles.fts', query)
               .eq('follower_user_id', id)
               .limit(10 * limit)
+              .order('followed_at', ascending: false)
               .withConverter((data) => List<UserModel>.from(
                     data!.map((x) => UserModel.fromJSON(x['profiles'])),
                   ))
@@ -92,6 +93,7 @@ class FollowServices {
               )
               .eq('follower_user_id', id)
               .limit(10 * limit)
+              .order('followed_at', ascending: false)
               .withConverter((data) => List<UserModel>.from(
                     data!.map((x) => UserModel.fromJSON(x['profiles'])),
                   ));
@@ -118,6 +120,7 @@ class FollowServices {
               .textSearch('profiles.fts', query)
               .eq('following_user_id', id)
               .limit(10 * limit)
+              .order('followed_at', ascending: false)
               .withConverter((data) => List<UserModel>.from(
                     data!.map((x) => UserModel.fromJSON(x['profiles'])),
                   ))
@@ -128,6 +131,7 @@ class FollowServices {
               )
               .eq('following_user_id', id)
               .limit(10 * limit)
+              .order('followed_at', ascending: false)
               .withConverter((data) => List<UserModel>.from(
                     data!.map((x) => UserModel.fromJSON(x['profiles'])),
                   ));

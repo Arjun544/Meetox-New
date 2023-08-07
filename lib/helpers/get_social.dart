@@ -10,6 +10,6 @@ IconData getSocial(String social) {
     case 'whatsapp':
       return FlutterRemix.whatsapp_fill;
     default:
-      return FlutterRemix.whatsapp_fill;
+      return IconsaxBold.link_21;
   }
 }

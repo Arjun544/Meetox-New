@@ -72,7 +72,9 @@ class UserDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => FollowersScreen(user, false));
+                      if (followers != 0) {
+                        Get.to(() => FollowersScreen(user, false));
+                      }
                     },
                     child: Column(
                       children: [
@@ -90,7 +92,9 @@ class UserDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => FollowersScreen(user, true));
+                      if (followers != 0) {
+                        Get.to(() => FollowersScreen(user, true));
+                      }
                     },
                     child: Column(
                       children: [

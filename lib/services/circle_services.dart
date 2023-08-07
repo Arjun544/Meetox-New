@@ -37,6 +37,7 @@ class CircleServices {
           'updated_at': DateTime.now().toString(),
         }).select('*, circle_members(count)');
 
+        // TODO: Add bulk insert for memebers
         if (newCircle.isNotEmpty) {
           // Add members
           for (var member in data['members']) {

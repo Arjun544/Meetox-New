@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../core/imports/core_imports.dart';
+import '../models/profile_model.dart';
 import '../models/user_model.dart';
 import 'storage_services.dart';
 
@@ -10,7 +11,7 @@ class UserServices {
     try {
       final data = await supabase
           .from('profiles')
-          .select('id, name, photo, address, ispremium, location')
+          .select('id, name, photo, address, ispremium, location, socials')
           .eq('id', supabase.auth.currentUser!.id)
           .single()
           .withConverter((data) {
@@ -19,6 +20,19 @@ class UserServices {
       });
 
       return data;
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<ProfileModel> profileDetails() async {
+    try {
+      final profile = await supabase
+          .rpc('profile_details')
+          .withConverter((data) => ProfileModel.fromJson(data[0]));
+
+      return profile;
     } catch (e) {
       logError(e.toString());
       rethrow;
@@ -123,11 +137,49 @@ class UserServices {
           .single()
           .withConverter(
             (data) => List<Social>.from(
-                data['socials']!.map((x) => Social.fromJson(x))),
+              data['socials']!.map((x) => Social.fromJson(x)),
+            ),
           );
 
       return socials;
     } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<bool> addSocial(
+      ValueNotifier<bool> isLoading, Social social) async {
+    try {
+      isLoading.value = true;
+      await supabase.from('profiles').update({
+        'socials': [
+          ...currentUser.value.socials!.map((e) => e.toJson()),
+          social.toJson()
+        ]
+      }).eq('id', supabase.auth.currentUser!.id);
+      isLoading.value = false;
+
+      return true;
+    } catch (e) {
+      isLoading.value = false;
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<bool> updateDOB(
+      ValueNotifier<bool> isLoading, DateTime date) async {
+    try {
+      isLoading.value = true;
+      await supabase.from('profiles').update({
+        'dob': date.toIso8601String(),
+      }).eq('id', supabase.auth.currentUser!.id);
+      isLoading.value = false;
+
+      return true;
+    } catch (e) {
+      isLoading.value = false;
       logError(e.toString());
       rethrow;
     }

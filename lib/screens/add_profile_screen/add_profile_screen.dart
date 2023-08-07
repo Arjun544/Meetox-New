@@ -1,8 +1,6 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import '../../controllers/add_profile_controller.dart';
 import '../../core/imports/core_imports.dart';
 import '../../core/imports/packages_imports.dart';
-import '../../helpers/show_toast.dart';
 import '../root_screen.dart';
 import '../../services/user_services.dart';
 import '../../widgets/custom_button.dart';

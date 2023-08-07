@@ -72,6 +72,7 @@
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		<string>whatsapp</string>
 		<!-- Launch Map Options -->
 		<string>comgooglemaps</string>
         <string>baidumap</string>

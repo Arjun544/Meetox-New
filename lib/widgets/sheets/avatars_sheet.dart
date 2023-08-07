@@ -25,7 +25,7 @@ class AvatarsSheet extends StatelessWidget {
             'Click to select an avatar',
             style: context.theme.textTheme.labelSmall,
           ),
-          SizedBox(height: 20.sp),
+          SizedBox(height: 20.h),
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

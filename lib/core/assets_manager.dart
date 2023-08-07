@@ -3,6 +3,7 @@ class AssetsManager {
   static const String avatarCommon = 'assets/avatars';
   static const String circleAvatarCommon = 'assets/circle_avatars';
   static const String imagesCommon = 'assets/images';
+  static const String animationsCommon = 'assets/animations';
 
   // Brand assets
   static const String appLogo = '$brandCommon/logo.svg';
@@ -12,6 +13,10 @@ class AssetsManager {
   static const String sadState = '$imagesCommon/sad.svg';
   static const String angryState = '$imagesCommon/angry.svg';
   static const String happyState = '$imagesCommon/happy.svg';
+
+  // Animations assets
+  static const String premiumIcon = '$animationsCommon/premium.json';
+
 
   // Avatars assets
   static const String avatar1 = '$avatarCommon/avatar 1.png';

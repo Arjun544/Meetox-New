@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/screens/profile_screen/profile_screen.dart';
 
 import '../core/imports/core_imports.dart';
 import '../screens/map_screen/components/map_options.dart';
@@ -77,6 +78,7 @@ class TopBar extends GetView<MapScreenController> {
           InkWell(
             onTap: () async =>
                 await rootController.zoomDrawerController.open!(),
+            onDoubleTap: () => Get.to(() => const ProfileScreen()),
             child: Obx(
               () => currentUser.value.photo == null
                   ? UserInititals(name: currentUser.value.name ?? 'Unknown')
