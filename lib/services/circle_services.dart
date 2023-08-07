@@ -13,8 +13,6 @@ class CircleServices {
           .select('', const FetchOptions(count: CountOption.exact))
           .eq('id', supabase.auth.currentUser!.id);
 
-      logError(circles.count.toString());
-
       return circles.count!;
     } catch (e) {
       logError(e.toString());
