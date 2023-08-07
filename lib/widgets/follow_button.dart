@@ -1,5 +1,7 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/models/profile_model.dart';
+import 'package:meetox/models/user_model.dart';
 
 import '../services/follow_services.dart';
 
@@ -30,7 +32,43 @@ class FollowButton extends HookWidget {
           if (followers != null) {
             followers!.value += 1;
           }
-          await checkIsFollowed.refresh();
+          // Optimistic Updates after a successful follow
+          final Query<List<UserModel>, dynamic> nearbyUsers =
+              QueryClient.of(context)
+                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers)!;
+
+          final Query<List<UserModel>, dynamic> nearbyFollowers =
+              QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
+                  CacheKeys.nearByFollowers)!;
+
+          final Query<ProfileModel, dynamic> userProfile =
+              QueryClient.of(context).getQuery<ProfileModel, dynamic>(
+                  CacheKeys.userProfileDetails)!;
+
+          userProfile.setData(ProfileModel(
+            id: userProfile.data!.id,
+            feeds: userProfile.data!.feeds,
+            circles: userProfile.data!.circles,
+            followers: followers!.value,
+            followings: userProfile.data!.followings,
+            crosspaths: userProfile.data!.crosspaths,
+            questions: userProfile.data!.questions,
+            createdAt: userProfile.data!.createdAt,
+            dob: userProfile.data!.dob,
+          ));
+
+          nearbyFollowers.data!.add(
+              nearbyUsers.data!.where((element) => element.id == id).first);
+          nearbyFollowers.setData(nearbyFollowers.data!);
+
+          nearbyUsers.data!.removeWhere((element) => element.id == id);
+          nearbyUsers.setData(nearbyUsers.data!);
+
+          final Query<bool, dynamic> checkIsFollowedQuery =
+              QueryClient.of(context)
+                  .getQuery<bool, dynamic>(CacheKeys.isFollowed)!;
+
+          checkIsFollowedQuery.setData(true);
         }
       },
     );
@@ -46,7 +84,44 @@ class FollowButton extends HookWidget {
           if (followers != null) {
             followers!.value -= 1;
           }
-          await checkIsFollowed.refresh();
+
+          // Optimistic Updates after a successful unfollow
+          final Query<List<UserModel>, dynamic> nearbyUsers =
+              QueryClient.of(context)
+                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers)!;
+
+          final Query<List<UserModel>, dynamic> nearbyFollowers =
+              QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
+                  CacheKeys.nearByFollowers)!;
+
+          final Query<ProfileModel, dynamic> userProfile =
+              QueryClient.of(context).getQuery<ProfileModel, dynamic>(
+                  CacheKeys.userProfileDetails)!;
+
+          userProfile.setData(ProfileModel(
+            id: userProfile.data!.id,
+            feeds: userProfile.data!.feeds,
+            circles: userProfile.data!.circles,
+            followers: userProfile.data!.followers,
+            followings: userProfile.data!.followings! - 1,
+            crosspaths: userProfile.data!.crosspaths,
+            questions: userProfile.data!.questions,
+            createdAt: userProfile.data!.createdAt,
+            dob: userProfile.data!.dob,
+          ));
+
+          nearbyUsers.data!.add(
+              nearbyFollowers.data!.where((element) => element.id == id).first);
+          nearbyUsers.setData(nearbyUsers.data!);
+
+          nearbyFollowers.data!.removeWhere((element) => element.id == id);
+          nearbyFollowers.setData(nearbyUsers.data!);
+
+          final Query<bool, dynamic> checkIsFollowedQuery =
+              QueryClient.of(context)
+                  .getQuery<bool, dynamic>(CacheKeys.isFollowed)!;
+
+          checkIsFollowedQuery.setData(false);
         }
       },
     );

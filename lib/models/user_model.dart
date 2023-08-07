@@ -37,7 +37,7 @@ class UserModel {
       address: json['address'],
       isPremium: json['ispremium'],
       socials: json["socials"] == null
-          ? null
+          ? []
           : List<Social>.from(json["socials"]!.map((x) => Social.fromJson(x))),
       followers: json['followers'] ?? 0,
       followings: json['followings'] ?? 0,

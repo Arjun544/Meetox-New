@@ -58,6 +58,7 @@ class UserServices {
           'photo': photoUrl,
           'dob': dob,
         }).eq('id', supabase.auth.currentUser!.id);
+        await getCurrentUser();
       }
       isLoading(false);
       return true;
