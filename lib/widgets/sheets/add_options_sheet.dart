@@ -1,7 +1,9 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/services/circle_services.dart';
 
 import '../../screens/add_circle_screen/add_circle_screen.dart';
+import '../dialogues/upgrade_premium_dialogue.dart';
 
 class AddOptionsSheet extends StatelessWidget {
   const AddOptionsSheet({super.key});
@@ -57,7 +59,22 @@ class AddOptionsSheet extends StatelessWidget {
               'Create circle',
               style: context.theme.textTheme.labelMedium,
             ),
-            onTap: () => Get.to(() => const AddCircleScreen()),
+            onTap: () async {
+              final int count = await CircleServices.checkCount();
+              count == (currentUser.value.isPremium! ? 50 : 10)
+                  ? Get.generalDialog(
+                      barrierDismissible: true,
+                      barrierLabel: '',
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          FadeTransition(
+                        opacity: animation,
+                        child: const UpgradePremiumDialogue(
+                          title: 'Cricles limit exceeded, Upgrade to Premium',
+                        ),
+                      ),
+                    )
+                  : Get.to(() => const AddCircleScreen());
+            },
           ),
           SizedBox(height: 20.sp),
           ListTile(

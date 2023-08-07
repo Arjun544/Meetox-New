@@ -6,6 +6,22 @@ import 'package:meetox/models/user_model.dart';
 import 'package:meetox/services/storage_services.dart';
 
 class CircleServices {
+  static Future<int> checkCount() async {
+    try {
+      final PostgrestResponse circles = await supabase
+          .from('profiles')
+          .select('', const FetchOptions(count: CountOption.exact))
+          .eq('id', supabase.auth.currentUser!.id);
+
+      logError(circles.count.toString());
+
+      return circles.count!;
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<CircleModel> addCircle({
     required RxBool isLoading,
     required Map<String, dynamic> data,
