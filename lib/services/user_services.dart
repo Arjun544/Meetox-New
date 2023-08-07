@@ -168,6 +168,24 @@ class UserServices {
     }
   }
 
+  static Future<bool> deleteSocial(
+      ValueNotifier<bool> isLoading, String type) async {
+    try {
+      isLoading.value = true;
+      currentUser.value.socials!.removeWhere((e) => e.type == type);
+      await supabase.from('profiles').update({
+        'socials': currentUser.value.socials,
+      }).eq('id', supabase.auth.currentUser!.id);
+      isLoading.value = false;
+
+      return true;
+    } catch (e) {
+      isLoading.value = false;
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<bool> updateDOB(
       ValueNotifier<bool> isLoading, DateTime date) async {
     try {

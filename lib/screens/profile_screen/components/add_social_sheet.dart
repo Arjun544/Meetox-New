@@ -8,16 +8,32 @@ import 'package:meetox/widgets/custom_field.dart';
 
 class AddSocialSheet extends HookWidget {
   final String type;
+  final String? url;
 
-  const AddSocialSheet(this.type, {super.key});
+  const AddSocialSheet(this.type, {this.url, super.key});
 
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final linkController = useTextEditingController();
+    final linkTextInput = useState('');
     final codeController = useTextEditingController(text: '+');
     final numberFocusNode = useFocusNode();
     final isLoading = useState(false);
+
+    useEffect(() {
+      if (url != null) {
+        if (!url.toString().isPhoneNumber) {
+          linkController.text = url!;
+          linkTextInput.value = url!;
+        } else {
+          linkController.text = url!.substring(3);
+          linkTextInput.value = url!.substring(3);
+          codeController.text = url!.substring(0, 3);
+        }
+      }
+      return null;
+    }, []);
 
     final addSocialMutation =
         useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
@@ -29,7 +45,6 @@ class AddSocialSheet extends HookWidget {
       onData: (data, recoveryData) {
         logSuccess(data.toString());
         if (data == true) {
-          showToast('Link added');
           Navigator.pop(context);
           linkController.clear();
         }
@@ -42,7 +57,7 @@ class AddSocialSheet extends HookWidget {
 
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Container(
-        height: isKeyboardVisible ? Get.height * 0.55 : Get.height * 0.25,
+        height: isKeyboardVisible ? Get.height * 0.6 : Get.height * 0.25,
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         decoration: BoxDecoration(
           color: context.theme.scaffoldBackgroundColor,
@@ -79,21 +94,37 @@ class AddSocialSheet extends HookWidget {
                       : GestureDetector(
                           onTap: () async {
                             if (formKey.currentState!.validate()) {
-                              await addSocialMutation.mutate({
-                                'social': Social(
-                                  type: type,
-                                  url: type == 'whatsapp'
-                                      ? codeController.text.trim() +
-                                          linkController.text.trim()
-                                      : linkController.text.trim(),
-                                ),
-                              });
+                              if (url == null && linkTextInput.value != url) {
+                                await addSocialMutation.mutate({
+                                  'social': Social(
+                                    type: type,
+                                    url: type == 'whatsapp'
+                                        ? codeController.text.trim() +
+                                            linkController.text.trim()
+                                        : linkController.text.trim(),
+                                  ),
+                                });
+                              } else {
+                                currentUser.value.socials!.removeWhere(
+                                    (element) => element.type == type);
+                                await addSocialMutation.mutate({
+                                  'social': Social(
+                                    type: type,
+                                    url: type == 'whatsapp'
+                                        ? codeController.text.trim() +
+                                            linkController.text.trim()
+                                        : linkController.text.trim(),
+                                  ),
+                                });
+                              }
                             }
                           },
                           child: Text(
                             'Save',
                             style: context.theme.textTheme.labelSmall!.copyWith(
-                              color: Colors.blue,
+                              color: linkTextInput.value == url
+                                  ? Colors.grey
+                                  : Colors.blue,
                             ),
                           ),
                         ),
@@ -120,6 +151,7 @@ class AddSocialSheet extends HookWidget {
                       }
                       return null;
                     },
+                    onChanged: (value) => linkTextInput.value = value,
                   ),
                 )
               else
@@ -128,6 +160,7 @@ class AddSocialSheet extends HookWidget {
                   numberFocusNode: numberFocusNode,
                   type: type,
                   linkController: linkController,
+                  linkTextInput: linkTextInput,
                 ),
             ],
           ),
@@ -144,12 +177,14 @@ class PhoneFields extends StatelessWidget {
     required this.numberFocusNode,
     required this.type,
     required this.linkController,
+    required this.linkTextInput,
   });
 
   final TextEditingController codeController;
   final FocusNode numberFocusNode;
   final String type;
   final TextEditingController linkController;
+  final ValueNotifier<String> linkTextInput;
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +209,7 @@ class PhoneFields extends StatelessWidget {
                 return null;
               },
               onChanged: (value) {
+                linkTextInput.value = value;
                 if (value.length == 3) {
                   numberFocusNode.requestFocus();
                 }
@@ -207,6 +243,7 @@ class PhoneFields extends StatelessWidget {
                 }
                 return null;
               },
+              onChanged: (value) => linkTextInput.value = value,
             ),
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/profile_model.dart';
 import 'package:meetox/services/user_services.dart';
+import 'package:meetox/widgets/loaders/list_tiles_loader.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'components/my_details.dart';
@@ -34,9 +35,9 @@ class ProfileScreen extends HookWidget {
           ];
         },
         body: Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+          padding: EdgeInsets.symmetric(vertical: 24.h),
           child: userProfile.isLoading
-              ? const SizedBox.shrink()
+              ? const ListTilesLoader()
               : Column(
                   children: [
                     ListTile(
