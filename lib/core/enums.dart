@@ -1,0 +1,4 @@
+enum PremiumPlans {
+  monthly,
+  yearly
+}

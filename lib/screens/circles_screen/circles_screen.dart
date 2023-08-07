@@ -8,6 +8,7 @@ import 'package:meetox/screens/circles_screen/components/circle_tile.dart';
 import 'package:meetox/screens/root_screen.dart';
 import 'package:meetox/widgets/custom_error_widget.dart';
 import 'package:meetox/widgets/custom_field.dart';
+import 'package:meetox/widgets/dialogues/upgrade_premium_dialogue.dart';
 import 'package:meetox/widgets/loaders/circles_loader.dart';
 
 class CirclesScreen extends GetView<CirclesController> {
@@ -33,7 +34,21 @@ class CirclesScreen extends GetView<CirclesController> {
         iconTheme: context.theme.appBarTheme.iconTheme,
         actions: [
           InkWell(
-            onTap: () => Get.to(() => const AddCircleScreen()),
+            onTap: () => controller.circlesPagingController.itemList != null &&
+                    controller.circlesPagingController.itemList!.length ==
+                        (currentUser.value.isPremium! ? 50 : 10)
+                ? Get.generalDialog(
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        FadeTransition(
+                      opacity: animation,
+                      child: const UpgradePremiumDialogue(
+                        title: 'Cricles limit exceeded, Upgrade to Premium',
+                      ),
+                    ),
+                  )
+                : Get.to(() => const AddCircleScreen()),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: DecoratedBox(
