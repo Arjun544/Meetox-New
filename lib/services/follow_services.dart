@@ -189,7 +189,6 @@ class FollowServices {
     String? query,
   }) async {
     try {
-      // TODO: Improve the logic in select
       final followers = query != null
           ? await supabase
               .from('follow')
@@ -198,16 +197,20 @@ class FollowServices {
               )
               .textSearch('profiles.fts', query)
               .or('follower_user_id.eq.$id,following_user_id.eq.$id')
+              .not('profiles.id', 'eq', id)
               .limit(10 * limit)
-              .withConverter((data) => List<UserModel>.from(
-                    data!.map((x) => UserModel.fromJSON(x['profiles'])),
-                  ))
+              .withConverter(
+                (data) => List<UserModel>.from(
+                  data!.map((x) => UserModel.fromJSON(x['profiles'])),
+                ),
+              )
           : await supabase
               .from('follow')
               .select(
                 'profiles!follow_follower_user_id_fkey!inner(id, name, photo, address)',
               )
               .or('follower_user_id.eq.$id,following_user_id.eq.$id')
+              .not('profiles.id', 'eq', id)
               .limit(10 * limit)
               .withConverter(
                 (data) => List<UserModel>.from(

@@ -32,7 +32,7 @@ class CircleMembers extends GetView<AddCircleController> {
               child: Row(
                 children: [
                   Text(
-                    'Add members ',
+                    'Add members',
                     style: context.theme.textTheme.titleLarge,
                   ),
                   Obx(
@@ -112,20 +112,21 @@ class CircleMembers extends GetView<AddCircleController> {
                       ),
                     ),
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 10.h),
             SlideInLeft(
               delay: const Duration(milliseconds: 500),
               from: 300,
               child: Text(
-                'Followers',
+                'Followers / Followings',
                 style: context.theme.textTheme.labelLarge,
               ),
             ),
+            SizedBox(height: 10.h),
             SizedBox(
               height: 40.h,
               width: Get.width,
               child: CustomField(
-                hintText: 'Search followers',
+                hintText: 'Search',
                 controller: TextEditingController(),
                 focusNode: FocusNode(),
                 isPasswordVisible: true.obs,
