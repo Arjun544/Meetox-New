@@ -3,6 +3,9 @@ import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/widgets/custom_sheet.dart';
+
+import 'circle_details_sheet.dart';
 
 class CustomCircleMarker extends HookWidget {
   const CustomCircleMarker({
@@ -28,16 +31,15 @@ class CustomCircleMarker extends HookWidget {
             onTap: () {
               tappedCircle.value = circle;
               controller.isFiltersVisible.value = false;
-              // TODO: show custom sheet for circles
-              // showCustomSheet(
-              //   context: context,
-              //   hasBlur: false,
-              //   enableDrag: false,
-              //   child: CircleDetailsSheet(
-              //     circle,
-              //     tappedCircle,
-              //   ),
-              // );
+              showCustomSheet(
+                context: context,
+                hasBlur: false,
+                enableDrag: false,
+                child: CircleDetailsSheet(
+                  circle,
+                  tappedCircle,
+                ),
+              );
             },
             child: Container(
               width: 40.sp,

@@ -15,7 +15,7 @@ class CircleModel {
   String? photo;
   String? address;
   int? limit;
-  bool? isprivate;
+  bool? isPrivate;
   LocationModel? location;
   String? adminId;
   DateTime? updatedAt;
@@ -29,7 +29,7 @@ class CircleModel {
     this.photo,
     this.address,
     this.limit,
-    this.isprivate,
+    this.isPrivate,
     this.location,
     this.adminId,
     this.updatedAt,
@@ -49,7 +49,7 @@ class CircleModel {
         photo: json["photo"],
         address: json["address"],
         limit: json["limit"],
-        isprivate: json["isprivate"],
+        isPrivate: json["isprivate"],
         location: json['location'] != null
             ? LocationModel.fromJSON(json['location'])
             : null,
@@ -73,7 +73,7 @@ class CircleModel {
         "photo": photo,
         "address": address,
         "limit": limit,
-        "isprivate": isprivate,
+        "isprivate": isPrivate,
         if (location != null) 'location': toPostGISPoint(location),
         "admin_id": adminId,
         "updated_at": updatedAt?.toIso8601String(),

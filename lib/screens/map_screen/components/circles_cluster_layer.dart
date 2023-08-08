@@ -42,8 +42,8 @@ class CirclesClusterlayer extends GetView<MapScreenController> {
                     .map(
                       (circle) => Marker(
                         point: LatLng(
-                          tappedCircle.value.location!.latitude!,
-                          tappedCircle.value.location!.longitude!,
+                          circle.location!.latitude!,
+                          circle.location!.longitude!,
                         ),
                         width: 60.sp,
                         height: 60.sp,

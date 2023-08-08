@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/models/circle_model.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/services/follow_services.dart';
 import 'package:meetox/services/user_services.dart';
 import 'package:meetox/widgets/top_bar.dart';
 
+import 'components/circles_cluster_layer.dart';
 import 'components/current_user_layer.dart';
 import 'components/custom_tile_layer.dart';
 import 'components/followers_cluster_layer.dart';
@@ -42,17 +45,25 @@ class MapScreen extends HookWidget {
       },
     );
 
-    // final circlesResult = useQuery(
-    //   QueryOptions(
-    //     document: gql(getNearbyCircles),
-    //     pollInterval: const Duration(minutes: 5),
-    //     variables: {
-    //       'latitude': currentUser.value.location!.coordinates![0],
-    //       'longitude': currentUser.value.location!.coordinates![1],
-    //       'distanceInKM': currentUser.value.isPremium! ? 600 : 300,
-    //     },
-    //   ),
-    // );
+    final circlesResult = useQuery<List<CircleModel>, dynamic>(
+      CacheKeys.nearByCircles,
+      () async => await CircleServices.getNearByCircles(
+        lat: currentUser.value.location!.latitude!,
+        long: currentUser.value.location!.longitude!,
+        distanceInKm: currentUser.value.isPremium! ? 600 : 300,
+      ),
+      refreshConfig: const RefreshConfig(
+        staleDuration: Duration(minutes: 5),
+        refreshInterval: Duration(minutes: 5),
+        refreshOnMount: false,
+        refreshOnQueryFnChange: false,
+        refreshOnNetworkStateChange: true,
+      ),
+      onData: (value) {},
+      onError: (error) {
+        logError(error.toString());
+      },
+    );
 
     // final questionsResult = useQuery(
     //   QueryOptions(
@@ -128,21 +139,17 @@ class MapScreen extends HookWidget {
                   // children: circlesResult.result.isNotLoading ||
                   //         questionsResult.result.isNotLoading ||
                   //         followersResult.result.isNotLoading ||
-                  !usersResult.isLoading || !followersResult.isLoading
+                  !usersResult.isLoading ||
+                          !followersResult.isLoading ||
+                          !circlesResult.isLoading
                       ? controller.currentMainFilter.value == 'All'
                           ? [
                               const CustomTileLayer(),
                               const CurrentUserLayer(),
-                              // if (circlesResult.result.data != null)
-                              //   CirclesClusterlayer(
-                              //     circlesResult.result.data!['getNearByCircles']
-                              //         .map<circle_model.Circle>(
-                              //           (circle) =>
-                              //               circle_model.Circle.fromRawJson(
-                              //                   json.encode(circle)),
-                              //         )
-                              //         .toList() as List<circle_model.Circle>,
-                              //   ),
+                              if (circlesResult.data != null)
+                                CirclesClusterlayer(
+                                  circlesResult.data!,
+                                ),
                               if (usersResult.data != null)
                                 UsersClusterlayer(
                                   usersResult.data!,
@@ -166,16 +173,9 @@ class MapScreen extends HookWidget {
                               ? [
                                   const CustomTileLayer(),
                                   const CurrentUserLayer(),
-                                  // CirclesClusterlayer(
-                                  //   circlesResult
-                                  //       .result.data!['getNearByCircles']
-                                  //       .map<circle_model.Circle>(
-                                  //         (circle) =>
-                                  //             circle_model.Circle.fromRawJson(
-                                  //                 json.encode(circle)),
-                                  //       )
-                                  //       .toList() as List<circle_model.Circle>,
-                                  // ),
+                                  CirclesClusterlayer(
+                                    circlesResult.data!,
+                                  ),
                                 ]
                               : controller.currentMainFilter.value ==
                                       'Questions'
@@ -265,7 +265,9 @@ class MapScreen extends HookWidget {
             child:
                 // circlesResult.result.isLoading ||
                 //         circlesResult.result.data == null ||
-                usersResult.isLoading || followersResult.isLoading
+                usersResult.isLoading ||
+                        followersResult.isLoading ||
+                        circlesResult.isLoading
                     // questionsResult.result.isLoading ||
                     // questionsResult.result.data == null
                     ? Container(

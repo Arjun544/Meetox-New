@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_file_name.dart';
@@ -128,6 +130,69 @@ class CircleServices {
     }
   }
 
+  static Future<bool> isMember({required String id}) async {
+    try {
+      final data = await supabase
+          .from('circle_members')
+          .select()
+          .eq('member_id', currentUser.value.id)
+          .eq('circle_id', id);
+
+      logSuccess(data.toString());
+
+      if (data.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<bool> join({
+    required String id,
+    required ValueNotifier<bool> isLoading,
+  }) async {
+    try {
+      isLoading.value = true;
+      await supabase
+          .from('circle_members')
+          .insert({'member_id': currentUser.value.id, 'circle_id': id});
+
+      isLoading.value = false;
+
+      return true;
+    } catch (e) {
+      isLoading.value = false;
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<bool> leave({
+    required String id,
+    required ValueNotifier<bool> isLoading,
+  }) async {
+    try {
+      isLoading.value = true;
+      await supabase
+          .from('circle_members')
+          .delete()
+          .eq('member_id', currentUser.value.id)
+          .eq('circle_id', id);
+
+      isLoading.value = false;
+
+      return true;
+    } catch (e) {
+      isLoading.value = false;
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<String> deleteCircle({required String id}) async {
     try {
       final List<Map<String, dynamic>> data = await supabase
@@ -142,6 +207,50 @@ class CircleServices {
       return data[0]['id'].toString();
     } catch (e) {
       logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<List<CircleModel>> getNearByCircles({
+    required double lat,
+    required double long,
+    required double distanceInKm,
+  }) async {
+    try {
+      final List<dynamic> data = await supabase.rpc(
+        'nearby_circles',
+        params: {
+          'lat': lat,
+          'long': long,
+          'distanceinkm': distanceInKm,
+        },
+      );
+      logError('Nearby Circles ${data.toString()}');
+
+      final List<CircleModel> circles = data
+          .map((e) => CircleModel.fromJson({
+                'id': e['id'],
+                'name': e['name'],
+                'photo': e['photo'],
+                'address': e['address'],
+                'isprivate': e['isprivate'],
+                'limit': e['limit'],
+                'circle_members': [
+                  CircleMember(
+                    count: e['members'],
+                  ).toJson()
+                ],
+                'location': LocationModel.fromJSON(
+                        jsonDecode(e['location']) as Map<String, dynamic>)
+                    .toJSON(),
+                'admin_id': e['admin_id'],
+                'updated_at': e['updated_at'],
+                'created_at': e['created_at'],
+              }))
+          .toList();
+      return circles;
+    } catch (e) {
+      logError('Nearby Circles ${e.toString()}');
       rethrow;
     }
   }
