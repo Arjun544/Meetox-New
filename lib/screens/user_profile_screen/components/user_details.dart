@@ -5,6 +5,7 @@ import 'package:meetox/helpers/get_social.dart';
 import 'package:meetox/helpers/launch_url.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/followers_screen/followers_screen.dart';
+import 'package:meetox/services/follow_services.dart';
 import 'package:meetox/services/user_services.dart';
 import 'package:meetox/widgets/custom_tabbar.dart';
 import 'package:meetox/widgets/follow_button.dart';
@@ -20,6 +21,21 @@ class UserDetails extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final totalFollowers = useState(followers);
+    final followersCount = useQuery<int, dynamic>(
+      CacheKeys.followersCount,
+      () async => await FollowServices.getFollowersCount(
+        id: user.id!,
+      ),
+      onData: (value) => totalFollowers.value = value,
+    );
+
+    final followingsCount = useQuery<int, dynamic>(
+      CacheKeys.followingsCount,
+      () async => await FollowServices.getFollowingsCount(
+        id: user.id!,
+      ),
+    );
+
     final getSocials = useQuery<List<Social>, dynamic>(
       CacheKeys.userSocials,
       () async => await UserServices.getSocials(),
@@ -72,7 +88,8 @@ class UserDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (followers != 0) {
+                      if (!followersCount.isLoading &&
+                          followersCount.data != 0) {
                         Get.to(() => FollowersScreen(user, false));
                       }
                     },
@@ -92,14 +109,17 @@ class UserDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (followers != 0) {
+                      if (!followingsCount.isLoading &&
+                          followingsCount.data != 0) {
                         Get.to(() => FollowersScreen(user, true));
                       }
                     },
                     child: Column(
                       children: [
                         Text(
-                          user.followings.toString(),
+                          followingsCount.isLoading
+                              ? user.followings.toString()
+                              : followingsCount.data.toString(),
                           style: context.theme.textTheme.labelMedium,
                         ),
                         Text(

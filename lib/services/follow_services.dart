@@ -67,6 +67,44 @@ class FollowServices {
     }
   }
 
+  static Future<int> getFollowersCount({
+    required String id,
+  }) async {
+    try {
+      final response = await supabase
+          .from('follow')
+          .select(
+            'profiles!follow_following_user_id_fkey!inner(count)',
+          )
+          .eq('follower_user_id', id)
+          .single();
+
+      return response['profiles']['count'];
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<int> getFollowingsCount({
+    required String id,
+  }) async {
+    try {
+      final response = await supabase
+          .from('follow')
+          .select(
+            'profiles!follow_follower_user_id_fkey!inner(count)',
+          )
+          .eq('following_user_id', id)
+          .single();
+
+      return response['profiles']['count'];
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<List<UserModel>> getFollowers({
     required String id,
     required int limit,

@@ -15,6 +15,8 @@ class CacheKeys {
 
 
   static const String userSocials = 'user socials';
+  static const String followersCount = 'followers count';
+  static const String followingsCount = 'followings count';
   static const String userProfileDetails = 'user profile details';
   static const String addSocial = 'add social';
   static const String deleteSocial = 'delete social';
