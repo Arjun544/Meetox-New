@@ -5,6 +5,7 @@ import 'package:meetox/services/circle_services.dart';
 class JoinButton extends HookWidget {
   final String id;
   final bool isPrivate;
+  final bool isAdmin;
   final int limit;
   final ValueNotifier<int>? members;
 
@@ -12,6 +13,7 @@ class JoinButton extends HookWidget {
     super.key,
     required this.id,
     this.members,
+    required this.isAdmin,
     required this.isPrivate,
     required this.limit,
   });
@@ -74,7 +76,7 @@ class JoinButton extends HookWidget {
     );
     return Padding(
       padding: const EdgeInsets.only(right: 16),
-      child: !isPrivate
+      child: isAdmin && !isPrivate
           ? InkWell(
               onTap: () async {
                 if (checkIsMember.isLoading || isLoading.value) {

@@ -203,6 +203,7 @@ class CircleDetails extends HookWidget {
                   isPrivate: circle.value.isPrivate!,
                   limit: circle.value.limit!,
                   members: totalMembers,
+                  isAdmin: isAdmin,
                 ),
               ],
             ],

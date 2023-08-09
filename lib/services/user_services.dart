@@ -146,6 +146,8 @@ class UserServices {
             ),
           );
 
+      logSuccess(socials.toString());
+
       return socials;
     } catch (e) {
       logError(e.toString());

@@ -106,6 +106,7 @@ class CircleDetailsSheet extends HookWidget {
                     isPrivate: circle.isPrivate!,
                     limit: circle.limit!,
                     members: members,
+                    isAdmin: false,
                   )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -193,7 +193,7 @@ class FollowServices {
           ? await supabase
               .from('follow')
               .select(
-                'profiles!follow_follower_user_id_fkey!inner(id, name, photo, address)',
+                'profiles!follow_follower_user_id_fkey!inner(id, name, photo, address, created_at, location)',
               )
               .textSearch('profiles.fts', query)
               .or('follower_user_id.eq.$id,following_user_id.eq.$id')
@@ -207,7 +207,7 @@ class FollowServices {
           : await supabase
               .from('follow')
               .select(
-                'profiles!follow_follower_user_id_fkey!inner(id, name, photo, address)',
+                'profiles!follow_follower_user_id_fkey!inner(id, name, photo, address, created_at, location)',
               )
               .or('follower_user_id.eq.$id,following_user_id.eq.$id')
               .not('profiles.id', 'eq', id)

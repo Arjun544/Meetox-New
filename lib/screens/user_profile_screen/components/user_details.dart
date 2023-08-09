@@ -115,7 +115,7 @@ class UserDetails extends HookWidget {
               SizedBox(height: 30.h),
               Row(
                 mainAxisAlignment:
-                    !getSocials.isLoading && getSocials.data?[0].type == null
+                    !getSocials.isLoading && getSocials.data!.isEmpty
                         ? MainAxisAlignment.center
                         : MainAxisAlignment.spaceEvenly,
                 children: [
@@ -125,7 +125,7 @@ class UserDetails extends HookWidget {
                   ),
                   getSocials.isLoading
                       ? const SocialsLoaders()
-                      : getSocials.data![0].type == null
+                      : getSocials.data!.isEmpty
                           ? const SizedBox.shrink()
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

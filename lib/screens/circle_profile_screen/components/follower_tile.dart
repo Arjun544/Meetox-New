@@ -72,7 +72,12 @@ class FollowerTile extends HookWidget {
         ],
       ),
       trailing: user.id != currentUser.value.id
-          ? JoinButton(id: id, isPrivate: isPrivate, limit: limit)
+          ? JoinButton(
+              id: id,
+              isPrivate: isPrivate,
+              limit: limit,
+              isAdmin: true,
+            )
           : const SizedBox.shrink(),
     );
   }

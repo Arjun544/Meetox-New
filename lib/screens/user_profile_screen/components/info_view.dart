@@ -22,9 +22,9 @@ class InfoView extends StatelessWidget {
               height: 200.h,
               width: Get.width,
               child: MiniMap(
-                latitude: currentUser.value.location!.latitude!,
-                longitude: currentUser.value.location!.longitude!,
-                image: currentUser.value.photo!,
+                latitude: user.location!.latitude!,
+                longitude: user.location!.longitude!,
+                image: user.photo!,
                 color: AppColors.primaryYellow,
               ),
             ),
