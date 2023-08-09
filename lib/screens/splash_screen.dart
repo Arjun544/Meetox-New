@@ -19,8 +19,20 @@ class SplashScreen extends HookWidget {
     useQuery(
       CacheKeys.currentUser,
       () async {
-        return await UserServices.getCurrentUser();
+        return await UserServices.userById();
       },
+      // refreshConfig: const RefreshConfig(
+      //   staleDuration: Duration.zero,
+      //   refreshInterval: Duration.zero,
+      //   refreshOnMount: false,
+      //   refreshOnQueryFnChange: false,
+      //   refreshOnNetworkStateChange: true,
+      // ),
+      // retryConfig: const RetryConfig(
+      //   maxRetries: 1,
+      //   retryDelay: Duration.zero,
+      //   cancelWhenOffline: true,
+      // ),
       onData: (data) {
         if (data.name == null) {
           Get.offAll(() => const AddProfileScreen());

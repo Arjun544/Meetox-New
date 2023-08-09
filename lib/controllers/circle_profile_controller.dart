@@ -1,3 +1,4 @@
+import 'package:meetox/controllers/circles_controller.dart';
 import 'package:meetox/controllers/global_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
@@ -74,6 +75,20 @@ class CircleProfileController extends GetxController
     } catch (e) {
       logError(e.toString());
       followersPagingController.error = e;
+    }
+  }
+
+  void onCircleDelete(BuildContext context, String newId) {
+    if (newId.isNotEmpty) {
+      final bool circlesController = Get.isRegistered<CirclesController>();
+      if (circlesController) {
+        final CirclesController circlesController = Get.find();
+        circlesController.circlesPagingController.itemList!
+            .removeWhere((element) => element.id == newId);
+        circlesController.circlesPagingController
+            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+            .notifyListeners();
+      }
     }
   }
 

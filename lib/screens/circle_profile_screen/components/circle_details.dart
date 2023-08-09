@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/widgets/custom_button.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 import 'package:meetox/widgets/join_button.dart';
@@ -18,7 +20,29 @@ class CircleDetails extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalMembers = useState(members.value);
     final bool isAdmin = circle.value.adminId == currentUser.value.id;
+    final CircleProfileController circleProfileController = Get.find();
+    final isLoading = useState(false);
+
+    final deleteCircleMutation = useMutation(
+      CacheKeys.deleteCircle,
+      (Map<String, dynamic> variables) async =>
+          await CircleServices.deleteCircle(
+        id: circle.value.id!,
+        isLoading: isLoading,
+      ),
+      onData: (data, recoveryData) {
+        circleProfileController.onCircleDelete(context, data);
+        showToast('Deleted circle successfully');
+        Navigator.pop(context);
+        Get.back();
+      },
+      onError: (error, recoveryData) {
+        logError(error.toString());
+        showToast('Create circle failed');
+      },
+    );
 
     return SliverAppBar(
       elevation: 0.1,
@@ -28,80 +52,6 @@ class CircleDetails extends HookWidget {
         circle.value.name!.capitalizeFirst!,
         style: context.theme.textTheme.labelMedium,
       ),
-      actions: isAdmin
-          ? [
-              IconButton(
-                onPressed: () => showCupertinoModalPopup(
-                  context: context,
-                  builder: (context) => CupertinoActionSheet(
-                    title: Text(
-                      'Are you sure?',
-                      style: context.theme.textTheme.labelMedium,
-                    ),
-                    cancelButton: CupertinoActionSheetAction(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel',
-                        style: context.theme.textTheme.labelMedium,
-                      ),
-                    ),
-                    actions: !isAdmin
-                        ? null
-                        : [
-                            // TODO: Add Delete
-                            // Mutation(
-                            //   options: MutationOptions(
-                            //     document: gql(deleteCircle),
-                            //     fetchPolicy: FetchPolicy.networkOnly,
-                            //     onCompleted:
-                            //         (Map<String, dynamic>? resultData) {
-                            //       circlesController.onDeleteCompleted(
-                            //         resultData,
-                            //         context,
-                            //       );
-                            //       Get.back();
-                            //     },
-                            //     onError: (error) =>
-                            //         showToast('Failed to delete circle'),
-                            //   ),
-                            //   builder: (runMutation, result) {
-                            //     return result!.isLoading
-                            //         ? Padding(
-                            //             padding: EdgeInsets.symmetric(
-                            //                 horizontal: Get.width * 0.42,
-                            //                 vertical: 8.h),
-                            //             child: LoadingAnimationWidget
-                            //                 .staggeredDotsWave(
-                            //               color: AppColors.primaryYellow,
-                            //               size: 25.sp,
-                            //             ),
-                            //           )
-                            //         : CupertinoActionSheetAction(
-                            //             isDestructiveAction: true,
-                            //             onPressed: () => runMutation({
-                            //               "id": circle.value.id,
-                            //             }),
-                            //             child: Text(
-                            //               'Delete',
-                            //               style: context
-                            //                   .theme.textTheme.labelMedium!
-                            //                   .copyWith(
-                            //                 color: Colors.redAccent,
-                            //               ),
-                            //             ),
-                            //           );
-                            //   },
-                            // ),
-                          ],
-                  ),
-                ),
-                icon: const Icon(
-                  IconsaxBold.trash,
-                  color: Colors.redAccent,
-                ),
-              ),
-            ]
-          : null,
       flexibleSpace: FlexibleSpaceBar(
         background: Padding(
           padding: EdgeInsets.only(top: Get.height * 0.15),
@@ -131,7 +81,7 @@ class CircleDetails extends HookWidget {
                     child: Column(
                       children: [
                         Text(
-                          members.value.toString(),
+                          totalMembers.value.toString(),
                           style: context.theme.textTheme.labelMedium,
                         ),
                         Text(
@@ -184,9 +134,62 @@ class CircleDetails extends HookWidget {
                         context: context,
                         child: AddMemberSheet(
                           id: circle.value.id!,
-                          members: members,
+                          members: totalMembers,
                           limit: circle.value.limit!,
                           isPrivate: circle.value.isPrivate!,
+                        ),
+                      ),
+                    ),
+                    CustomButton(
+                      width: Get.width * 0.15,
+                      height: 35.h,
+                      color: context.theme.indicatorColor,
+                      icon: const Icon(
+                        IconsaxBold.trash,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () => showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) => CupertinoActionSheet(
+                          title: Text(
+                            'Are you sure?',
+                            style: context.theme.textTheme.labelMedium,
+                          ),
+                          cancelButton: CupertinoActionSheetAction(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'Cancel',
+                              style: context.theme.textTheme.labelMedium,
+                            ),
+                          ),
+                          actions: [
+                            isLoading.value
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Get.width * 0.42,
+                                        vertical: 8.h),
+                                    child: LoadingAnimationWidget
+                                        .staggeredDotsWave(
+                                      color: AppColors.primaryYellow,
+                                      size: 25.sp,
+                                    ),
+                                  )
+                                : CupertinoActionSheetAction(
+                                    isDestructiveAction: true,
+                                    onPressed: () =>
+                                        deleteCircleMutation.mutate({
+                                      "id": circle.value.id,
+                                    }),
+                                    child: Text(
+                                      'Delete',
+                                      style: context
+                                          .theme.textTheme.labelMedium!
+                                          .copyWith(
+                                        color: Colors.redAccent,
+                                      ),
+                                    ),
+                                  ),
+                          ],
                         ),
                       ),
                     ),
@@ -199,7 +202,7 @@ class CircleDetails extends HookWidget {
                   id: circle.value.id!,
                   isPrivate: circle.value.isPrivate!,
                   limit: circle.value.limit!,
-                  members: members,
+                  members: totalMembers,
                 ),
               ],
             ],

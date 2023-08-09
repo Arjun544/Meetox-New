@@ -24,7 +24,7 @@ class CircleProfileScreen extends HookWidget {
 
     final adminResult = useQuery<UserModel, dynamic>(
       CacheKeys.currentUser,
-      () async => await UserServices.getCurrentUser(
+      () async => await UserServices.userById(
         id: circle.adminId,
       ),
       onError: (error) {

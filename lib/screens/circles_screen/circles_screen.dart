@@ -11,6 +11,8 @@ import 'package:meetox/widgets/custom_field.dart';
 import 'package:meetox/widgets/dialogues/upgrade_premium_dialogue.dart';
 import 'package:meetox/widgets/loaders/circles_loader.dart';
 
+import '../circle_profile_screen/circle_profile_screen.dart';
+
 class CirclesScreen extends GetView<CirclesController> {
   const CirclesScreen({super.key});
 
@@ -129,13 +131,14 @@ class CirclesScreen extends GetView<CirclesController> {
                     itemBuilder: (context, item, index) => CircleTile(
                       circle: item,
                       circlesController: controller,
-                      onTap: () {},
-                      // onTap: () => Get.to(
-                      //   () => CircleProfileScreen(
-                      //     circle: item,
-                      //     allMembers: ValueNotifier(item.members!),
-                      //   ),
-                      // ),
+                      onTap: () => Get.to(
+                        () => CircleProfileScreen(
+                          circle: item,
+                          allMembers: ValueNotifier(
+                            item.circleMembers![0].count!,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

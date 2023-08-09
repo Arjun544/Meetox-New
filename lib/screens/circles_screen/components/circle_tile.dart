@@ -22,11 +22,14 @@ class CircleTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = useState(false);
+
     final deleteCircleMutation = useMutation(
-      CacheKeys.addCircle,
+      CacheKeys.deleteCircle,
       (Map<String, dynamic> variables) async =>
           await CircleServices.deleteCircle(
         id: variables['id'],
+        isLoading: isLoading,
       ),
       onData: (data, recoveryData) {
         circlesController!.onCircleDelete(context, data);
@@ -124,7 +127,7 @@ class CircleTile extends HookWidget {
                             style: context.theme.textTheme.labelMedium,
                           ),
                         ),
-                        deleteCircleMutation.isMutating
+                        isLoading.value
                             ? Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: Get.width * 0.42,

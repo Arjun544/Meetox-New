@@ -24,7 +24,7 @@ class AuthScreen extends HookWidget {
         variables['isLoading'],
       ),
       onData: (data, recoveryData) async {
-        final UserModel user = await UserServices.getCurrentUser();
+        final UserModel user = await UserServices.userById();
         currentUser(user);
         if (currentUser.value.name == null) {
           Get.offAll(() => const AddProfileScreen());

@@ -7,11 +7,15 @@ import '../models/user_model.dart';
 import 'storage_services.dart';
 
 class UserServices {
-  static Future<UserModel> getCurrentUser({String? id}) async {
+  static Future<UserModel> userById({String? id}) async {
     try {
       final data = await supabase
           .from('profiles')
-          .select('id, name, photo, address, ispremium, location, socials')
+          .select(
+            id == null
+                ? 'id, name, photo, address, ispremium, location, socials'
+                : 'id, name',
+          )
           .eq('id', id ?? supabase.auth.currentUser!.id)
           .single()
           .withConverter((data) {
@@ -58,7 +62,7 @@ class UserServices {
           'photo': photoUrl,
           'dob': dob,
         }).eq('id', supabase.auth.currentUser!.id);
-        await getCurrentUser();
+        await userById();
       }
       isLoading(false);
       return true;

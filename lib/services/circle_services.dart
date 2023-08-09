@@ -216,8 +216,12 @@ class CircleServices {
     }
   }
 
-  static Future<String> deleteCircle({required String id}) async {
+  static Future<String> deleteCircle({
+    required String id,
+    required ValueNotifier<bool> isLoading,
+  }) async {
     try {
+      isLoading.value = true;
       final List<Map<String, dynamic>> data = await supabase
           .from('circles')
           .delete()
@@ -227,8 +231,11 @@ class CircleServices {
         folder: 'circle profiles',
         name: getFileName(data[0]['photo']),
       );
+      isLoading.value = false;
+
       return data[0]['id'].toString();
     } catch (e) {
+      isLoading.value = false;
       logError(e.toString());
       rethrow;
     }
