@@ -4,6 +4,7 @@ import 'package:meetox/controllers/circles_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/screens/circle_profile_screen/circle_profile_screen.dart';
 import 'package:meetox/services/circle_services.dart';
 
 class CircleTile extends HookWidget {
@@ -104,7 +105,13 @@ class CircleTile extends HookWidget {
                       ),
                       actions: [
                         CupertinoActionSheetAction(
-                          onPressed: () {},
+                          onPressed: () => Get.to(
+                            () => CircleProfileScreen(
+                              circle: circle,
+                              allMembers: ValueNotifier(
+                                  circle.circleMembers![0].count!),
+                            ),
+                          ),
                           child: Text(
                             'View profile',
                             style: context.theme.textTheme.labelMedium,

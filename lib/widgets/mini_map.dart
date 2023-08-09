@@ -1,13 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
-import 'package:meetox/models/user_model.dart';
-import 'package:meetox/screens/map_screen/components/current_user_marker.dart';
+
+import 'user_initials.dart';
 
 class MiniMap extends GetView<MapScreenController> {
-  const MiniMap({required this.user, super.key});
-  final UserModel user;
+  final double latitude;
+  final double longitude;
+  final String image;
+  final Color color;
+
+  const MiniMap({
+    super.key,
+    required this.latitude,
+    required this.longitude,
+    required this.image,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +32,8 @@ class MiniMap extends GetView<MapScreenController> {
     final distanceBtw = getDistance(
       currentLatitude,
       currentLongitude,
-      user.location!.latitude!,
-      user.location!.longitude!,
+      latitude,
+      longitude,
     );
     return Stack(
       children: [
@@ -30,8 +41,8 @@ class MiniMap extends GetView<MapScreenController> {
           () => FlutterMap(
             options: MapOptions(
               center: LatLng(
-                user.location!.latitude!,
-                user.location!.longitude!,
+                latitude,
+                longitude,
               ),
               zoom: 12,
               minZoom: 1,
@@ -103,9 +114,58 @@ class MiniMap extends GetView<MapScreenController> {
                     ),
                     width: 60.sp,
                     height: 60.sp,
-                    builder: (context) => CurrentUserMarker(
-                      isMiniMap: true,
-                      user: user,
+                    builder: (context) => Pulse(
+                      infinite: true,
+                      // ignore: avoid_bool_literals_in_conditional_expressions
+                      animate: false,
+                      child: Container(
+                        width: 70.sp,
+                        height: 70.sp,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Dance(
+                          duration: const Duration(milliseconds: 2000),
+                          infinite: true,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              image.isEmpty
+                                  ? const UserInititals(name: 'A')
+                                  : Container(
+                                      width: 40.h,
+                                      height: 40.w,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.customGrey,
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                          width: 3,
+                                          color: color,
+                                        ),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                            image,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              Positioned(
+                                bottom: -18,
+                                child: Icon(
+                                  FlutterRemix.arrow_down_s_fill,
+                                  size: 30.sp,
+                                  color: color,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -113,31 +173,30 @@ class MiniMap extends GetView<MapScreenController> {
             ],
           ),
         ),
-        if (user.id != currentUser.value.id)
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: context.theme.scaffoldBackgroundColor.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  FlutterRemix.pin_distance_fill,
-                  size: 18,
-                  color: context.theme.iconTheme.color,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  '~ ${distanceBtw.toStringAsFixed(0)} KMs',
-                  style: context.theme.textTheme.labelSmall,
-                ),
-              ],
-            ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8),
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: context.theme.scaffoldBackgroundColor.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(10),
           ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                FlutterRemix.pin_distance_fill,
+                size: 18,
+                color: context.theme.iconTheme.color,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                '~ ${distanceBtw.toStringAsFixed(0)} KMs',
+                style: context.theme.textTheme.labelSmall,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

@@ -193,6 +193,29 @@ class CircleServices {
     }
   }
 
+  static Future<String> editCircle({
+    required ValueNotifier<bool> isLoading,
+    required CircleModel circle,
+  }) async {
+    try {
+      final PostgrestTransformBuilder data = await supabase
+          .from('circles')
+          .update(
+            circle.toJson(),
+          )
+          .eq('id', circle.id)
+          .select();
+      // await StorageServices.deleteImage(
+      //   folder: 'circle profiles',
+      //   name: getFileName(data[0]['photo']),
+      // );
+      return data.toString();
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<String> deleteCircle({required String id}) async {
     try {
       final List<Map<String, dynamic>> data = await supabase

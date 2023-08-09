@@ -65,7 +65,10 @@ class CustomMapOptions extends HookWidget {
               height: 200.sp,
               width: Get.width,
               child: MiniMap(
-                user: currentUser.value,
+                latitude: currentUser.value.location!.latitude!,
+                longitude: currentUser.value.location!.longitude!,
+                image: currentUser.value.photo!,
+                color: AppColors.primaryYellow,
               ),
             ),
           ),

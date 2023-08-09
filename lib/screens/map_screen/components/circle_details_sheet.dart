@@ -4,6 +4,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/screens/circle_profile_screen/circle_profile_screen.dart';
 import 'package:meetox/widgets/join_button.dart';
 import 'package:meetox/widgets/navigate_button.dart';
 
@@ -185,13 +186,12 @@ class CircleDetailsSheet extends HookWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: InkWell(
-                        onTap: () {},
-                        // onTap: () => Get.to(
-                        //   () => CircleProfileScreen(
-                        //     circle: circle,
-                        //     allMembers: members,
-                        //   ),
-                        // ),
+                        onTap: () => Get.to(
+                          () => CircleProfileScreen(
+                            circle: circle,
+                            allMembers: members,
+                          ),
+                        ),
                         child: Container(
                           height: 45.sp,
                           decoration: BoxDecoration(

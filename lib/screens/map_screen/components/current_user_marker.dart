@@ -5,9 +5,7 @@ import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/user_initials.dart';
 
 class CurrentUserMarker extends StatelessWidget {
-  const CurrentUserMarker(
-      {super.key, this.isMiniMap = false, required this.user});
-  final bool isMiniMap;
+  const CurrentUserMarker({super.key, required this.user});
   final UserModel user;
 
   @override
@@ -15,7 +13,7 @@ class CurrentUserMarker extends StatelessWidget {
     return Pulse(
       infinite: true,
       // ignore: avoid_bool_literals_in_conditional_expressions
-      animate: isMiniMap ? false : true,
+      animate: true,
       child: InkWell(
         onTap: () {},
         // TODO:
@@ -25,9 +23,7 @@ class CurrentUserMarker extends StatelessWidget {
           height: 70.sp,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isMiniMap
-                ? Colors.transparent
-                : AppColors.primaryYellow.withOpacity(0.3),
+            color: AppColors.primaryYellow.withOpacity(0.3),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Dance(
@@ -42,14 +38,14 @@ class CurrentUserMarker extends StatelessWidget {
                     : user.id == currentUser.value.id
                         ? Obx(
                             () => Container(
-                              width: isMiniMap ? 40.sp : 50.sp,
-                              height: isMiniMap ? 40.sp : 50.sp,
+                              width: 50.h,
+                              height: 50.w,
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                 color: AppColors.customGrey,
                                 borderRadius: BorderRadius.circular(15),
                                 border: Border.all(
-                                  width: isMiniMap ? 3 : 4,
+                                  width: 4,
                                   color: AppColors.primaryYellow,
                                 ),
                                 image: DecorationImage(
@@ -64,14 +60,14 @@ class CurrentUserMarker extends StatelessWidget {
                             ),
                           )
                         : Container(
-                            width: isMiniMap ? 40.sp : 50.sp,
-                            height: isMiniMap ? 40.sp : 50.sp,
+                            width: 50.w,
+                            height: 50.h,
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
                               color: AppColors.customGrey,
                               borderRadius: BorderRadius.circular(15),
                               border: Border.all(
-                                width: isMiniMap ? 3 : 4,
+                                width: 4,
                                 color: AppColors.primaryYellow,
                               ),
                               image: DecorationImage(
