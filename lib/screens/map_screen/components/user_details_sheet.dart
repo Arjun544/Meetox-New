@@ -6,6 +6,7 @@ import 'package:meetox/helpers/get_distance.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/followers_screen/followers_screen.dart';
 import 'package:meetox/widgets/follow_button.dart';
+import 'package:meetox/widgets/navigate_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 
 import '../../user_profile_screen/user_profile_screen.dart';
@@ -291,30 +292,11 @@ class UserDetailsSheet extends HookWidget {
                   ],
                 ),
               ),
-              Container(
-                height: 50.sp,
-                width: Get.width,
-                margin:
-                    EdgeInsets.only(right: 15.sp, left: 15.sp, bottom: 15.sp),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryYellow,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FlutterRemix.treasure_map_fill,
-                      size: 18.sp,
-                      color: context.theme.iconTheme.color,
-                    ),
-                    const SizedBox(width: 20),
-                    Text(
-                      'Navigate',
-                      style: context.theme.textTheme.labelSmall,
-                    ),
-                  ],
-                ),
+               NavigateButton(
+                title: user.name!.capitalizeFirst!,
+                address: user.address!,
+                latitude: user.location!.latitude!,
+                longitude: user.location!.longitude!,
               ),
             ],
           ),

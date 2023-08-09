@@ -5,6 +5,7 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
 import 'package:meetox/models/circle_model.dart';
 import 'package:meetox/widgets/join_button.dart';
+import 'package:meetox/widgets/navigate_button.dart';
 
 class CircleDetailsSheet extends HookWidget {
   final CircleModel circle;
@@ -184,7 +185,7 @@ class CircleDetailsSheet extends HookWidget {
                     const SizedBox(width: 20),
                     Expanded(
                       child: InkWell(
-                        onTap: (){},
+                        onTap: () {},
                         // onTap: () => Get.to(
                         //   () => CircleProfileScreen(
                         //     circle: circle,
@@ -208,30 +209,11 @@ class CircleDetailsSheet extends HookWidget {
                   ],
                 ),
               ),
-              Container(
-                height: 50.sp,
-                width: Get.width,
-                margin:
-                    EdgeInsets.only(right: 15.sp, left: 15.sp, bottom: 15.sp),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryYellow,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FlutterRemix.treasure_map_fill,
-                      size: 18.sp,
-                      color: context.theme.iconTheme.color,
-                    ),
-                    const SizedBox(width: 20),
-                    Text(
-                      'Navigate',
-                      style: context.theme.textTheme.labelSmall,
-                    ),
-                  ],
-                ),
+              NavigateButton(
+                title: circle.name!.capitalizeFirst!,
+                address: circle.address!,
+                latitude: circle.location!.latitude!,
+                longitude: circle.location!.longitude!,
               ),
             ],
           ),

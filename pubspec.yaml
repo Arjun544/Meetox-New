@@ -39,6 +39,7 @@ dependencies:
   latlong2: ^0.8.1
   loading_animation_widget: ^1.2.0+4
   lottie: ^2.5.0
+  map_launcher: ^2.5.0+1
   permission_handler: ^10.4.3
   shimmer: ^3.0.0
   smooth_page_indicator: ^1.1.0
