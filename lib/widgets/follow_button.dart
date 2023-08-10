@@ -33,32 +33,33 @@ class FollowButton extends HookWidget {
             followers!.value += 1;
           }
           // Optimistic Updates after a successful follow
-          final Query<List<UserModel>, dynamic> nearbyUsers =
+          final Query<List<UserModel>, dynamic>? nearbyUsers =
               QueryClient.of(context)
-                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers)!;
+                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers);
 
           final Query<List<UserModel>, dynamic> nearbyFollowers =
               QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
                   CacheKeys.nearByFollowers)!;
 
-          final Query<ProfileModel, dynamic> userProfile =
+          final Query<ProfileModel, dynamic>? userProfile =
               QueryClient.of(context).getQuery<ProfileModel, dynamic>(
-                  CacheKeys.userProfileDetails)!;
-
-          userProfile.setData(ProfileModel(
-            id: userProfile.data!.id,
-            feeds: userProfile.data!.feeds,
-            circles: userProfile.data!.circles,
-            followers: followers!.value,
-            followings: userProfile.data!.followings,
-            crosspaths: userProfile.data!.crosspaths,
-            questions: userProfile.data!.questions,
-            createdAt: userProfile.data!.createdAt,
-            dob: userProfile.data!.dob,
-          ));
+                  CacheKeys.userProfileDetails);
+          if (userProfile != null) {
+            userProfile.setData(ProfileModel(
+              id: userProfile.data!.id,
+              feeds: userProfile.data!.feeds,
+              circles: userProfile.data!.circles,
+              followers: followers!.value,
+              followings: userProfile.data!.followings,
+              crosspaths: userProfile.data!.crosspaths,
+              questions: userProfile.data!.questions,
+              createdAt: userProfile.data!.createdAt,
+              dob: userProfile.data!.dob,
+            ));
+          }
 
           nearbyFollowers.data!.add(
-              nearbyUsers.data!.where((element) => element.id == id).first);
+              nearbyUsers!.data!.where((element) => element.id == id).first);
           nearbyFollowers.setData(nearbyFollowers.data!);
 
           nearbyUsers.data!.removeWhere((element) => element.id == id);
@@ -94,21 +95,25 @@ class FollowButton extends HookWidget {
               QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
                   CacheKeys.nearByFollowers)!;
 
-          final Query<ProfileModel, dynamic> userProfile =
+          final Query<ProfileModel, dynamic>? userProfile =
               QueryClient.of(context).getQuery<ProfileModel, dynamic>(
-                  CacheKeys.userProfileDetails)!;
+                  CacheKeys.userProfileDetails);
 
-          userProfile.setData(ProfileModel(
-            id: userProfile.data!.id,
-            feeds: userProfile.data!.feeds,
-            circles: userProfile.data!.circles,
-            followers: userProfile.data!.followers,
-            followings: userProfile.data!.followings! - 1,
-            crosspaths: userProfile.data!.crosspaths,
-            questions: userProfile.data!.questions,
-            createdAt: userProfile.data!.createdAt,
-            dob: userProfile.data!.dob,
-          ));
+          if (userProfile != null) {
+            userProfile.setData(
+              ProfileModel(
+                id: userProfile.data!.id,
+                feeds: userProfile.data!.feeds,
+                circles: userProfile.data!.circles,
+                followers: userProfile.data!.followers,
+                followings: userProfile.data!.followings! - 1,
+                crosspaths: userProfile.data!.crosspaths,
+                questions: userProfile.data!.questions,
+                createdAt: userProfile.data!.createdAt,
+                dob: userProfile.data!.dob,
+              ),
+            );
+          }
 
           nearbyUsers.data!.add(
               nearbyFollowers.data!.where((element) => element.id == id).first);

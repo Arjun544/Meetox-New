@@ -175,7 +175,7 @@ class UserDetailsSheet extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (followers.value != 0) {
+                      if (user.followings != 0) {
                         Get.to(() => FollowersScreen(user, true));
                       }
                     },
@@ -292,7 +292,7 @@ class UserDetailsSheet extends HookWidget {
                   ],
                 ),
               ),
-               NavigateButton(
+              NavigateButton(
                 title: user.name!.capitalizeFirst!,
                 address: user.address!,
                 latitude: user.location!.latitude!,
