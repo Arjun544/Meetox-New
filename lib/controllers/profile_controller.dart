@@ -121,4 +121,11 @@ class ProfileController extends GetxController {
       Navigator.pop(context);
     }
   }
+
+  @override
+  void dispose() {
+    linkController.dispose();
+    numberFocusNode.dispose();
+    super.dispose();
+  }
 }
