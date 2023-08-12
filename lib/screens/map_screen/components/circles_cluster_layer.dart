@@ -12,46 +12,29 @@ class CirclesClusterlayer extends GetView<MapScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    final tappedCircle = CircleModel().obs;
-
     return ZoomIn(
-      child: Obx(
-        () => MarkerClusterLayerWidget(
+      child: MarkerClusterLayerWidget(
           options: MarkerClusterLayerOptions(
             maxClusterRadius: 120,
             spiderfySpiralDistanceMultiplier: 2,
             circleSpiralSwitchover: 1,
             zoomToBoundsOnClick: false,
             size: Size(50.sp, 50.sp),
-            markers: tappedCircle.value.id != null
-                ? [
-                    Marker(
-                      point: LatLng(
-                        tappedCircle.value.location!.latitude!,
-                        tappedCircle.value.location!.longitude!,
-                      ),
-                      width: 60.sp,
-                      height: 60.sp,
-                      builder: (context) => CustomCircleMarker(
-                        circle: tappedCircle.value,
-                      ),
-                    )
-                  ]
-                : circles
-                    .map(
-                      (circle) => Marker(
-                        point: LatLng(
-                          circle.location!.latitude!,
-                          circle.location!.longitude!,
-                        ),
-                        width: 60.sp,
-                        height: 60.sp,
-                        builder: (context) => CustomCircleMarker(
-                          circle: circle,
-                        ),
-                      ),
-                    )
-                    .toList(),
+            markers: circles
+                .map(
+                  (circle) => Marker(
+                    point: LatLng(
+                      circle.location!.latitude!,
+                      circle.location!.longitude!,
+                    ),
+                    width: 60.sp,
+                    height: 60.sp,
+                    builder: (context) => CustomCircleMarker(
+                      circle: circle,
+                    ),
+                  ),
+                )
+                .toList(),
             polygonOptions: const PolygonOptions(
                 borderColor: Colors.lightBlue, borderStrokeWidth: 4),
             builder: (context, markers) {
@@ -77,7 +60,7 @@ class CirclesClusterlayer extends GetView<MapScreenController> {
               );
             },
           ),
-        ),
+        
       ),
     );
   }

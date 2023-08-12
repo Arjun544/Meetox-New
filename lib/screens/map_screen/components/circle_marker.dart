@@ -1,12 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/map_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
 import 'package:meetox/screens/circle_profile_screen/circle_profile_screen.dart';
-import 'package:meetox/widgets/custom_sheet.dart';
-
-import 'circle_details_sheet.dart';
 
 class CustomCircleMarker extends StatelessWidget {
   const CustomCircleMarker({

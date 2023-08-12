@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/models/user_model.dart';
@@ -65,10 +67,21 @@ class FollowerTile extends GetView<CircleProfileController> {
       ),
       trailing: user.id != currentUser.value.id
           ? JoinButton(
-              id: controller.circle.value.id!,
-              isPrivate: controller.circle.value.isPrivate!,
-              limit: controller.circle.value.limit!,
+              id: controller.profile.value.id!,
+              isPrivate: controller.profile.value.isPrivate!,
               isAdmin: true,
+              hasLimitReached: controller.profile.value.members ==
+                  controller.profile.value.limit!,
+              onJoin: (data) {
+                controller.profile.value.members =
+                    controller.profile.value.members! + 1;
+                controller.profile.refresh();
+              },
+              onLeave: (data) {
+                controller.profile.value.members =
+                    controller.profile.value.members! - 1;
+                controller.profile.refresh();
+              },
             )
           : const SizedBox.shrink(),
     );

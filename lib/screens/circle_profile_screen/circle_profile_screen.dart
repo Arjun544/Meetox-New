@@ -17,7 +17,6 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
   Widget build(BuildContext context) {
     Get.put(CircleProfileController());
     controller.circle(circle);
-    controller.members(circle.circleMembers![0].count);
     logSuccess(circle.toJson().toString());
 
     return Scaffold(
@@ -74,11 +73,11 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
               Column(
                 children: [
                   Obx(
-                    () => controller.admin.value.id == null
+                    () => controller.profile.value.id == null
                         ? const SizedBox.shrink()
                         : Text(
-                            'Created by ${circle.adminId == currentUser.value.id ? 'YOU' : controller.admin.value.name!.capitalizeFirst!} ${timeago.format(
-                              circle.createdAt!,
+                            'Created by ${circle.adminId == currentUser.value.id ? 'YOU' : controller.profile.value.admin!.name!.capitalizeFirst!} ${timeago.format(
+                              controller.profile.value.createdAt!,
                               locale: 'en',
                               allowFromNow: true,
                             )}',
@@ -99,9 +98,11 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
                         color: context.theme.indicatorColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        'www.meetox.com/${circle.name}',
-                        style: context.theme.textTheme.labelSmall,
+                      child: Obx(
+                        () => Text(
+                          'www.meetox.com/${controller.profile.value.name ?? ''}',
+                          style: context.theme.textTheme.labelSmall,
+                        ),
                       ),
                     ),
                     trailing: const Icon(IconsaxBold.copy),

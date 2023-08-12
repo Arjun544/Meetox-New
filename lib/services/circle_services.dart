@@ -4,6 +4,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_file_name.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/models/circle_profile_model.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/services/storage_services.dart';
 
@@ -37,51 +38,49 @@ class CircleServices {
         subFolder: '${DateTime.now().millisecondsSinceEpoch}',
         file: data['file'],
       );
-      late dynamic newCircle;
-      if (photoUrl.isNotEmpty) {
-        newCircle = await supabase.from('circles').insert({
-          'name': data['name'],
-          'description': data['description'],
-          'photo': photoUrl,
-          'isprivate': data['isPrivate'],
-          'limit': int.parse(data['limit'].toString()),
-          'address': data['address'],
-          'admin_id': supabase.auth.currentUser!.id,
-          'location': LocationModel(
-            latitude: lat,
-            longitude: long,
-          ).toJSON(),
-          'updated_at': DateTime.now().toString(),
-        }).select('*, circle_members(count)');
 
-        if (newCircle.isNotEmpty) {
+      if (photoUrl.isNotEmpty) {
+        final CircleModel newCircle = await supabase
+            .from('circles')
+            .insert({
+              'name': data['name'],
+              'description': data['description'],
+              'photo': photoUrl,
+              'isprivate': data['isPrivate'],
+              'limit': int.parse(data['limit'].toString()),
+              'address': data['address'],
+              'admin_id': supabase.auth.currentUser!.id,
+              'location': LocationModel(
+                latitude: lat,
+                longitude: long,
+              ).toJSON(),
+              'updated_at': DateTime.now().toString(),
+            })
+            .select('id, name, photo')
+            .withConverter((data) => CircleModel.fromJson(data!.first));
+
+        if (newCircle.id != null) {
           // Add members
           for (var member in data['members']) {
             await supabase.from('circle_members').insert({
-              'circle_id': newCircle[0]['id'],
+              'circle_id': newCircle.id,
               'member_id': member,
             });
           }
         }
+        onSuccess(
+          CircleModel(
+            id: newCircle.id,
+            name: newCircle.name,
+            photo: newCircle.photo,
+            members: data['members'].length,
+          ),
+        );
+        isLoading(false);
       }
-      // Updating members count manually
-      final CircleModel editedCircle = CircleModel.fromJson(
-        {
-          ...newCircle[0],
-          'circle_members': [
-            CircleMember(
-              count: data['members'].length,
-            ).toJson()
-          ],
-        },
-      );
-      onSuccess(editedCircle);
-      isLoading(false);
-      return;
     } catch (e) {
       isLoading(false);
       logError('Circle created error ${e.toString()}');
-      rethrow;
     }
   }
 
@@ -94,7 +93,7 @@ class CircleServices {
           ? await supabase
               .from('circles')
               .select(
-                '*, circle_members(count)',
+                'id, name, photo, location, members:circle_members(count)',
                 const FetchOptions(
                   count: CountOption.exact,
                 ),
@@ -111,7 +110,7 @@ class CircleServices {
           : await supabase
               .from('circles')
               .select(
-                '*, circle_members(count)',
+                'id, name, photo, location, members:circle_members(count)',
                 const FetchOptions(
                   count: CountOption.exact,
                 ),
@@ -124,10 +123,24 @@ class CircleServices {
                   data!.map((x) => CircleModel.fromJson(x)),
                 ),
               );
-      logSuccess('$circles');
       return circles;
     } catch (e) {
       logError('Get Circles Error ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  static Future<CircleProfileModel> getCircleProfile({
+    required String id,
+  }) async {
+    try {
+      final profile = await supabase.rpc(
+        'circle_profile_details',
+        params: {'circle_id': id},
+      ).withConverter((data) => CircleProfileModel.fromJson(data[0]));
+      return profile;
+    } catch (e) {
+      logError(e.toString());
       rethrow;
     }
   }
@@ -264,26 +277,13 @@ class CircleServices {
         },
       );
       logError('Nearby Circles ${data.toString()}');
-
       final List<CircleModel> circles = data
           .map((e) => CircleModel.fromJson({
                 'id': e['id'],
-                'name': e['name'],
                 'photo': e['photo'],
-                'address': e['address'],
-                'isprivate': e['isprivate'],
-                'limit': e['limit'],
-                'circle_members': [
-                  CircleMember(
-                    count: e['members'],
-                  ).toJson()
-                ],
                 'location': LocationModel.fromJSON(
                         jsonDecode(e['location']) as Map<String, dynamic>)
                     .toJSON(),
-                'admin_id': e['admin_id'],
-                'updated_at': e['updated_at'],
-                'created_at': e['created_at'],
               }))
           .toList();
       return circles;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/controllers/user_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';

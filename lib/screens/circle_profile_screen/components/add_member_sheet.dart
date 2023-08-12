@@ -30,7 +30,7 @@ class AddMemberSheet extends GetView<CircleProfileController> {
             children: [
               Obx(
                 () => Text(
-                  'Add members ( ${controller.members.value}/${controller.circle.value.limit} )',
+                  'Add members ( ${controller.profile.value.members}/${controller.profile.value.limit} )',
                   style: context.theme.textTheme.labelLarge,
                 ),
               ),

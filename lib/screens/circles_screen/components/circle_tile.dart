@@ -51,7 +51,7 @@ class CircleTile extends GetView<CirclesController> {
             style: context.theme.textTheme.labelMedium,
           ),
           subtitle: Text(
-            'Members: ${circle.circleMembers![0].count!}',
+            'Members: ${circle.members}',
             style: context.theme.textTheme.labelSmall!.copyWith(
               fontSize: 10.sp,
             ),

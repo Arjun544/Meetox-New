@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,15 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/helpers/get_asset_image.dart';
-import 'package:meetox/models/circle_model.dart';
-import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/widgets/custom_area_field.dart';
 import 'package:meetox/widgets/custom_field.dart';
-import 'package:meetox/widgets/custom_sheet.dart';
 import 'package:meetox/widgets/unfocuser.dart';
 
-import 'avatar_sheet.dart';
 
 class EditCircle extends GetView<CircleProfileController> {
   const EditCircle({super.key});
@@ -24,11 +18,11 @@ class EditCircle extends GetView<CircleProfileController> {
     CircleProfileController controller = Get.find();
     final RxBool isLoading = false.obs;
 
-    controller.nameController.text = controller.circle.value.name!;
-    controller.descController.text = controller.circle.value.description!;
-    controller.isPrivate.value = controller.circle.value.isPrivate!;
-    controller.nameText.value = controller.circle.value.name!;
-    controller.descText.value = controller.circle.value.description!;
+    controller.nameController.text = controller.profile.value.name!;
+    controller.descController.text = controller.profile.value.description!;
+    controller.isPrivate.value = controller.profile.value.isPrivate!;
+    controller.nameText.value = controller.profile.value.name!;
+    controller.descText.value = controller.profile.value.description!;
 
     return UnFocuser(
       child: Scaffold(
@@ -55,7 +49,7 @@ class EditCircle extends GetView<CircleProfileController> {
                       onPressed: () {},
                       // onPressed: () => handleDone(),
                       child: Obx(
-                        () => Text(
+                        () => const Text(
                           'Done',
                           // style: context.theme.textTheme.labelMedium!.copyWith(
                           //     color: circleAvatar.value != circle.value.photo ||

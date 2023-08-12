@@ -3,10 +3,10 @@ import 'package:meetox/controllers/global_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/models/circle_profile_model.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/services/follow_services.dart';
-import 'package:meetox/services/user_services.dart';
 
 class CircleProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -20,8 +20,7 @@ class CircleProfileController extends GetxController
       PagingController<int, UserModel>(firstPageKey: 1);
 
   final Rx<CircleModel> circle = CircleModel().obs;
-  final Rx<UserModel> admin = UserModel().obs;
-  final RxInt members = 0.obs;
+  final Rx<CircleProfileModel> profile = CircleProfileModel().obs;
   final RxBool isPrivate = false.obs;
   final RxString nameText = ''.obs;
   final RxString descText = ''.obs;
@@ -35,12 +34,11 @@ class CircleProfileController extends GetxController
   final RxBool hasDescFocus = false.obs;
 
   final RxString followersSearchQuery = ''.obs;
-  late Worker followersSearchDebounce;
+   Worker? followersSearchDebounce;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    getAdmin();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       nameFocusNode.addListener(() {
         hasNameFocus.value = nameFocusNode.hasFocus;
@@ -59,6 +57,19 @@ class CircleProfileController extends GetxController
         time: const Duration(seconds: 2),
       );
     });
+  }
+
+  @override
+  void onReady() async {
+    getProfileDetails();
+    super.onReady();
+  }
+
+  void getProfileDetails() async {
+    profile.value = await CircleServices.getCircleProfile(
+      id: circle.value.id!,
+    );
+    logError(profile.value.toJson().toString());
   }
 
   Future<void> fetchFollowers(int pageKey) async {
@@ -84,9 +95,6 @@ class CircleProfileController extends GetxController
       followersPagingController.error = e;
     }
   }
-
-  void getAdmin() async =>
-      admin.value = await UserServices.userById(id: circle.value.adminId);
 
   void handleEdit(RxBool isLoading) async {
     //  if ((selectedImage.value[0] != circle.value.photo ||
@@ -121,8 +129,9 @@ class CircleProfileController extends GetxController
       circle: CircleModel(
         id: circle.value.id,
         name: nameController.text.trim(),
-        description: descController.text.trim(),
-        isPrivate: isPrivate.value,
+        // TODO:
+        // description: descController.text.trim(),
+        // isPrivate: isPrivate.value,
       ),
       // file: circleAvatar.value != circle.value.photo ? base64Profile : null,
       onSuccess: (String data) {},
@@ -151,8 +160,7 @@ class CircleProfileController extends GetxController
 
   @override
   void onClose() {
-    followersPagingController.dispose();
-    followersSearchDebounce.dispose();
+    if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
     nameController.dispose();
     descController.dispose();
     super.onClose();
