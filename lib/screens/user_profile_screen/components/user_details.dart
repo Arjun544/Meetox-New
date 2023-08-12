@@ -12,9 +12,7 @@ import 'package:meetox/widgets/loaders/socials_loaders.dart';
 import 'package:meetox/widgets/navigate_button.dart';
 
 class UserDetails extends GetView<UserProfileController> {
-  final UserModel user;
-
-  const UserDetails(this.user, {super.key});
+  const UserDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +21,22 @@ class UserDetails extends GetView<UserProfileController> {
       expandedHeight: Get.height * 0.37,
       collapsedHeight: 100,
       pinned: true,
-      title: Text(
-        user.name!.capitalizeFirst!,
-        style: context.theme.textTheme.labelMedium,
+      title: Obx(
+        () => Text(
+          controller.profile.value.name?.capitalizeFirst ?? '',
+          style: context.theme.textTheme.labelMedium,
+        ),
       ),
       actions: [
-        NavigateButton(
-          title: user.name!.capitalizeFirst!,
-          address: user.address!,
-          latitude: user.location!.latitude!,
-          longitude: user.location!.longitude!,
+        Obx(
+          () => controller.profile.value.id == null
+              ? const SizedBox.shrink()
+              : NavigateButton(
+                  title: controller.profile.value.name!.capitalizeFirst!,
+                  address: controller.profile.value.address!,
+                  latitude: controller.user.value.location!.latitude!,
+                  longitude: controller.user.value.location!.longitude!,
+                ),
         ),
       ],
       bottom: PreferredSize(
@@ -66,22 +70,30 @@ class UserDetails extends GetView<UserProfileController> {
                       image: DecorationImage(
                         fit: BoxFit.cover,
                         image: CachedNetworkImageProvider(
-                          user.photo!,
+                          controller.user.value.photo!,
                         ),
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (controller.followerCount.value != 0) {
-                        Get.to(() => FollowersScreen(user, false));
+                      if (controller.profile.value.followers != 0) {
+                        Get.to(() => FollowersScreen(
+                              UserModel(
+                                id: controller.profile.value.id,
+                                name: controller.profile.value.name,
+                              ),
+                              false,
+                            ));
                       }
                     },
                     child: Column(
                       children: [
                         Obx(
                           () => Text(
-                            controller.followerCount.value.toString(),
+                            controller.profile.value.followers == null
+                                ? '0'
+                                : controller.profile.value.followers.toString(),
                             style: context.theme.textTheme.labelMedium,
                           ),
                         ),
@@ -95,15 +107,24 @@ class UserDetails extends GetView<UserProfileController> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (controller.followingCount.value != 0) {
-                        Get.to(() => FollowersScreen(user, true));
+                      if (controller.profile.value.followings != 0) {
+                        Get.to(() => FollowersScreen(
+                              UserModel(
+                                id: controller.profile.value.id,
+                                name: controller.profile.value.name,
+                              ),
+                              true,
+                            ));
                       }
                     },
                     child: Column(
                       children: [
                         Obx(
                           () => Text(
-                            controller.followingCount.toString(),
+                            controller.profile.value.followings == null
+                                ? '0'
+                                : controller.profile.value.followings
+                                    .toString(),
                             style: context.theme.textTheme.labelMedium,
                           ),
                         ),
@@ -119,99 +140,106 @@ class UserDetails extends GetView<UserProfileController> {
               ),
               SizedBox(height: 30.h),
               Obx(
-                () => IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FollowButton(
-                        id: user.id!,
-                        followers: controller.followerCount,
-                      ),
-                      VerticalDivider(
-                        color: context.theme.indicatorColor,
-                        width: 20.w,
-                        thickness: 2,
-                        indent: 5.h,
-                        endIndent: 5.h,
-                      ),
-                      Container(
-                        height: 30.h,
-                        width: 40.w,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 0,
-                          // horizontal: checkHasConversation.result.isLoading
-                          //     ? 25.w
-                          //     : 0
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.theme.indicatorColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          FlutterRemix.chat_3_fill,
-                          size: 20.h,
-                          color: context.theme.iconTheme.color,
-                        ),
-                        // child: checkHasConversation.result.isLoading
-                        //     ? LoadingAnimationWidget.staggeredDotsWave(
-                        //         color: AppColors.primaryYellow,
-                        //         size: 20.w,
-                        //       )
-                        //     : Icon(
-                        //         FlutterRemix.chat_3_fill,
-                        //         size: 22.sp,
-                        //         color: context.theme.iconTheme.color,
-                        //       ),
-                      ),
-                      controller.isSocialsLoading.value
-                          ? const SocialsLoaders()
-                          : controller.socials.value.isEmpty
-                              ? const SizedBox.shrink()
-                              : Row(
-                                  children: [
-                                    VerticalDivider(
-                                      color: context.theme.indicatorColor,
-                                      width: 20.w,
-                                      thickness: 2,
-                                      indent: 5.h,
-                                      endIndent: 5.h,
-                                    ),
-                                    Row(
-                                      children: controller.socials.value
-                                          .map<Widget>(
-                                            (social) => Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 12.0),
-                                              child: InkWell(
-                                                onTap: () =>
-                                                    appLaunchUrl(social.url!),
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: context
-                                                        .theme.indicatorColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Icon(
-                                                      getSocial(social.type!),
+                () => controller.profile.value.id == null
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SocialsLoaders(),
+                        ],
+                      )
+                    : IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FollowButton(
+                              id: controller.profile.value.id!,
+                              followers:
+                                  controller.profile.value.followers!.obs,
+                            ),
+                            VerticalDivider(
+                              color: context.theme.indicatorColor,
+                              width: 20.w,
+                              thickness: 2,
+                              indent: 5.h,
+                              endIndent: 5.h,
+                            ),
+                            Container(
+                              height: 30.h,
+                              width: 40.w,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 0,
+                                // horizontal: checkHasConversation.result.isLoading
+                                //     ? 25.w
+                                //     : 0
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.theme.indicatorColor,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                FlutterRemix.chat_3_fill,
+                                size: 20.h,
+                                color: context.theme.iconTheme.color,
+                              ),
+                              // child: checkHasConversation.result.isLoading
+                              //     ? LoadingAnimationWidget.staggeredDotsWave(
+                              //         color: AppColors.primaryYellow,
+                              //         size: 20.w,
+                              //       )
+                              //     : Icon(
+                              //         FlutterRemix.chat_3_fill,
+                              //         size: 22.sp,
+                              //         color: context.theme.iconTheme.color,
+                              //       ),
+                            ),
+                            controller.profile.value.socials!.isEmpty
+                                ? const SizedBox.shrink()
+                                : Row(
+                                    children: [
+                                      VerticalDivider(
+                                        color: context.theme.indicatorColor,
+                                        width: 20.w,
+                                        thickness: 2,
+                                        indent: 5.h,
+                                        endIndent: 5.h,
+                                      ),
+                                      Row(
+                                        children: controller
+                                            .profile.value.socials!
+                                            .map<Widget>(
+                                              (social) => Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 12.0),
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      appLaunchUrl(social.url!),
+                                                  child: DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      color: context
+                                                          .theme.indicatorColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Icon(
+                                                        getSocial(social.type!),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ],
-                                ),
-                    ],
-                  ),
-                ),
+                                            )
+                                            .toList(),
+                                      ),
+                                    ],
+                                  ),
+                          ],
+                        ),
+                      ),
               ),
             ],
           ),

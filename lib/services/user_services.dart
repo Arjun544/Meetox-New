@@ -47,6 +47,21 @@ class UserServices {
     }
   }
 
+  static Future<ProfileModel> getUserProfile({
+    required String id,
+  }) async {
+    try {
+      final profile = await supabase.rpc(
+        'user_profile_details',
+        params: {'user_id': id},
+      ).withConverter((data) => ProfileModel.fromJson(data[0]));
+      return profile;
+    } catch (e) {
+      logError(e.toString());
+      rethrow;
+    }
+  }
+
   static Future<bool> addProfile(
       {required RxBool isLoading,
       required String name,
@@ -152,49 +167,15 @@ class UserServices {
       final List<UserModel> users = data
           .map((e) => UserModel.fromJSON({
                 'id': e['id'],
-                'name': e['name'],
                 'photo': e['photo'],
-                'address': e['address'],
-                'isPremium': e['ispremium'],
-                'followers': e['followers'],
-                'followings': e['followings'],
                 'location': LocationModel.fromJSON(
                         jsonDecode(e['location']) as Map<String, dynamic>)
                     .toJSON(),
-                'dob': e['dob'],
-                'created_at': e['created_at'],
               }))
           .toList();
       return users;
     } catch (e) {
       logError('Nearby Users ${e.toString()}');
-      rethrow;
-    }
-  }
-
-  static Future<List<Social>> getSocials({
-    required String id,
-    required RxBool isLoading,
-  }) async {
-    try {
-      isLoading.value = true;
-      final socials = await supabase
-          .from('profiles')
-          .select('socials')
-          .eq('id', id)
-          .limit(1)
-          .single()
-          .withConverter(
-            (data) => List<Social>.from(
-              data['socials'].map((x) => Social.fromJson(x)),
-            ),
-          );
-      isLoading.value = false;
-      logSuccess(socials.toString());
-      return socials;
-    } catch (e) {
-      isLoading.value = false;
-      logError(e.toString());
       rethrow;
     }
   }

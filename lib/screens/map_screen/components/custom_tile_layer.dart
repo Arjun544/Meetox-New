@@ -8,7 +8,7 @@ class CustomTileLayer extends GetView<MapScreenController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => controller.currentMapStyle.value == 'default'
+      () => controller.rootController.currentMapStyle.value == 'default'
           ? context.isDarkMode
               ? TileLayer(
                   tileProvider: FMTC.instance('Map dark').getTileProvider(
@@ -34,7 +34,7 @@ class CustomTileLayer extends GetView<MapScreenController> {
                     'access_token': mapBoxAccessToken,
                   },
                 )
-          : controller.currentMapStyle.value == 'sky'
+          : controller.rootController.currentMapStyle.value == 'sky'
               ? TileLayer(
                   tileProvider: FMTC.instance('Map sky').getTileProvider(
                         FMTCTileProviderSettings(),

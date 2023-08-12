@@ -28,6 +28,7 @@ class RootController extends GetxController {
 
   Rx<LatLngBounds> mapBounds = LatLngBounds(LatLng(0, 0), LatLng(0, 0)).obs;
   Rx<LocationPermission> locationPermission = LocationPermission.denied.obs;
+  final RxString currentMapStyle = 'default'.obs;
 
   RxString currentAddress = ''.obs;
   Rx<Position> currentPosition = Position(
@@ -44,6 +45,7 @@ class RootController extends GetxController {
   @override
   Future<void> onInit() async {
     await getLocation();
+    currentMapStyle.value = getStorage.read('currentMapStyle') ?? 'default';
     super.onInit();
   }
 

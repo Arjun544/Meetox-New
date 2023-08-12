@@ -14,7 +14,6 @@ class MapScreenController extends GetxController
   final RootController rootController = Get.find();
   MapController? mapController;
   late TabController stylesTabController;
-  final RxString currentMapStyle = 'default'.obs;
 
   final RxList<UserModel> nearbyUsers = <UserModel>[].obs;
   final RxList<UserModel> nearbyFollowers = <UserModel>[].obs;
@@ -41,14 +40,13 @@ class MapScreenController extends GetxController
     await hasLocationPermission();
     isLocationPrecise.value = getStorage.read('isPrecise') ?? false;
     stylesTabController = TabController(
-        initialIndex: currentMapStyle.value == 'default'
+        initialIndex: rootController.currentMapStyle.value == 'default'
             ? 0
-            : currentMapStyle.value == 'sky'
+            : rootController.currentMapStyle.value == 'sky'
                 ? 1
                 : 2,
         length: 3,
         vsync: this);
-    currentMapStyle.value = getStorage.read('currentMapStyle') ?? 'default';
   }
 
   @override

@@ -11,13 +11,13 @@ class CustomMapOptions extends GetView<MapScreenController> {
   Widget build(BuildContext context) {
     Future<void> handleMapStyleChange(int value) async {
       if (value == 0) {
-        controller.currentMapStyle.value = 'default';
+        controller.rootController.currentMapStyle.value = 'default';
         await getStorage.write('currentMapStyle', 'default');
       } else if (value == 1) {
-        controller.currentMapStyle.value = 'sky';
+        controller.rootController.currentMapStyle.value = 'sky';
         await getStorage.write('currentMapStyle', 'sky');
       } else {
-        controller.currentMapStyle.value = 'meetox';
+        controller.rootController.currentMapStyle.value = 'meetox';
         await getStorage.write('currentMapStyle', 'meetox');
       }
     }

@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/map_controller.dart';
+import 'package:meetox/controllers/root_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_distance.dart';
 
 import 'user_initials.dart';
 
-class MiniMap extends GetView<MapScreenController> {
+class MiniMap extends GetView<RootController> {
   final double latitude;
   final double longitude;
   final String image;
@@ -19,15 +19,10 @@ class MiniMap extends GetView<MapScreenController> {
     required this.image,
     required this.color,
   });
-
   @override
   Widget build(BuildContext context) {
-    Get.put(MapScreenController());
-
-    final currentLatitude =
-        controller.rootController.currentPosition.value.latitude;
-    final currentLongitude =
-        controller.rootController.currentPosition.value.longitude;
+    final currentLatitude = currentUser.value.location!.latitude!;
+    final currentLongitude = currentUser.value.location!.longitude!;
 
     final distanceBtw = getDistance(
       currentLatitude,
@@ -109,8 +104,8 @@ class MiniMap extends GetView<MapScreenController> {
                 markers: [
                   Marker(
                     point: LatLng(
-                      controller.rootController.currentPosition.value.latitude,
-                      controller.rootController.currentPosition.value.longitude,
+                      currentLatitude,
+                      currentLongitude,
                     ),
                     width: 60.sp,
                     height: 60.sp,

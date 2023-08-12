@@ -1,13 +1,11 @@
+import 'package:meetox/controllers/user_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/mini_map.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class InfoView extends StatelessWidget {
-  final UserModel user;
-
-  const InfoView({super.key, required this.user});
+class InfoView extends GetView<UserProfileController> {
+  const InfoView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +20,30 @@ class InfoView extends StatelessWidget {
               height: 200.h,
               width: Get.width,
               child: MiniMap(
-                latitude: user.location!.latitude!,
-                longitude: user.location!.longitude!,
-                image: user.photo!,
+                latitude: controller.user.value.location!.latitude!,
+                longitude: controller.user.value.location!.longitude!,
+                image: controller.user.value.photo!,
                 color: AppColors.primaryYellow,
               ),
             ),
           ),
           Column(
             children: [
-              Text(
-                'Joined ${timeago.format(
-                  user.createdAt!,
-                  locale: 'en',
-                  allowFromNow: true,
-                )}',
-                style: context.theme.textTheme.labelSmall!.copyWith(
-                  color: context.theme.textTheme.labelSmall!.color!
-                      .withOpacity(0.5),
-                  letterSpacing: 1,
-                ),
+              Obx(
+                () => controller.profile.value.id == null
+                    ? const SizedBox.shrink()
+                    : Text(
+                        'Joined ${timeago.format(
+                          controller.profile.value.createdAt!,
+                          locale: 'en',
+                          allowFromNow: true,
+                        )}',
+                        style: context.theme.textTheme.labelSmall!.copyWith(
+                          color: context.theme.textTheme.labelSmall!.color!
+                              .withOpacity(0.5),
+                          letterSpacing: 1,
+                        ),
+                      ),
               ),
               SizedBox(height: 20.h),
               ListTile(
@@ -52,16 +54,18 @@ class InfoView extends StatelessWidget {
                     color: context.theme.indicatorColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    'www.meetox.com/${user.name}',
-                    style: context.theme.textTheme.labelSmall,
+                  child: Obx(
+                    () => Text(
+                      'www.meetox.com/${controller.profile.value.name ?? ''}',
+                      style: context.theme.textTheme.labelSmall,
+                    ),
                   ),
                 ),
                 trailing: const Icon(IconsaxBold.copy),
                 splashColor: Colors.transparent,
                 onTap: () {
-                  Clipboard.setData(
-                      ClipboardData(text: 'www.meetox.com/${user.name}'));
+                  Clipboard.setData(ClipboardData(
+                      text: 'www.meetox.com/${controller.profile.value.name}'));
                   showToast('Copied profile link');
                 },
               ),

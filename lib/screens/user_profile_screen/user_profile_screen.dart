@@ -14,23 +14,21 @@ class UserProfileScreen extends GetView<UserProfileController> {
   @override
   Widget build(BuildContext context) {
     Get.put(UserProfileController());
-    controller.userId(user.id!);
+    controller.user(user);
 
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            UserDetails(user),
+            const UserDetails(),
           ];
         },
         body: TabBarView(
           controller: controller.tabController,
-          children: [
-            InfoView(
-              user: user,
-            ),
-            const FeedsView(),
+          children: const [
+            InfoView(),
+            FeedsView(),
           ],
         ),
       ),

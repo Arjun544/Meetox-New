@@ -210,17 +210,10 @@ class FollowServices {
       final List<UserModel> users = data
           .map((e) => UserModel.fromJSON({
                 'id': e['id'],
-                'name': e['name'],
                 'photo': e['photo'],
-                'address': e['address'],
-                'isPremium': e['ispremium'],
-                'followers': e['followers'],
-                'followings': e['followings'],
                 'location': LocationModel.fromJSON(
                         jsonDecode(e['location']) as Map<String, dynamic>)
                     .toJSON(),
-                'dob': e['dob'],
-                'created_at': e['created_at'],
               }))
           .toList();
       return users;

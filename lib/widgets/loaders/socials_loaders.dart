@@ -17,6 +17,14 @@ class SocialsLoaders extends StatelessWidget {
       child: Row(
         children: [
           Container(
+            padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 50.w),
+            margin: EdgeInsets.only(right: 14.h),
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          Container(
             padding: EdgeInsets.all(18.h),
             margin: EdgeInsets.only(right: 14.h),
             decoration: BoxDecoration(
