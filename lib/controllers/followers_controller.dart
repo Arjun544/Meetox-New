@@ -18,8 +18,8 @@ class FollowersController extends GetxController
 
   final RxString followersSearchQuery = ''.obs;
   final RxString followingSearchQuery = ''.obs;
-  late Worker followersSearchDebounce;
-  late Worker followingSearchDebounce;
+  Worker? followersSearchDebounce;
+  Worker? followingSearchDebounce;
 
   @override
   void onInit() {
@@ -110,10 +110,8 @@ class FollowersController extends GetxController
 
   @override
   void onClose() {
-    followersPagingController.dispose();
-    followersSearchDebounce.dispose();
-    followingPagingController.dispose();
-    followingSearchDebounce.dispose();
+    if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
+    if (followingSearchDebounce != null) followingSearchDebounce!.dispose();
     tabController.dispose();
     super.onClose();
   }

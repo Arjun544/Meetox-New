@@ -77,6 +77,29 @@ class UserDetails extends GetView<UserProfileController> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 20.w),
+                  GestureDetector(
+                    onTap: controller.tabController.index != 1
+                        ? () => controller.tabController.animateTo(1)
+                        : null,
+                    child: Column(
+                      children: [
+                        Obx(
+                          () => Text(
+                            controller.profile.value.feeds == null
+                                ? '0'
+                                : controller.profile.value.feeds.toString(),
+                            style: context.theme.textTheme.labelMedium,
+                          ),
+                        ),
+                        Text(
+                          'Feeds',
+                          style: context.theme.textTheme.labelSmall!
+                              .copyWith(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followers != 0) {
@@ -140,6 +163,7 @@ class UserDetails extends GetView<UserProfileController> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 20.w),
                 ],
               ),
               SizedBox(height: 30.h),
