@@ -7,6 +7,7 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_asset_image.dart';
 import 'package:meetox/models/circle_model.dart';
+import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/services/follow_services.dart';
 
 import '../models/user_model.dart';
@@ -88,10 +89,7 @@ class AddCircleController extends GetxController {
     }
   }
 
-  Future<void> handleAddCircle(
-      BuildContext context,
-      Mutation<CircleModel, Object?, Map<String, dynamic>>
-          addCircleMutation) async {
+  Future<void> handleAddCircle(BuildContext context) async {
     File? base64Profile;
     if (capturedImage.value.path.isEmpty &&
         selectedImage.value.files.isNotEmpty) {
@@ -117,44 +115,49 @@ class AddCircleController extends GetxController {
         .toList()
       ..insert(0, currentUser.value.id!);
 
-    addCircleMutation.mutate({
-      'name': nameController.text.trim(),
-      'description': descController.text.trim(),
-      'file': base64Profile,
-      'isPrivate': isPrivate.value,
-      'limit': limit.value.toInt(),
-      'members': members,
-      'address': currentUser.value.address,
-      'lat': currentUser.value.location!.latitude!,
-      'long': currentUser.value.location!.longitude!,
-    });
-  }
+    await CircleServices.addCircle(
+      isLoading: isLoading,
+      lat: rootController.currentPosition.value.latitude,
+      long: rootController.currentPosition.value.longitude,
+      data: {
+        'name': nameController.text.trim(),
+        'description': descController.text.trim(),
+        'file': base64Profile,
+        'isPrivate': isPrivate.value,
+        'limit': limit.value.toInt(),
+        'members': members,
+        'address': currentUser.value.address,
+        'lat': currentUser.value.location!.latitude!,
+        'long': currentUser.value.location!.longitude!,
+      },
+      onSuccess: (CircleModel newCircle) {
+        if (newCircle.id != null) {
+          final bool hasCirclesController =
+              Get.isRegistered<CirclesController>();
+          if (hasCirclesController) {
+            final CirclesController circlesController = Get.find();
 
-  void oData(CircleModel newCircle) {
-    if (newCircle.id != null) {
-      final bool hasCirclesController = Get.isRegistered<CirclesController>();
-      if (hasCirclesController) {
-        final CirclesController circlesController = Get.find();
+            circlesController.circlesPagingController.itemList!
+                .insert(0, newCircle);
+            circlesController.circlesPagingController
+                // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+                .notifyListeners();
+          }
 
-        circlesController.circlesPagingController.itemList!
-            .insert(0, newCircle);
-        circlesController.circlesPagingController
-            // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-            .notifyListeners();
-      }
-
-      currentStep.value = 0;
-      nameController.clear();
-      descController.clear();
-      isPrivate.value = false;
-      limit.value = 50.0;
-      selectedAvatar.value = 0;
-      capturedImage.value = XFile('');
-      selectedImage.value = const FilePickerResult([]);
-      selectedMembers.clear();
-      Get.back();
-      showToast('Circle created successfully');
-    }
+          currentStep.value = 0;
+          nameController.clear();
+          descController.clear();
+          isPrivate.value = false;
+          limit.value = 50.0;
+          selectedAvatar.value = 0;
+          capturedImage.value = XFile('');
+          selectedImage.value = const FilePickerResult([]);
+          selectedMembers.clear();
+          Get.back();
+          showToast('Circle created successfully');
+        }
+      },
+    );
   }
 
   @override

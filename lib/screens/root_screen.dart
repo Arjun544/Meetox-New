@@ -36,43 +36,60 @@ class RootScreen extends GetView<RootController> {
   }
 }
 
-class SubRootScreen extends HookWidget {
+class SubRootScreen extends StatefulWidget {
   const SubRootScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Get.put(UserController(), permanent: true);
+  State<SubRootScreen> createState() => _SubRootScreenState();
+}
 
+class _SubRootScreenState extends State<SubRootScreen>
+    with WidgetsBindingObserver {
+  final UserController userController =
+      Get.put(UserController(), permanent: true);
+  final controller = Get.put(RootController());
+
+  Future<void> appResumedOperations() async {
+    if (await Permission.location.serviceStatus.isEnabled &&
+        await Permission.location.status == PermissionStatus.granted) {
+      await controller.getLocation();
+    }
+  }
+
+  void appInactiveOperations() {}
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:
+        appInactiveOperations();
+        break;
+      case AppLifecycleState.resumed:
+        appResumedOperations();
+        break;
+      default:
+        {}
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       context.theme.appBarTheme.systemOverlayStyle!,
     );
-
-    final controller = Get.put(RootController());
-
-    final appLifecycleState = useAppLifecycleState();
-
-    Future<void> appResumedOperations() async {
-      if (await Permission.location.serviceStatus.isEnabled &&
-          await Permission.location.status == PermissionStatus.granted) {
-        await controller.getLocation();
-      }
-    }
-
-    void appInactiveOperations() {}
-
-    useEffect(
-      () {
-        if (appLifecycleState == AppLifecycleState.resumed) {
-          log('app resumed');
-          appResumedOperations();
-        } else if (appLifecycleState == AppLifecycleState.inactive) {
-          appInactiveOperations();
-        }
-        return () {};
-      },
-      [appLifecycleState],
-    );
-
     return Scaffold(
       extendBody: true,
       body: Obx(

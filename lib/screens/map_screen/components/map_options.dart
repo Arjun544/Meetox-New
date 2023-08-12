@@ -4,12 +4,11 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/widgets/custom_tabbar.dart';
 import 'package:meetox/widgets/mini_map.dart';
 
-class CustomMapOptions extends HookWidget {
+class CustomMapOptions extends GetView<MapScreenController> {
   const CustomMapOptions({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final MapScreenController controller = Get.find();
     Future<void> handleMapStyleChange(int value) async {
       if (value == 0) {
         controller.currentMapStyle.value = 'default';
@@ -22,15 +21,6 @@ class CustomMapOptions extends HookWidget {
         await getStorage.write('currentMapStyle', 'meetox');
       }
     }
-
-    final tabController = useTabController(
-      initialIndex: controller.currentMapStyle.value == 'default'
-          ? 0
-          : controller.currentMapStyle.value == 'sky'
-              ? 1
-              : 2,
-      initialLength: 3,
-    );
 
     return Container(
       height: Get.height * 0.45,
@@ -73,7 +63,7 @@ class CustomMapOptions extends HookWidget {
             ),
           ),
           CustomTabbar(
-            controller: tabController,
+            controller: controller.stylesTabController,
             onTap: handleMapStyleChange,
             tabs: const [
               Tab(

@@ -2,47 +2,14 @@ import '../controllers/global_controller.dart';
 import '../controllers/splash_controller.dart';
 import '../core/imports/core_imports.dart';
 import '../core/imports/packages_imports.dart';
-import 'add_profile_screen/add_profile_screen.dart';
-import 'auth_screens/auth_screen.dart';
-import 'root_screen.dart';
-import '../services/user_services.dart';
 
-class SplashScreen extends HookWidget {
+class SplashScreen extends GetView<SplashController> {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get
-      ..put(SplashController())
-      ..put(GlobalController(), permanent: true);
-
-    useQuery(
-      CacheKeys.currentUser,
-      () async {
-        return await UserServices.userById();
-      },
-      // refreshConfig: const RefreshConfig(
-      //   staleDuration: Duration.zero,
-      //   refreshInterval: Duration.zero,
-      //   refreshOnMount: false,
-      //   refreshOnQueryFnChange: false,
-      //   refreshOnNetworkStateChange: true,
-      // ),
-      // retryConfig: const RetryConfig(
-      //   maxRetries: 1,
-      //   retryDelay: Duration.zero,
-      //   cancelWhenOffline: true,
-      // ),
-      onData: (data) {
-        if (data.name == null) {
-          Get.offAll(() => const AddProfileScreen());
-        } else {
-          currentUser(data);
-          Get.offAll(() => const RootScreen());
-        }
-      },
-      onError: (value) => Get.offAll(() => const AuthScreen()),
-    );
+    Get.put(SplashController());
+    Get.put(GlobalController(), permanent: true);
 
     return Scaffold(
       body: Container(

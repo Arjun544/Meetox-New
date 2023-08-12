@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:meetox/screens/root_screen.dart';
+import 'package:meetox/services/user_services.dart';
+
 import '../core/imports/core_imports.dart';
 import '../core/imports/packages_imports.dart';
 import '../helpers/get_asset_image.dart';
@@ -46,8 +49,7 @@ class AddProfileController extends GetxController
     super.onInit();
   }
 
-  Future<void> handleSubmit(
-      Mutation<void, Object?, Map<String, dynamic>> addProfileMutation) async {
+  Future<void> handleSubmit() async {
     File? base64Profile;
     if (socialProfile.value.isEmpty &&
         capturedImage.value.path.isEmpty &&
@@ -77,15 +79,18 @@ class AddProfileController extends GetxController
       base64Profile = File(imageFromAsset.path);
     }
 
-    isLoading(true);
-    await addProfileMutation.mutate({
-      'isLoading': isLoading,
-      'name': nameController.text.trim(),
-      'dob': birthDate.value.toUtc().toIso8601String(),
-      'file': socialProfile.value.isNotEmpty
+    final isSuccess = await UserServices.addProfile(
+      isLoading: isLoading,
+      name: nameController.text.trim(),
+      dob: birthDate.value.toUtc().toIso8601String(),
+      file: socialProfile.value.isNotEmpty
           ? await urlToFile(socialProfile.value)
-          : base64Profile,
-    });
+          : base64Profile!,
+    );
+
+    if (isSuccess) {
+      Get.offAll(() => const RootScreen());
+    }
   }
 
   @override

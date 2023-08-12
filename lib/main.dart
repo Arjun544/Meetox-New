@@ -1,4 +1,3 @@
-import 'package:fl_query_connectivity_plus_adapter/fl_query_connectivity_plus_adapter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/imports/core_imports.dart';
 import 'core/imports/packages_imports.dart';
@@ -13,10 +12,6 @@ void main() async {
   await dotenv.load();
   await supabaseInit();
   timeago.setLocaleMessages('en', TimeAgoMessages());
-  await QueryClient.initialize(
-    cachePrefix: 'meetox',
-    connectivity: FlQueryConnectivityPlusAdapter(),
-  );
 
   // if (getStorage.read('first_run') ?? true) {
   //   await SecureStorageServices.clearAll();
@@ -68,21 +63,17 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: QueryClientProvider(
-          maxRetries: 1,
-          refreshOnMount: false,
-          child: GetMaterialApp(
-            title: 'Meetox',
-            debugShowCheckedModeBanner: false,
-            theme: light,
-            darkTheme: dark,
-            themeMode: currentTheme == 'light'
-                ? ThemeMode.light
-                : currentTheme == 'dark'
-                    ? ThemeMode.dark
-                    : ThemeMode.system,
-            home: const SplashScreen(),
-          ),
+        child: GetMaterialApp(
+          title: 'Meetox',
+          debugShowCheckedModeBanner: false,
+          theme: light,
+          darkTheme: dark,
+          themeMode: currentTheme == 'light'
+              ? ThemeMode.light
+              : currentTheme == 'dark'
+                  ? ThemeMode.dark
+                  : ThemeMode.system,
+          home: const SplashScreen(),
         ),
       ),
     );

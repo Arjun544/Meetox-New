@@ -1,156 +1,87 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/models/profile_model.dart';
-import 'package:meetox/models/user_model.dart';
 
 import '../services/follow_services.dart';
 
-class FollowButton extends HookWidget {
+class FollowButton extends StatefulWidget {
   final String id;
-  final ValueNotifier<int>? followers;
+  final RxInt? followers;
 
   const FollowButton({super.key, required this.id, this.followers});
 
   @override
-  Widget build(BuildContext context) {
-    final isFollowLoading = useState(false);
+  State<FollowButton> createState() => _FollowButtonState();
+}
 
-    final checkIsFollowed = useQuery<bool, dynamic>(
-      CacheKeys.isFollowed,
-      () async => await FollowServices.isFollowed(targetUserId: id),
-      onError: (value) => logError(value.toString()),
+class _FollowButtonState extends State<FollowButton> {
+  final RxBool isLoading = false.obs;
+  final RxBool isFollowed = false.obs;
+
+  @override
+  void initState() {
+    checkIsFollowed();
+    super.initState();
+  }
+
+  void checkIsFollowed() async {
+    isFollowed.value = await FollowServices.isFollowed(
+      targetUserId: widget.id,
+      isLoading: isLoading,
     );
-    final followUser =
-        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
-      CacheKeys.followUser,
-      (varibles) async => await FollowServices.followUser(
-        targetUserId: varibles['id'],
-        isLoading: isFollowLoading,
-      ),
-      onData: (data, _) async {
+  }
+
+  void handleFollow() async {
+    await FollowServices.followUser(
+      isLoading: isLoading,
+      targetUserId: widget.id,
+      onSuccess: (data) {
         if (data == true) {
-          if (followers != null) {
-            followers!.value += 1;
+          if (widget.followers != null) {
+            widget.followers!.value += 1;
+            isFollowed(true);
           }
           // Optimistic Updates after a successful follow
-          final Query<List<UserModel>, dynamic>? nearbyUsers =
-              QueryClient.of(context)
-                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers);
-
-          final Query<List<UserModel>, dynamic> nearbyFollowers =
-              QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
-                  CacheKeys.nearByFollowers)!;
-
-          final Query<ProfileModel, dynamic>? userProfile =
-              QueryClient.of(context).getQuery<ProfileModel, dynamic>(
-                  CacheKeys.userProfileDetails);
-          if (userProfile != null) {
-            userProfile.setData(ProfileModel(
-              id: userProfile.data!.id,
-              feeds: userProfile.data!.feeds,
-              circles: userProfile.data!.circles,
-              followers: followers!.value,
-              followings: userProfile.data!.followings,
-              crosspaths: userProfile.data!.crosspaths,
-              questions: userProfile.data!.questions,
-              createdAt: userProfile.data!.createdAt,
-              dob: userProfile.data!.dob,
-            ));
-          }
-
-          nearbyFollowers.data!.add(
-              nearbyUsers!.data!.where((element) => element.id == id).first);
-          nearbyFollowers.setData(nearbyFollowers.data!);
-
-          nearbyUsers.data!.removeWhere((element) => element.id == id);
-          nearbyUsers.setData(nearbyUsers.data!);
-
-          final Query<bool, dynamic> checkIsFollowedQuery =
-              QueryClient.of(context)
-                  .getQuery<bool, dynamic>(CacheKeys.isFollowed)!;
-
-          checkIsFollowedQuery.setData(true);
+          // TODO: Add optimistic updates
         }
       },
     );
-    final unFollowUser =
-        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
-      CacheKeys.unFollowUser,
-      (varibles) async => await FollowServices.unFollowUser(
-        targetUserId: varibles['id'],
-        isLoading: isFollowLoading,
-      ),
-      onData: (data, _) async {
+  }
+
+  void handleUnFollow() async {
+    await FollowServices.unFollowUser(
+      isLoading: isLoading,
+      targetUserId: widget.id,
+      onSuccess: (data) {
         if (data == true) {
-          if (followers != null) {
-            followers!.value -= 1;
+          if (widget.followers != null) {
+            widget.followers!.value -= 1;
+            isFollowed(false);
           }
-
-          // Optimistic Updates after a successful unfollow
-          final Query<List<UserModel>, dynamic> nearbyUsers =
-              QueryClient.of(context)
-                  .getQuery<List<UserModel>, dynamic>(CacheKeys.nearByUsers)!;
-
-          final Query<List<UserModel>, dynamic> nearbyFollowers =
-              QueryClient.of(context).getQuery<List<UserModel>, dynamic>(
-                  CacheKeys.nearByFollowers)!;
-
-          final Query<ProfileModel, dynamic>? userProfile =
-              QueryClient.of(context).getQuery<ProfileModel, dynamic>(
-                  CacheKeys.userProfileDetails);
-
-          if (userProfile != null) {
-            userProfile.setData(
-              ProfileModel(
-                id: userProfile.data!.id,
-                feeds: userProfile.data!.feeds,
-                circles: userProfile.data!.circles,
-                followers: userProfile.data!.followers,
-                followings: userProfile.data!.followings! - 1,
-                crosspaths: userProfile.data!.crosspaths,
-                questions: userProfile.data!.questions,
-                createdAt: userProfile.data!.createdAt,
-                dob: userProfile.data!.dob,
-              ),
-            );
-          }
-
-          nearbyUsers.data!.add(
-              nearbyFollowers.data!.where((element) => element.id == id).first);
-          nearbyUsers.setData(nearbyUsers.data!);
-
-          nearbyFollowers.data!.removeWhere((element) => element.id == id);
-          nearbyFollowers.setData(nearbyUsers.data!);
-
-          final Query<bool, dynamic> checkIsFollowedQuery =
-              QueryClient.of(context)
-                  .getQuery<bool, dynamic>(CacheKeys.isFollowed)!;
-
-          checkIsFollowedQuery.setData(false);
+          // Optimistic Updates after a successful follow
+          // TODO: Add optimistic updates
         }
       },
     );
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: InkWell(
-        onTap: checkIsFollowed.isLoading || isFollowLoading.value
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => InkWell(
+        onTap: isLoading.value
             ? () {}
             : () async {
-                if (checkIsFollowed.data == true) {
-                  unFollowUser.mutate({
-                    "id": id,
-                  });
+                if (isFollowed.value == true) {
+                  handleUnFollow();
                 } else {
-                  followUser.mutate({
-                    "id": id,
-                  });
+                  handleFollow();
                 }
               },
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: checkIsFollowed.isLoading
+            color: isLoading.value
                 ? AppColors.customGrey
-                : checkIsFollowed.data == true
+                : isFollowed.value == true
                     ? Colors.redAccent
                     : AppColors.primaryYellow,
             borderRadius: BorderRadius.circular(10),
@@ -160,7 +91,7 @@ class FollowButton extends HookWidget {
               horizontal: 12.sp,
               vertical: 6.sp,
             ),
-            child: checkIsFollowed.isLoading || isFollowLoading.value
+            child: isLoading.value
                 ? LoadingAnimationWidget.staggeredDotsWave(
                     color: AppColors.customBlack,
                     size: 20.sp,
@@ -169,7 +100,7 @@ class FollowButton extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        checkIsFollowed.data == true
+                        isFollowed.value == true
                             ? FlutterRemix.user_unfollow_fill
                             : FlutterRemix.user_add_fill,
                         size: 16.sp,
@@ -177,7 +108,7 @@ class FollowButton extends HookWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        checkIsFollowed.data == true ? 'Unfollow' : 'Follow',
+                        isFollowed.value == true ? 'Unfollow' : 'Follow',
                         style: context.theme.textTheme.labelSmall,
                       ),
                     ],

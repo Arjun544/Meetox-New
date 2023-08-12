@@ -4,8 +4,12 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/models/user_model.dart';
 
 class FollowServices {
-  static Future<bool> isFollowed({required String targetUserId}) async {
+  static Future<bool> isFollowed({
+    required String targetUserId,
+    required RxBool isLoading,
+  }) async {
     try {
+      isLoading.value = true;
       final data = await supabase
           .from('follow')
           .select()
@@ -13,6 +17,7 @@ class FollowServices {
           .eq('following_user_id', supabase.auth.currentUser!.id);
 
       logSuccess(data.toString());
+      isLoading.value = false;
 
       if (data.isEmpty) {
         return false;
@@ -20,14 +25,17 @@ class FollowServices {
         return true;
       }
     } catch (e) {
+      isLoading.value = false;
       logError(e.toString());
       rethrow;
     }
   }
 
-  static Future<bool> followUser(
-      {required String targetUserId,
-      required ValueNotifier<bool> isLoading}) async {
+  static Future<void> followUser({
+    required RxBool isLoading,
+    required String targetUserId,
+    required void Function(bool) onSuccess,
+  }) async {
     try {
       isLoading.value = true;
       await supabase.from('follow').insert(
@@ -37,8 +45,8 @@ class FollowServices {
         },
       );
       isLoading.value = false;
+      onSuccess(true);
       logSuccess('followed user successfully');
-      return true;
     } catch (e) {
       isLoading.value = false;
       logError(e.toString());
@@ -46,9 +54,11 @@ class FollowServices {
     }
   }
 
-  static Future<bool> unFollowUser(
-      {required String targetUserId,
-      required ValueNotifier<bool> isLoading}) async {
+  static Future<void> unFollowUser({
+    required RxBool isLoading,
+    required String targetUserId,
+    required void Function(bool) onSuccess,
+  }) async {
     try {
       isLoading.value = true;
       await supabase
@@ -57,9 +67,8 @@ class FollowServices {
           .eq('follower_user_id', targetUserId)
           .eq('following_user_id', supabase.auth.currentUser!.id);
       isLoading.value = false;
+      onSuccess(true);
       logSuccess('unfollowed user successfully');
-
-      return true;
     } catch (e) {
       isLoading.value = false;
       logError(e.toString());
@@ -67,8 +76,9 @@ class FollowServices {
     }
   }
 
-  static Future<int> getFollowersCount({
+  static Future<void> getFollowersCount({
     required String id,
+    required void Function(int) onSuccess,
   }) async {
     try {
       final response = await supabase
@@ -79,15 +89,15 @@ class FollowServices {
           .eq('follower_user_id', id)
           .single();
 
-      return response['profiles']['count'];
+      onSuccess(response['profiles']['count']);
     } catch (e) {
       logError(e.toString());
-      rethrow;
     }
   }
 
-  static Future<int> getFollowingsCount({
+  static Future<void> getFollowingsCount({
     required String id,
+    required void Function(int) onSuccess,
   }) async {
     try {
       final response = await supabase
@@ -98,10 +108,9 @@ class FollowServices {
           .eq('following_user_id', id)
           .single();
 
-      return response['profiles']['count'];
+      onSuccess(response['profiles']['count']);
     } catch (e) {
       logError(e.toString());
-      rethrow;
     }
   }
 

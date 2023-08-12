@@ -1,44 +1,15 @@
 import '../../controllers/auth_controller.dart';
 import '../../core/imports/core_imports.dart';
 import '../../core/imports/packages_imports.dart';
-import '../../models/user_model.dart';
-import '../../services/auth_services.dart';
-import '../../services/user_services.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/loaders/botton_loader.dart';
 
-import '../add_profile_screen/add_profile_screen.dart';
-import '../root_screen.dart';
-
-class AuthScreen extends HookWidget {
+class AuthScreen extends GetView<AuthController> {
   const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.put(AuthController());
-
-    final loginWithGoogleMutation = useMutation(
-      'loginWithGoogle',
-      (Map<String, dynamic> variables) async =>
-          await AuthServices.signInWithGoogle(
-        variables['isLoading'],
-      ),
-      onData: (data, recoveryData) async {
-        final UserModel user = await UserServices.userById();
-        currentUser(user);
-        if (currentUser.value.name == null) {
-          Get.offAll(() => const AddProfileScreen());
-        } else {
-          Get.offAll(() => const RootScreen());
-        }
-        authController.isLoading(false);
-      },
-      onError: (error, recoveryData) {
-        authController.isLoading(false);
-        logError(error.toString());
-        showToast('Sign in failed');
-      },
-    );
+    Get.put(AuthController());
 
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
@@ -152,7 +123,7 @@ class AuthScreen extends HookWidget {
                     duration: const Duration(milliseconds: 400),
                     from: 330,
                     child: Obx(
-                      () => authController.isLoading.value
+                      () => controller.isLoading.value
                           ? ButtonLoader(
                               width: Get.width * 0.9,
                               color: Colors.redAccent[100]!,
@@ -169,10 +140,7 @@ class AuthScreen extends HookWidget {
                                   FlutterRemix.google_fill,
                                 ),
                               ),
-                              onPressed: () async =>
-                                  await loginWithGoogleMutation.mutate({
-                                'isLoading': authController.isLoading,
-                              }),
+                              onPressed: () => controller.handleLogin(),
                             ),
                     ),
                   ),

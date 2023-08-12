@@ -30,14 +30,16 @@ class UserServices {
     }
   }
 
-  static Future<ProfileModel> profileDetails() async {
+  static Future<ProfileModel> profileDetails(RxBool isLoading) async {
     try {
+      isLoading(true);
       final profile = await supabase
           .rpc('profile_details')
           .withConverter((data) => ProfileModel.fromJson(data[0]));
-
+      isLoading(false);
       return profile;
     } catch (e) {
+      isLoading(false);
       logError(e.toString());
       rethrow;
     }
@@ -64,11 +66,11 @@ class UserServices {
         }).eq('id', supabase.auth.currentUser!.id);
         await userById();
       }
-      isLoading(false);
       return true;
     } catch (e) {
       isLoading(false);
       logError(e.toString());
+      showToast('Add profile failed');
       rethrow;
     }
   }
@@ -133,30 +135,34 @@ class UserServices {
     }
   }
 
-  static Future<List<Social>> getSocials() async {
+  static Future<List<Social>> getSocials({
+    required String id,
+    required RxBool isLoading,
+  }) async {
     try {
+      isLoading.value = true;
       final socials = await supabase
           .from('profiles')
           .select('socials')
-          .eq('id', supabase.auth.currentUser!.id)
+          .eq('id', id)
+          .limit(1)
           .single()
           .withConverter(
             (data) => List<Social>.from(
-              data['socials']!.map((x) => Social.fromJson(x)),
+              data['socials'].map((x) => Social.fromJson(x)),
             ),
           );
-
+      isLoading.value = false;
       logSuccess(socials.toString());
-
       return socials;
     } catch (e) {
+      isLoading.value = false;
       logError(e.toString());
       rethrow;
     }
   }
 
-  static Future<bool> addSocial(
-      ValueNotifier<bool> isLoading, Social social) async {
+  static Future<bool> addSocial(RxBool isLoading, Social social) async {
     try {
       isLoading.value = true;
       await supabase.from('profiles').update({
@@ -170,13 +176,13 @@ class UserServices {
       return true;
     } catch (e) {
       isLoading.value = false;
+      showToast('Link failed to add');
       logError(e.toString());
       rethrow;
     }
   }
 
-  static Future<bool> deleteSocial(
-      ValueNotifier<bool> isLoading, String type) async {
+  static Future<bool> deleteSocial(RxBool isLoading, String type) async {
     try {
       isLoading.value = true;
       currentUser.value.socials!.removeWhere((e) => e.type == type);
@@ -188,13 +194,13 @@ class UserServices {
       return true;
     } catch (e) {
       isLoading.value = false;
+      showToast('Link failed to remove');
       logError(e.toString());
       rethrow;
     }
   }
 
-  static Future<bool> updateDOB(
-      ValueNotifier<bool> isLoading, DateTime date) async {
+  static Future<bool> updateDOB(RxBool isLoading, DateTime date) async {
     try {
       isLoading.value = true;
       await supabase.from('profiles').update({

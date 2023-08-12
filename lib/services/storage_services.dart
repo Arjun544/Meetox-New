@@ -18,7 +18,6 @@ class StorageServices {
 
       final String publicUrl =
           supabase.storage.from(folder).getPublicUrl(subFolder);
-      isLoading(false);
       return publicUrl;
     } catch (e) {
       isLoading(false);

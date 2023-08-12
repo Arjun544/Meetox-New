@@ -1,8 +1,6 @@
 import '../../controllers/add_profile_controller.dart';
 import '../../core/imports/core_imports.dart';
 import '../../core/imports/packages_imports.dart';
-import '../root_screen.dart';
-import '../../services/user_services.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/loaders/botton_loader.dart';
 
@@ -10,39 +8,17 @@ import 'components/step_one.dart';
 import 'components/step_three.dart';
 import 'components/step_two.dart';
 
-class AddProfileScreen extends HookWidget {
+class AddProfileScreen extends GetView<AddProfileController> {
   const AddProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AddProfileController controller = Get.put(AddProfileController());
+    Get.put(AddProfileController());
 
-    useEffect(() {
-      controller.nameController.text =
-          supabase.auth.currentUser!.userMetadata!['full_name'];
-      controller.socialProfile(
-          supabase.auth.currentUser!.userMetadata!['avatar_url']);
-      return null;
-    }, []);
-
-    final uploadImageMutation = useMutation(
-      CacheKeys.uploadImage,
-      (Map<String, dynamic> variables) async => await UserServices.addProfile(
-        isLoading: variables['isLoading'],
-        name: variables['name'],
-        dob: variables['dob'],
-        file: variables['file'],
-      ),
-      onData: (data, recoveryData) {
-        if (data == true) {
-          Get.offAll(() => const RootScreen());
-        }
-      },
-      onError: (error, recoveryData) {
-        logError(error.toString());
-        showToast('Add profile failed');
-      },
-    );
+    controller.nameController.text =
+        supabase.auth.currentUser!.userMetadata!['full_name'];
+    controller
+        .socialProfile(supabase.auth.currentUser!.userMetadata!['avatar_url']);
 
     return Scaffold(
       body: PageView(
@@ -112,7 +88,7 @@ class AddProfileScreen extends HookWidget {
                               );
                             }
                           } else if (controller.currentStep.value == 3) {
-                            await controller.handleSubmit(uploadImageMutation);
+                            await controller.handleSubmit();
                           } else {
                             FocusScope.of(context).unfocus();
                             await controller.pageController.nextPage(

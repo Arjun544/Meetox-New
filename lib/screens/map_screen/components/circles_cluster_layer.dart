@@ -34,7 +34,6 @@ class CirclesClusterlayer extends GetView<MapScreenController> {
                       height: 60.sp,
                       builder: (context) => CustomCircleMarker(
                         circle: tappedCircle.value,
-                        tappedCircle: tappedCircle,
                       ),
                     )
                   ]
@@ -49,7 +48,6 @@ class CirclesClusterlayer extends GetView<MapScreenController> {
                         height: 60.sp,
                         builder: (context) => CustomCircleMarker(
                           circle: circle,
-                          tappedCircle: tappedCircle,
                         ),
                       ),
                     )

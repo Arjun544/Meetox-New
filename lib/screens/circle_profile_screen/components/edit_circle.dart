@@ -16,87 +16,19 @@ import 'package:meetox/widgets/unfocuser.dart';
 
 import 'avatar_sheet.dart';
 
-class EditCircle extends HookWidget {
-  final ValueNotifier<CircleModel> circle;
-
-  const EditCircle(this.circle, {super.key});
+class EditCircle extends GetView<CircleProfileController> {
+  const EditCircle({super.key});
 
   @override
   Widget build(BuildContext context) {
     CircleProfileController controller = Get.find();
-    final Rx<String> circleAvatar = circle.value.photo!.obs;
-    final isLoading = useState(false);
+    final RxBool isLoading = false.obs;
 
-    useEffect(() {
-      controller.nameController.text = circle.value.name!;
-      controller.descController.text = circle.value.description!;
-      controller.isPrivate.value = circle.value.isPrivate!;
-      controller.nameText.value = circle.value.name!;
-      controller.descText.value = circle.value.description!;
-      return () {};
-    }, []);
-
-   
-
-    final editCircleMutation = useMutation(
-      CacheKeys.addCircle,
-      (Map<String, dynamic> variables) async => await CircleServices.editCircle(
-        isLoading: isLoading,
-        circle: variables['circle'],
-      ),
-      onData: (data, recoveryData) {
-        // if (data.id != null) {
-        //   controller.oData(data);
-        // }
-      },
-      onError: (error, recoveryData) {
-        logError(error.toString());
-        showToast('Create circle failed');
-      },
-    );
-
-    void handleDone() async {
-      if ((circleAvatar.value != circle.value.photo ||
-              controller.nameText.value.toLowerCase() !=
-                  circle.value.name!.toLowerCase() ||
-              controller.descText.value.toLowerCase() !=
-                  circle.value.description!.toLowerCase() ||
-              controller.isPrivate.value != circle.value.isPrivate) &&
-          controller.editFormKey.currentState!.validate()) {
-        File? base64Profile;
-        if (controller.capturedImage.value.path.isEmpty &&
-            controller.selectedImage.value.files.isNotEmpty) {
-          base64Profile = File(controller.selectedImage.value.files[0].path!);
-        }
-
-        if (controller.selectedImage.value.files.isEmpty &&
-            controller.capturedImage.value.path.isNotEmpty) {
-          base64Profile = File(controller.capturedImage.value.path);
-        }
-        if (controller.selectedImage.value.files.isEmpty &&
-            controller.capturedImage.value.path.isEmpty) {
-          final imageFromAsset = await getImageFileFromAssets(
-            controller.globalController
-                .circleAvatars[controller.selectedAvatar.value],
-          );
-          log(imageFromAsset.path);
-
-          base64Profile = File(imageFromAsset.path);
-        }
-        editCircleMutation.mutate(
-          {
-            'circle': CircleModel(
-              id: circle.value.id,
-              name: controller.nameController.text.trim(),
-              description: controller.descController.text.trim(),
-              isPrivate: controller.isPrivate.value,
-            ),
-            'file':
-                circleAvatar.value != circle.value.photo ? base64Profile : null,
-          },
-        );
-      }
-    }
+    controller.nameController.text = controller.circle.value.name!;
+    controller.descController.text = controller.circle.value.description!;
+    controller.isPrivate.value = controller.circle.value.isPrivate!;
+    controller.nameText.value = controller.circle.value.name!;
+    controller.descText.value = controller.circle.value.description!;
 
     return UnFocuser(
       child: Scaffold(
@@ -119,21 +51,23 @@ class EditCircle extends HookWidget {
                       style: ElevatedButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
                       ),
-                      onPressed: () => handleDone(),
+                      // TODO: Handle delete done
+                      onPressed: () {},
+                      // onPressed: () => handleDone(),
                       child: Obx(
                         () => Text(
                           'Done',
-                          style: context.theme.textTheme.labelMedium!.copyWith(
-                              color: circleAvatar.value != circle.value.photo ||
-                                      controller.nameText.value.toLowerCase() !=
-                                          circle.value.name!.toLowerCase() ||
-                                      controller.descText.value.toLowerCase() !=
-                                          circle.value.description!
-                                              .toLowerCase() ||
-                                      controller.isPrivate.value !=
-                                          circle.value.isPrivate
-                                  ? Colors.blueAccent
-                                  : context.theme.indicatorColor),
+                          // style: context.theme.textTheme.labelMedium!.copyWith(
+                          //     color: circleAvatar.value != circle.value.photo ||
+                          //             controller.nameText.value.toLowerCase() !=
+                          //                 circle.value.name!.toLowerCase() ||
+                          //             controller.descText.value.toLowerCase() !=
+                          //                 circle.value.description!
+                          //                     .toLowerCase() ||
+                          //             controller.isPrivate.value !=
+                          //                 circle.value.isPrivate
+                          //         ? Colors.blueAccent
+                          //         : context.theme.indicatorColor),
                         ),
                       ),
                     ),
@@ -149,10 +83,12 @@ class EditCircle extends HookWidget {
               children: [
                 SizedBox(height: 20.h),
                 GestureDetector(
-                  onTap: () => showCustomSheet(
-                    context: context,
-                    child: AvatarSheet(circleAvatar),
-                  ),
+                  // TODO: handle
+                  onTap: () {},
+                  // onTap: () => showCustomSheet(
+                  //   context: context,
+                  //   child: AvatarSheet(circleAvatar),
+                  // ),
                   // child: Obx(
                   //   () => CircleAvatar(
                   //     maxRadius: 85.sp,
@@ -188,9 +124,9 @@ class EditCircle extends HookWidget {
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: circleAvatar.value.isNotEmpty
+                          image: controller.circle.value.photo!.isNotEmpty
                               ? CachedNetworkImageProvider(
-                                  circle.value.photo!,
+                                  controller.circle.value.photo!,
                                 )
                               : controller.selectedImage.value.files.isEmpty &&
                                       controller

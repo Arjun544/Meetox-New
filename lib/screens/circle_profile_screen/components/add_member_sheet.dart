@@ -10,17 +10,8 @@ import 'package:meetox/widgets/loaders/followers_loader.dart';
 import 'follower_tile.dart';
 
 class AddMemberSheet extends GetView<CircleProfileController> {
-  final String id;
-  final int limit;
-  final bool isPrivate;
-  final ValueNotifier<int> members;
-
   const AddMemberSheet({
     super.key,
-    required this.id,
-    required this.limit,
-    required this.isPrivate,
-    required this.members,
   });
 
   @override
@@ -37,9 +28,11 @@ class AddMemberSheet extends GetView<CircleProfileController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Add members ( ${members.value}/$limit )',
-                style: context.theme.textTheme.labelLarge,
+              Obx(
+                () => Text(
+                  'Add members ( ${controller.members.value}/${controller.circle.value.limit} )',
+                  style: context.theme.textTheme.labelLarge,
+                ),
               ),
               CustomCloseButton(
                 onTap: () => Navigator.pop(context),
@@ -99,10 +92,6 @@ class AddMemberSheet extends GetView<CircleProfileController> {
                 ),
                 itemBuilder: (context, item, index) => FollowerTile(
                   user: item,
-                  id: id,
-                  members: members,
-                  isPrivate: isPrivate,
-                  limit: limit,
                 ),
               ),
             ),

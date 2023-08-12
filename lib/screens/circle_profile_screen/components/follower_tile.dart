@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:meetox/widgets/join_button.dart';
@@ -7,20 +8,12 @@ import 'package:meetox/widgets/online_indicator.dart';
 import '../../../core/imports/core_imports.dart';
 import '../../../core/imports/packages_imports.dart';
 
-class FollowerTile extends HookWidget {
-  final String id;
+class FollowerTile extends GetView<CircleProfileController> {
   final UserModel user;
-  final ValueNotifier<int> members;
-  final bool isPrivate;
-  final int limit;
 
   const FollowerTile({
     super.key,
     required this.user,
-    required this.id,
-    required this.members,
-    required this.isPrivate,
-    required this.limit,
   });
   @override
   Widget build(BuildContext context) {
@@ -28,7 +21,6 @@ class FollowerTile extends HookWidget {
       onTap: () => Get.to(
         () => UserProfileScreen(
           user: user,
-          followers: ValueNotifier(user.followers!),
         ),
       ),
       splashColor: Colors.transparent,
@@ -73,9 +65,9 @@ class FollowerTile extends HookWidget {
       ),
       trailing: user.id != currentUser.value.id
           ? JoinButton(
-              id: id,
-              isPrivate: isPrivate,
-              limit: limit,
+              id: controller.circle.value.id!,
+              isPrivate: controller.circle.value.isPrivate!,
+              limit: controller.circle.value.limit!,
               isAdmin: true,
             )
           : const SizedBox.shrink(),

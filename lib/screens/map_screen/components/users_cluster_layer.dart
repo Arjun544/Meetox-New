@@ -32,7 +32,6 @@ class UsersClusterlayer extends GetView<MapScreenController> {
                       height: 60.sp,
                       builder: (context) => UserMarker(
                         user: tappedUser.value,
-                        tappedUser: tappedUser,
                       ),
                     )
                   ]
@@ -47,7 +46,6 @@ class UsersClusterlayer extends GetView<MapScreenController> {
                         height: 60.sp,
                         builder: (context) => UserMarker(
                           user: user,
-                          tappedUser: tappedUser,
                         ),
                       ),
                     )

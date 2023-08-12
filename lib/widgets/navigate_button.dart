@@ -30,28 +30,12 @@ class NavigateButton extends StatelessWidget {
           originTitle: 'You',
         );
       },
-      child: Container(
-        height: 45.h,
-        width: Get.width,
-        margin: EdgeInsets.only(right: 15.sp, left: 15.sp, bottom: 15.sp),
-        decoration: BoxDecoration(
-          color: AppColors.primaryYellow,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              FlutterRemix.treasure_map_fill,
-              size: 18.sp,
-              color: context.theme.iconTheme.color,
-            ),
-            const SizedBox(width: 20),
-            Text(
-              'Navigate',
-              style: context.theme.textTheme.labelSmall,
-            ),
-          ],
+      child: Padding(
+        padding: EdgeInsets.only(right: 15.w),
+        child: Icon(
+          FlutterRemix.treasure_map_fill,
+          size: 24.h,
+          color: context.theme.iconTheme.color,
         ),
       ),
     );

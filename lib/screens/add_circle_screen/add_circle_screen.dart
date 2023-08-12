@@ -4,7 +4,6 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/screens/add_circle_screen/components/circle_avatar.dart';
 import 'package:meetox/screens/add_circle_screen/components/circle_details.dart';
 import 'package:meetox/screens/add_circle_screen/components/circle_privacy.dart';
-import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/widgets/close_button.dart';
 import 'package:meetox/widgets/custom_button.dart';
 import 'package:meetox/widgets/loaders/botton_loader.dart';
@@ -12,31 +11,12 @@ import 'package:meetox/widgets/unfocuser.dart';
 
 import 'components/circle_members.dart';
 
-class AddCircleScreen extends HookWidget {
+class AddCircleScreen extends GetView<AddCircleController> {
   const AddCircleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AddCircleController controller = Get.put(AddCircleController());
-
-    final addCircleMutation = useMutation(
-      CacheKeys.addCircle,
-      (Map<String, dynamic> variables) async => await CircleServices.addCircle(
-        isLoading: controller.isLoading,
-        lat: variables['lat'],
-        long: variables['long'],
-        data: {...variables},
-      ),
-      onData: (data, recoveryData) {
-        if (data.id != null) {
-          controller.oData(data);
-        }
-      },
-      onError: (error, recoveryData) {
-        logError(error.toString());
-        showToast('Create circle failed');
-      },
-    );
+    Get.put(AddCircleController());
 
     return UnFocuser(
       child: Scaffold(
@@ -161,8 +141,7 @@ class AddCircleScreen extends HookWidget {
                                     'Your members limit is ${controller.limit.value.toInt()}',
                                   );
                                 } else if (controller.currentStep.value == 3) {
-                                  await controller.handleAddCircle(
-                                      context, addCircleMutation);
+                                  await controller.handleAddCircle(context);
                                 } else {
                                   FocusScope.of(context).unfocus();
                                   await controller.pageController.nextPage(

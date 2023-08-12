@@ -22,11 +22,12 @@ class CircleServices {
     }
   }
 
-  static Future<CircleModel> addCircle({
+  static Future<void> addCircle({
     required RxBool isLoading,
     required Map<String, dynamic> data,
     required double lat,
     required double long,
+    required void Function(CircleModel) onSuccess,
   }) async {
     try {
       isLoading(true);
@@ -74,8 +75,9 @@ class CircleServices {
           ],
         },
       );
+      onSuccess(editedCircle);
       isLoading(false);
-      return editedCircle;
+      return;
     } catch (e) {
       isLoading(false);
       logError('Circle created error ${e.toString()}');
@@ -130,8 +132,12 @@ class CircleServices {
     }
   }
 
-  static Future<bool> isMember({required String id}) async {
+  static Future<bool> isMember({
+    required String id,
+    required RxBool isLoading,
+  }) async {
     try {
+      isLoading.value = true;
       final data = await supabase
           .from('circle_members')
           .select()
@@ -139,6 +145,7 @@ class CircleServices {
           .eq('circle_id', id);
 
       logSuccess(data.toString());
+      isLoading.value = false;
 
       if (data.isEmpty) {
         return false;
@@ -151,9 +158,10 @@ class CircleServices {
     }
   }
 
-  static Future<bool> join({
+  static Future<void> join({
     required String id,
-    required ValueNotifier<bool> isLoading,
+    required RxBool isLoading,
+    required void Function(bool) onSuccess,
   }) async {
     try {
       isLoading.value = true;
@@ -162,18 +170,17 @@ class CircleServices {
           .insert({'member_id': currentUser.value.id, 'circle_id': id});
 
       isLoading.value = false;
-
-      return true;
+      onSuccess(true);
     } catch (e) {
       isLoading.value = false;
       logError(e.toString());
-      rethrow;
     }
   }
 
-  static Future<bool> leave({
+  static Future<void> leave({
     required String id,
-    required ValueNotifier<bool> isLoading,
+    required RxBool isLoading,
+    required void Function(bool) onSuccess,
   }) async {
     try {
       isLoading.value = true;
@@ -184,8 +191,7 @@ class CircleServices {
           .eq('circle_id', id);
 
       isLoading.value = false;
-
-      return true;
+      onSuccess(true);
     } catch (e) {
       isLoading.value = false;
       logError(e.toString());
@@ -193,11 +199,13 @@ class CircleServices {
     }
   }
 
-  static Future<String> editCircle({
-    required ValueNotifier<bool> isLoading,
+  static Future<void> editCircle({
+    required RxBool isLoading,
     required CircleModel circle,
+    required void Function(String) onSuccess,
   }) async {
     try {
+      isLoading.value = true;
       final PostgrestTransformBuilder data = await supabase
           .from('circles')
           .update(
@@ -209,16 +217,17 @@ class CircleServices {
       //   folder: 'circle profiles',
       //   name: getFileName(data[0]['photo']),
       // );
-      return data.toString();
+      isLoading.value = false;
+      onSuccess(data.toString());
     } catch (e) {
       logError(e.toString());
-      rethrow;
     }
   }
 
-  static Future<String> deleteCircle({
+  static Future<void> deleteCircle({
     required String id,
-    required ValueNotifier<bool> isLoading,
+    required RxBool isLoading,
+    required void Function(String) onSuccess,
   }) async {
     try {
       isLoading.value = true;
@@ -232,12 +241,11 @@ class CircleServices {
         name: getFileName(data[0]['photo']),
       );
       isLoading.value = false;
-
-      return data[0]['id'].toString();
+      onSuccess(data[0]['id'].toString());
     } catch (e) {
       isLoading.value = false;
+      showToast('Delete circle failed');
       logError(e.toString());
-      rethrow;
     }
   }
 

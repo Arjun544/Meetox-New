@@ -2,12 +2,12 @@ import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/services/circle_services.dart';
 
-class JoinButton extends HookWidget {
+class JoinButton extends StatefulWidget {
   final String id;
   final bool isPrivate;
   final bool isAdmin;
   final int limit;
-  final ValueNotifier<int>? members;
+  final RxInt? members;
 
   const JoinButton({
     super.key,
@@ -19,130 +19,128 @@ class JoinButton extends HookWidget {
   });
 
   @override
+  State<JoinButton> createState() => _JoinButtonState();
+}
+
+class _JoinButtonState extends State<JoinButton> {
+  final RxBool isLoading = false.obs;
+  final RxBool isMember = false.obs;
+
+  @override
+  void initState() {
+    checkIsFollowed();
+    super.initState();
+  }
+
+  void checkIsFollowed() async {
+    isMember.value = await CircleServices.isMember(
+      id: widget.id,
+      isLoading: isLoading,
+    );
+  }
+
+  void handleJoin() async {
+    await CircleServices.join(
+      isLoading: isLoading,
+      id: widget.id,
+      onSuccess: (data) {
+        if (data == true) {
+          if (widget.members != null) {
+            widget.members!.value += 1;
+            isMember(true);
+          }
+          // Optimistic Updates after a successful follow
+          // TODO: Add optimistic updates
+        }
+      },
+    );
+  }
+
+  void handleLeave() async {
+    await CircleServices.leave(
+      isLoading: isLoading,
+      id: widget.id,
+      onSuccess: (data) {
+        if (data == true) {
+          if (widget.members != null) {
+            widget.members!.value -= 1;
+            isMember(false);
+          }
+          // Optimistic Updates after a successful follow
+          // TODO: Add optimistic updates
+        }
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isLoading = useState(false);
-
-    final checkIsMember = useQuery<bool, dynamic>(
-      CacheKeys.isMember,
-      () async => await CircleServices.isMember(
-        id: id,
-      ),
-      onError: (value) => logError(value.toString()),
-    );
-
-    final joinCircle =
-        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
-      CacheKeys.joinCircle,
-      (varibles) async => await CircleServices.join(
-        id: varibles['id'],
-        isLoading: isLoading,
-      ),
-      onData: (data, _) async {
-        if (data == true) {
-          if (members != null) {
-            members!.value += 1;
-          }
-          // Optimistic Updates after a successful adding member
-          final Query<bool, dynamic> checkIsMemberQuery =
-              QueryClient.of(context)
-                  .getQuery<bool, dynamic>(CacheKeys.isMember)!;
-
-          checkIsMemberQuery.setData(true);
-        }
-      },
-    );
-
-    final leaveCircle =
-        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
-      CacheKeys.unFollowUser,
-      (varibles) async => await CircleServices.leave(
-        id: varibles['id'],
-        isLoading: isLoading,
-      ),
-      onData: (data, _) async {
-        if (data == true) {
-          if (members != null) {
-            members!.value -= 1;
-          }
-
-          // Optimistic Updates after a successful adding member
-          final Query<bool, dynamic> checkIsMemberQuery =
-              QueryClient.of(context)
-                  .getQuery<bool, dynamic>(CacheKeys.isMember)!;
-
-          checkIsMemberQuery.setData(false);
-        }
-      },
-    );
     return Padding(
       padding: const EdgeInsets.only(right: 16),
-      child: isAdmin && !isPrivate
-          ? InkWell(
-              onTap: () async {
-                if (checkIsMember.isLoading || isLoading.value) {
-                } else {
-                  if (checkIsMember.data!) {
-                    leaveCircle.mutate({
-                      "id": id,
-                    });
+      child: !widget.isPrivate
+          ? Obx(() => InkWell(
+                onTap: () async {
+                  if (isLoading.value) {
                   } else {
-                    if (members!.value == limit) {
-                      showToast('Circle reached members limit');
+                    if (isMember.value) {
+                      handleLeave();
                     } else {
-                      joinCircle.mutate({
-                        "id": id,
-                      });
+                      if (widget.members!.value == widget.limit) {
+                        showToast('Circle reached members limit');
+                      } else {
+                        handleJoin();
+                      }
                     }
                   }
-                }
-              },
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: checkIsMember.isLoading
-                      ? AppColors.primaryYellow
-                      : checkIsMember.data == false
-                          ? members!.value == limit
-                              ? context.theme.indicatorColor
-                              : AppColors.primaryYellow
-                          : checkIsMember.data!
-                              ? Colors.redAccent
-                              : AppColors.primaryYellow,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.sp,
-                    vertical: 6.sp,
+                },
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: isLoading.value
+                        ? AppColors.primaryYellow
+                        : isMember.value == false
+                            ? widget.members!.value == widget.limit
+                                ? context.theme.indicatorColor
+                                : AppColors.primaryYellow
+                            : isMember.value
+                                ? Colors.redAccent
+                                : AppColors.primaryYellow,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: checkIsMember.isLoading || isLoading.value
-                      ? LoadingAnimationWidget.staggeredDotsWave(
-                          color: AppColors.customBlack,
-                          size: 20.sp,
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              checkIsMember.data!
-                                  ? FlutterRemix.logout_circle_fill
-                                  : FlutterRemix.login_circle_fill,
-                              size: 16.sp,
-                              color: context.theme.iconTheme.color!.withOpacity(
-                                  members!.value == limit &&
-                                          !checkIsMember.data!
-                                      ? 0.5
-                                      : 1),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              checkIsMember.data! ? 'Leave' : 'Join',
-                              style: context.theme.textTheme.labelSmall,
-                            ),
-                          ],
-                        ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.sp,
+                      vertical: 6.sp,
+                    ),
+                    child: isLoading.value
+                        ? LoadingAnimationWidget.staggeredDotsWave(
+                            color: AppColors.customBlack,
+                            size: 20.sp,
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isMember.value
+                                    ? FlutterRemix.logout_circle_fill
+                                    : FlutterRemix.login_circle_fill,
+                                size: 16.sp,
+                                color: context.theme.iconTheme.color!
+                                    .withOpacity(
+                                        widget.members!.value == widget.limit &&
+                                                !isMember.value
+                                            ? 0.5
+                                            : 1),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                isMember.value ? 'Leave' : 'Join',
+                                style: context.theme.textTheme.labelSmall,
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
-              ),
-            )
+              ))
           : InkWell(
               onTap: () => showToast('Circle is private'),
               child: DecoratedBox(

@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/models/circle_model.dart';
-import 'package:meetox/services/circle_services.dart';
 import 'package:meetox/widgets/custom_button.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 import 'package:meetox/widgets/join_button.dart';
@@ -12,45 +10,24 @@ import 'package:meetox/widgets/join_button.dart';
 import 'add_member_sheet.dart';
 import 'edit_circle.dart';
 
-class CircleDetails extends HookWidget {
-  final ValueNotifier<CircleModel> circle;
-  final ValueNotifier<int> members;
-
-  const CircleDetails(this.circle, this.members, {super.key});
+class CircleDetails extends GetView<CircleProfileController> {
+  const CircleDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final totalMembers = useState(members.value);
-    final bool isAdmin = circle.value.adminId == currentUser.value.id;
-    final CircleProfileController circleProfileController = Get.find();
-    final isLoading = useState(false);
-
-    final deleteCircleMutation = useMutation(
-      CacheKeys.deleteCircle,
-      (Map<String, dynamic> variables) async =>
-          await CircleServices.deleteCircle(
-        id: circle.value.id!,
-        isLoading: isLoading,
-      ),
-      onData: (data, recoveryData) {
-        circleProfileController.onCircleDelete(context, data);
-        showToast('Deleted circle successfully');
-        Navigator.pop(context);
-        Get.back();
-      },
-      onError: (error, recoveryData) {
-        logError(error.toString());
-        showToast('Create circle failed');
-      },
-    );
+    final bool isAdmin =
+        controller.circle.value.adminId == currentUser.value.id;
+    final RxBool isLoading = false.obs;
 
     return SliverAppBar(
       elevation: 0.1,
       expandedHeight: Get.height * 0.3,
       pinned: true,
-      title: Text(
-        circle.value.name!.capitalizeFirst!,
-        style: context.theme.textTheme.labelMedium,
+      title: Obx(
+        () => Text(
+          controller.circle.value.name!.capitalizeFirst!,
+          style: context.theme.textTheme.labelMedium,
+        ),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Padding(
@@ -60,16 +37,18 @@ class CircleDetails extends HookWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    height: Get.height * 0.09,
-                    width: Get.width * 0.18,
-                    decoration: BoxDecoration(
-                      color: context.theme.indicatorColor,
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(
-                          circle.value.photo!,
+                  Obx(
+                    () => Container(
+                      height: Get.height * 0.09,
+                      width: Get.width * 0.18,
+                      decoration: BoxDecoration(
+                        color: context.theme.indicatorColor,
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            controller.circle.value.photo!,
+                          ),
                         ),
                       ),
                     ),
@@ -80,9 +59,11 @@ class CircleDetails extends HookWidget {
                     },
                     child: Column(
                       children: [
-                        Text(
-                          totalMembers.value.toString(),
-                          style: context.theme.textTheme.labelMedium,
+                        Obx(
+                          () => Text(
+                            controller.members.value.toString(),
+                            style: context.theme.textTheme.labelMedium,
+                          ),
                         ),
                         Text(
                           'Members',
@@ -94,9 +75,11 @@ class CircleDetails extends HookWidget {
                   ),
                   Column(
                     children: [
-                      Text(
-                        circle.value.limit.toString(),
-                        style: context.theme.textTheme.labelMedium,
+                      Obx(
+                        () => Text(
+                          controller.circle.value.limit.toString(),
+                          style: context.theme.textTheme.labelMedium,
+                        ),
                       ),
                       Text(
                         'Limit',
@@ -120,7 +103,7 @@ class CircleDetails extends HookWidget {
                         IconsaxBold.edit_2,
                       ),
                       onPressed: () => Get.to(
-                        () => EditCircle(circle),
+                        () => const EditCircle(),
                       ),
                     ),
                     CustomButton(
@@ -132,12 +115,7 @@ class CircleDetails extends HookWidget {
                       ),
                       onPressed: () => showCustomSheet(
                         context: context,
-                        child: AddMemberSheet(
-                          id: circle.value.id!,
-                          members: totalMembers,
-                          limit: circle.value.limit!,
-                          isPrivate: circle.value.isPrivate!,
-                        ),
+                        child: const AddMemberSheet(),
                       ),
                     ),
                     CustomButton(
@@ -177,9 +155,7 @@ class CircleDetails extends HookWidget {
                                 : CupertinoActionSheetAction(
                                     isDestructiveAction: true,
                                     onPressed: () =>
-                                        deleteCircleMutation.mutate({
-                                      "id": circle.value.id,
-                                    }),
+                                        controller.handleDelete(isLoading),
                                     child: Text(
                                       'Delete',
                                       style: context
@@ -196,14 +172,14 @@ class CircleDetails extends HookWidget {
                   ],
                 ),
               ],
-              if (circle.value.isPrivate == false && !isAdmin) ...[
+              if (controller.circle.value.isPrivate == false && !isAdmin) ...[
                 SizedBox(height: 30.h),
                 JoinButton(
-                  id: circle.value.id!,
-                  isPrivate: circle.value.isPrivate!,
-                  limit: circle.value.limit!,
-                  members: totalMembers,
                   isAdmin: isAdmin,
+                  id: controller.circle.value.id!,
+                  isPrivate: controller.circle.value.isPrivate!,
+                  limit: controller.circle.value.limit!,
+                  members: controller.members,
                 ),
               ],
             ],

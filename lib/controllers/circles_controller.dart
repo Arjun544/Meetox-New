@@ -46,15 +46,24 @@ class CirclesController extends GetxController {
     }
   }
 
-  void onCircleDelete(BuildContext context, String newId) {
-    if (newId.isNotEmpty) {
-      circlesPagingController.itemList!.removeWhere((element) => element.id == newId);
-      circlesPagingController
-          // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-          .notifyListeners();
-      showToast('Deleted circle successfully');
-    }
+   void handleDelete(RxBool isLoading, String id) async {
+    await CircleServices.deleteCircle(
+      id:id,
+      isLoading: isLoading,
+      onSuccess: (newId) {
+       if (newId.isNotEmpty) {
+          circlesPagingController.itemList!
+              .removeWhere((element) => element.id == newId);
+          circlesPagingController
+              // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+              .notifyListeners();
+          showToast('Deleted circle successfully');
+        }
+      },
+    );
   }
+
+  
 
   @override
   void onClose() {

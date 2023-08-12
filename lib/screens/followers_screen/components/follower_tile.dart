@@ -6,7 +6,7 @@ import 'package:meetox/widgets/online_indicator.dart';
 import '../../../core/imports/core_imports.dart';
 import '../../../core/imports/packages_imports.dart';
 
-class FollowerTile extends HookWidget {
+class FollowerTile extends StatelessWidget {
   final UserModel user;
   final bool showFollowButton;
   final VoidCallback? onTap;

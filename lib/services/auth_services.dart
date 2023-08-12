@@ -81,6 +81,7 @@ class AuthServices {
       );
     } catch (e) {
       isLoading(false);
+        showToast('Sign in failed');
       logError(e.toString());
       rethrow;
     }

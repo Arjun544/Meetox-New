@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:meetox/controllers/profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/models/profile_model.dart';
 import 'package:meetox/screens/followers_screen/followers_screen.dart';
 import 'package:meetox/screens/profile_screen/components/date_picker_sheet.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
@@ -9,13 +9,11 @@ import 'package:meetox/widgets/premium_button.dart';
 
 import 'social_item.dart';
 
-class MyDetails extends HookWidget {
-  final Query<ProfileModel, dynamic> userProfile;
-  const MyDetails(this.userProfile, {super.key});
+class MyDetails extends GetView<ProfileController> {
+  const MyDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final selectedDOB = useState(userProfile.data?.dob ?? DateTime.now());
     return SliverAppBar(
       elevation: 0.1,
       expandedHeight: Get.height * 0.45,
@@ -84,15 +82,19 @@ class MyDetails extends HookWidget {
                   SizedBox(height: 20.w),
                   GestureDetector(
                     onTap: () {
-                      if (userProfile.data!.followings != 0) {
+                      if (controller.profile.value.followings != 0) {
                         Get.to(() => FollowersScreen(currentUser.value, true));
                       }
                     },
                     child: Column(
                       children: [
-                        Text(
-                          userProfile.data?.feeds.toString() ?? '',
-                          style: context.theme.textTheme.labelMedium,
+                        Obx(
+                          () => Text(
+                            controller.profile.value.feeds == null
+                                ? '0'
+                                : controller.profile.value.feeds.toString(),
+                            style: context.theme.textTheme.labelMedium,
+                          ),
                         ),
                         Text(
                           'Feeds',
@@ -104,15 +106,19 @@ class MyDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (userProfile.data!.followers != 0) {
+                      if (controller.profile.value.followers != 0) {
                         Get.to(() => FollowersScreen(currentUser.value, false));
                       }
                     },
                     child: Column(
                       children: [
-                        Text(
-                          userProfile.data?.followers.toString() ?? '',
-                          style: context.theme.textTheme.labelMedium,
+                        Obx(
+                          () => Text(
+                            controller.profile.value.followers == null
+                                ? '0'
+                                : controller.profile.value.followers.toString(),
+                            style: context.theme.textTheme.labelMedium,
+                          ),
                         ),
                         Text(
                           'Followers',
@@ -124,15 +130,20 @@ class MyDetails extends HookWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (userProfile.data!.followings != 0) {
+                      if (controller.profile.value.followings != 0) {
                         Get.to(() => FollowersScreen(currentUser.value, true));
                       }
                     },
                     child: Column(
                       children: [
-                        Text(
-                          userProfile.data?.followings.toString() ?? '',
-                          style: context.theme.textTheme.labelMedium,
+                        Obx(
+                          () => Text(
+                            controller.profile.value.followings == null
+                                ? '0'
+                                : controller.profile.value.followings
+                                    .toString(),
+                            style: context.theme.textTheme.labelMedium,
+                          ),
                         ),
                         Text(
                           'Followings',
@@ -176,24 +187,24 @@ class MyDetails extends HookWidget {
                               .withOpacity(0.5),
                         ),
                       ),
-                      Text(
-                        formatDate(
-                          userProfile.data?.dob ?? DateTime.now(),
-                          [d, ', ', M, ' ', yyyy],
+                      Obx(
+                        () => Text(
+                          formatDate(
+                            controller.profile.value.dob ?? DateTime.now(),
+                            [d, ', ', M, ' ', yyyy],
+                          ),
+                          style: context.theme.textTheme.labelSmall,
                         ),
-                        style: context.theme.textTheme.labelSmall,
                       ),
                     ],
                   ),
                   TextButton(
                     onPressed: () {
-                      selectedDOB.value = userProfile.data!.dob!;
+                      controller.selectedDOB.value =
+                          controller.profile.value.dob!;
                       showCustomSheet(
                         context: context,
-                        child: DatePickerSheet(
-                          selectedDate: selectedDOB,
-                          userProfile: userProfile,
-                        ),
+                        child: const DatePickerSheet(),
                       );
                     },
                     child: Text(

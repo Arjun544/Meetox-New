@@ -130,15 +130,7 @@ class CirclesScreen extends GetView<CirclesController> {
                     ),
                     itemBuilder: (context, item, index) => CircleTile(
                       circle: item,
-                      circlesController: controller,
-                      onTap: () => Get.to(
-                        () => CircleProfileScreen(
-                          circle: item,
-                          allMembers: ValueNotifier(
-                            item.circleMembers![0].count!,
-                          ),
-                        ),
-                      ),
+                      
                     ),
                   ),
                 ),

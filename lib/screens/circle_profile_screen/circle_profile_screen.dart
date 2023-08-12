@@ -2,42 +2,29 @@ import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/circle_model.dart';
-import 'package:meetox/models/user_model.dart';
-import 'package:meetox/services/user_services.dart';
 import 'package:meetox/widgets/mini_map.dart';
 import 'package:meetox/widgets/read_more.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'components/circle_details.dart';
 
-class CircleProfileScreen extends HookWidget {
+class CircleProfileScreen extends GetView<CircleProfileController> {
   final CircleModel circle;
-  final ValueNotifier<int> allMembers;
 
-  const CircleProfileScreen(
-      {super.key, required this.circle, required this.allMembers});
+  const CircleProfileScreen({super.key, required this.circle});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CircleProfileController());
-    final ValueNotifier<CircleModel> profileCircle = useState(circle);
+    Get.put(CircleProfileController(circle.obs));
+    controller.members(circle.circleMembers![0].count);
 
-    final adminResult = useQuery<UserModel, dynamic>(
-      CacheKeys.currentUser,
-      () async => await UserServices.userById(
-        id: circle.adminId,
-      ),
-      onError: (error) {
-        logError(error.toString());
-      },
-    );
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            CircleDetails(profileCircle, allMembers),
+            const CircleDetails(),
           ];
         },
         body: Padding(
@@ -84,20 +71,22 @@ class CircleProfileScreen extends HookWidget {
               const Spacer(),
               Column(
                 children: [
-                  adminResult.isLoading
-                      ? const SizedBox.shrink()
-                      : Text(
-                          'Created by ${circle.adminId == currentUser.value.id ? 'YOU' : adminResult.data!.name!.capitalizeFirst!} ${timeago.format(
-                            circle.createdAt!,
-                            locale: 'en',
-                            allowFromNow: true,
-                          )}',
-                          style: context.theme.textTheme.labelSmall!.copyWith(
-                            color: context.theme.textTheme.labelSmall!.color!
-                                .withOpacity(0.5),
-                            letterSpacing: 1,
+                  Obx(
+                    () => controller.admin.value.id == null
+                        ? const SizedBox.shrink()
+                        : Text(
+                            'Created by ${circle.adminId == currentUser.value.id ? 'YOU' : controller.admin.value.name!.capitalizeFirst!} ${timeago.format(
+                              circle.createdAt!,
+                              locale: 'en',
+                              allowFromNow: true,
+                            )}',
+                            style: context.theme.textTheme.labelSmall!.copyWith(
+                              color: context.theme.textTheme.labelSmall!.color!
+                                  .withOpacity(0.5),
+                              letterSpacing: 1,
+                            ),
                           ),
-                        ),
+                  ),
                   SizedBox(height: 20.h),
                   ListTile(
                     contentPadding: EdgeInsets.zero,

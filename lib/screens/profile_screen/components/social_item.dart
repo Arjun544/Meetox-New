@@ -1,39 +1,19 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meetox/controllers/profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_social.dart';
 import 'package:meetox/helpers/launch_url.dart';
 import 'package:meetox/screens/profile_screen/components/add_social_sheet.dart';
-import 'package:meetox/services/user_services.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 
-class SocialItem extends HookWidget {
+class SocialItem extends GetView<ProfileController> {
   final String type;
 
   const SocialItem({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = useState(false);
-
-    final deleteSocialMutation =
-        useMutation<bool, dynamic, Map<String, dynamic>, dynamic>(
-      CacheKeys.deleteSocial,
-      (Map<String, dynamic> variables) async => await UserServices.deleteSocial(
-        isLoading,
-        variables['type'],
-      ),
-      onData: (data, recoveryData) {
-        logSuccess(data.toString());
-        if (data == true) {
-          Navigator.pop(context);
-        }
-      },
-      onError: (error, recoveryData) {
-        logError(error.toString());
-        showToast('Link failed to add');
-      },
-    );
     return Obx(
       () => InkWell(
         onTap: () => currentUser.value.socials!
@@ -116,29 +96,30 @@ class SocialItem extends HookWidget {
                         style: context.theme.textTheme.labelMedium,
                       ),
                     ),
-                    isLoading.value
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Get.width * 0.45, vertical: 8.h),
-                            child: LoadingAnimationWidget.staggeredDotsWave(
-                              color: AppColors.primaryYellow,
-                              size: 20.sp,
-                            ),
-                          )
-                        : CupertinoActionSheetAction(
-                            isDestructiveAction: true,
-                            onPressed: () async =>
-                                await deleteSocialMutation.mutate({
-                              'type': type.toLowerCase(),
-                            }),
-                            child: Text(
-                              'Remove',
-                              style:
-                                  context.theme.textTheme.labelMedium!.copyWith(
-                                color: Colors.redAccent,
+                    Obx(
+                      () => controller.removeSocialIsLoading.value
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Get.width * 0.45, vertical: 8.h),
+                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                color: AppColors.primaryYellow,
+                                size: 20.sp,
+                              ),
+                            )
+                          : CupertinoActionSheetAction(
+                              isDestructiveAction: true,
+                              onPressed: () => controller.handleRemoveSocial(
+                                  context,
+                                  type: type.toLowerCase()),
+                              child: Text(
+                                'Remove',
+                                style: context.theme.textTheme.labelMedium!
+                                    .copyWith(
+                                  color: Colors.redAccent,
+                                ),
                               ),
                             ),
-                          ),
+                    ),
                   ],
                 ),
               ),
