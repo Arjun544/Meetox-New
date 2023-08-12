@@ -42,7 +42,7 @@ class CircleDetails extends GetView<CircleProfileController> {
                       height: Get.height * 0.09,
                       width: Get.width * 0.18,
                       decoration: BoxDecoration(
-                        color: context.theme.indicatorColor,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
                           fit: BoxFit.cover,

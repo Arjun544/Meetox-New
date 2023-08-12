@@ -10,9 +10,6 @@ import 'package:meetox/services/user_services.dart';
 
 class CircleProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final Rx<CircleModel> circle;
-  CircleProfileController(this.circle);
-
   final GlobalController globalController = Get.find();
   final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
 
@@ -22,6 +19,7 @@ class CircleProfileController extends GetxController
   final followersPagingController =
       PagingController<int, UserModel>(firstPageKey: 1);
 
+  final Rx<CircleModel> circle = CircleModel().obs;
   final Rx<UserModel> admin = UserModel().obs;
   final RxInt members = 0.obs;
   final RxBool isPrivate = false.obs;

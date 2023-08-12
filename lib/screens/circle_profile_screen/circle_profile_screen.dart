@@ -15,8 +15,10 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CircleProfileController(circle.obs));
+    Get.put(CircleProfileController());
+    controller.circle(circle);
     controller.members(circle.circleMembers![0].count);
+    logSuccess(circle.toJson().toString());
 
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
