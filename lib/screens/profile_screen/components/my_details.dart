@@ -49,7 +49,7 @@ class MyDetails extends GetView<ProfileController> {
                             height: Get.height * 0.09,
                             width: Get.width * 0.18,
                             decoration: BoxDecoration(
-                              color: context.theme.indicatorColor,
+                              color: context.theme.primaryColor,
                               borderRadius: BorderRadius.circular(20),
                               image: DecorationImage(
                                 fit: BoxFit.cover,

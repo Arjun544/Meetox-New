@@ -11,7 +11,6 @@ import 'package:meetox/widgets/custom_field.dart';
 import 'package:meetox/widgets/dialogues/upgrade_premium_dialogue.dart';
 import 'package:meetox/widgets/loaders/circles_loader.dart';
 
-import '../circle_profile_screen/circle_profile_screen.dart';
 
 class CirclesScreen extends GetView<CirclesController> {
   const CirclesScreen({super.key});
