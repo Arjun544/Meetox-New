@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 
@@ -5,9 +7,15 @@ import '../services/follow_services.dart';
 
 class FollowButton extends StatefulWidget {
   final String id;
-  final RxInt? followers;
+  final void Function(bool) onFollow;
+  final void Function(bool) onUnFollow;
 
-  const FollowButton({super.key, required this.id, this.followers});
+  const FollowButton({
+    super.key,
+    required this.id,
+    required this.onFollow,
+    required this.onUnFollow,
+  });
 
   @override
   State<FollowButton> createState() => _FollowButtonState();
@@ -35,14 +43,8 @@ class _FollowButtonState extends State<FollowButton> {
       isLoading: isLoading,
       targetUserId: widget.id,
       onSuccess: (data) {
-        if (data == true) {
-          if (widget.followers != null) {
-            widget.followers!.value += 1;
-            isFollowed(true);
-          }
-          // Optimistic Updates after a successful follow
-          // TODO: Add optimistic updates
-        }
+        isFollowed(true);
+        widget.onFollow(data);
       },
     );
   }
@@ -52,14 +54,8 @@ class _FollowButtonState extends State<FollowButton> {
       isLoading: isLoading,
       targetUserId: widget.id,
       onSuccess: (data) {
-        if (data == true) {
-          if (widget.followers != null) {
-            widget.followers!.value -= 1;
-            isFollowed(false);
-          }
-          // Optimistic Updates after a successful follow
-          // TODO: Add optimistic updates
-        }
+        isFollowed(false);
+        widget.onUnFollow(data);
       },
     );
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/controllers/user_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
@@ -108,13 +110,15 @@ class UserDetails extends GetView<UserProfileController> {
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followings != 0) {
-                        Get.to(() => FollowersScreen(
-                              UserModel(
-                                id: controller.profile.value.id,
-                                name: controller.profile.value.name,
-                              ),
-                              true,
-                            ));
+                        Get.to(
+                          () => FollowersScreen(
+                            UserModel(
+                              id: controller.profile.value.id,
+                              name: controller.profile.value.name,
+                            ),
+                            true,
+                          ),
+                        );
                       }
                     },
                     child: Column(
@@ -153,8 +157,17 @@ class UserDetails extends GetView<UserProfileController> {
                           children: [
                             FollowButton(
                               id: controller.profile.value.id!,
-                              followers:
-                                  controller.profile.value.followers!.obs,
+                              onFollow: (data) {
+                                controller.profile.value.followers =
+                                    controller.profile.value.followers! + 1;
+                                controller.profile.refresh();
+                              },
+                              onUnFollow: (data) {
+                                controller.profile.value.followers =
+                                    controller.profile.value.followers! - 1;
+
+                                controller.profile.refresh();
+                              },
                             ),
                             VerticalDivider(
                               color: context.theme.indicatorColor,

@@ -63,6 +63,18 @@ class FollowerTile extends StatelessWidget {
       trailing: user.id != currentUser.value.id && showFollowButton
           ? FollowButton(
               id: user.id!,
+              onFollow: (data) {
+                // if (data == true) {
+                //   controller.profile.value.followers! + 1;
+                //   controller.profile.refresh();
+                // }
+              },
+              onUnFollow: (data) {
+                // if (data == true) {
+                //   controller.profile.value.followers! - 1;
+                //   controller.profile.refresh();
+                // }
+              },
             )
           : const SizedBox.shrink(),
     );
