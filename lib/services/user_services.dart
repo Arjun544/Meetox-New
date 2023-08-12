@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:meetox/helpers/get_file_name.dart';
+
 import '../core/imports/core_imports.dart';
 import '../models/profile_model.dart';
 import '../models/user_model.dart';
@@ -54,7 +56,7 @@ class UserServices {
       isLoading(true);
       final photoUrl = await StorageServices.uploadImage(
         isLoading: isLoading,
-        folder: 'circle profiles',
+        folder: 'user profiles',
         subFolder: '${supabase.auth.currentUser!.id}/profile',
         file: file,
       );
@@ -71,6 +73,41 @@ class UserServices {
       isLoading(false);
       logError(e.toString());
       showToast('Add profile failed');
+      rethrow;
+    }
+  }
+
+  static Future<bool> updateImage({
+    required File file,
+    required RxBool isLoading,
+  }) async {
+    try {
+      isLoading(true);
+      final bool isDeleteSuccess = await StorageServices.deleteImage(
+        folder: 'user profiles',
+        name: getFileName(currentUser.value.photo!),
+      );
+      if (isDeleteSuccess) {
+        final photoUrl = await StorageServices.uploadImage(
+          isLoading: isLoading,
+          folder: 'user profiles',
+          subFolder: '${supabase.auth.currentUser!.id}/profile',
+          file: file,
+        );
+        if (photoUrl.isNotEmpty) {
+          await supabase.from('profiles').update({
+            'photo': photoUrl,
+          }).eq('id', supabase.auth.currentUser!.id);
+          await userById();
+        }
+      }
+      isLoading(false);
+
+      return true;
+    } catch (e) {
+      isLoading(false);
+      logError('Update image ${e.toString()}');
+      showToast('Update image failed');
       rethrow;
     }
   }

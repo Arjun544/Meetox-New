@@ -7,6 +7,7 @@ import 'package:meetox/screens/profile_screen/components/date_picker_sheet.dart'
 import 'package:meetox/widgets/custom_sheet.dart';
 import 'package:meetox/widgets/premium_button.dart';
 
+import 'edit_image.dart';
 import 'social_item.dart';
 
 class MyDetails extends GetView<ProfileController> {
@@ -37,46 +38,49 @@ class MyDetails extends GetView<ProfileController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Obx(
-                    () => Stack(
-                      alignment: Alignment.bottomRight,
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          height: Get.height * 0.09,
-                          width: Get.width * 0.18,
-                          decoration: BoxDecoration(
-                            color: context.theme.indicatorColor,
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                currentUser.value.photo!,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: -4,
-                          bottom: -4,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
+                  InkWell(
+                    onTap: () => Get.to(() => const EditProfile()),
+                    child: Obx(
+                      () => Stack(
+                        alignment: Alignment.bottomRight,
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            height: Get.height * 0.09,
+                            width: Get.width * 0.18,
                             decoration: BoxDecoration(
+                              color: context.theme.indicatorColor,
                               borderRadius: BorderRadius.circular(20),
-                              color: AppColors.customBlack,
-                              border: Border.all(
-                                width: 3,
-                                color: context.theme.scaffoldBackgroundColor,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(
+                                  currentUser.value.photo!,
+                                ),
                               ),
                             ),
-                            child: const Icon(
-                              FlutterRemix.add_fill,
-                              color: Colors.white,
-                              size: 18,
+                          ),
+                          Positioned(
+                            right: -4,
+                            bottom: -4,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: AppColors.customBlack,
+                                border: Border.all(
+                                  width: 3,
+                                  color: context.theme.scaffoldBackgroundColor,
+                                ),
+                              ),
+                              child: const Icon(
+                                FlutterRemix.add_fill,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 20.w),
