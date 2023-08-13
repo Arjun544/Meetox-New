@@ -79,26 +79,28 @@ class AdminOptions extends GetView<CircleProfileController> {
                   ),
                 ),
                 actions: [
-                  isLoading.value
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Get.width * 0.42, vertical: 8.h),
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                            color: AppColors.primaryYellow,
-                            size: 25.sp,
-                          ),
-                        )
-                      : CupertinoActionSheetAction(
-                          isDestructiveAction: true,
-                          onPressed: () => controller.handleDelete(isLoading),
-                          child: Text(
-                            'Delete',
-                            style:
-                                context.theme.textTheme.labelMedium!.copyWith(
-                              color: Colors.redAccent,
+                  Obx(
+                    () => isLoading.value
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Get.width * 0.44, vertical: 8.h),
+                            child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: AppColors.primaryYellow,
+                              size: 20.sp,
+                            ),
+                          )
+                        : CupertinoActionSheetAction(
+                            isDestructiveAction: true,
+                            onPressed: () => controller.handleDelete(isLoading),
+                            child: Text(
+                              'Delete',
+                              style:
+                                  context.theme.textTheme.labelMedium!.copyWith(
+                                color: Colors.redAccent,
+                              ),
                             ),
                           ),
-                        ),
+                  ),
                 ],
               ),
             ),
