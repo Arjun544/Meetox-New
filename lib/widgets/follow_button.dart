@@ -6,7 +6,8 @@ import 'package:meetox/core/imports/packages_imports.dart';
 import '../services/follow_services.dart';
 
 class FollowButton extends StatefulWidget {
-  final String id;
+  final String followerId;
+  final String followingId;
   final void Function() onFollow;
   final void Function() onFollowError;
   final void Function() onUnFollow;
@@ -14,7 +15,8 @@ class FollowButton extends StatefulWidget {
 
   const FollowButton({
     super.key,
-    required this.id,
+    required this.followerId,
+    required this.followingId,
     required this.onFollow,
     required this.onFollowError,
     required this.onUnFollow,
@@ -37,7 +39,8 @@ class _FollowButtonState extends State<FollowButton> {
 
   void checkIsFollowed() async {
     isFollowed.value = await FollowServices.isFollowed(
-      targetUserId: widget.id,
+      followerId: widget.followerId,
+      followingId: widget.followingId,
       isLoading: isLoading,
     );
   }
@@ -46,7 +49,8 @@ class _FollowButtonState extends State<FollowButton> {
     isFollowed(true);
     widget.onFollow();
     await FollowServices.followUser(
-      targetUserId: widget.id,
+      followerId: widget.followerId,
+      followingId: widget.followingId,
       onError: () {
         isFollowed(false);
         widget.onFollowError();
@@ -56,11 +60,11 @@ class _FollowButtonState extends State<FollowButton> {
   }
 
   void handleUnFollow() async {
-     isFollowed(false);
+    isFollowed(false);
     widget.onUnFollow();
     await FollowServices.unFollowUser(
-      targetUserId: widget.id,
-     
+      followerId: widget.followerId,
+      followingId: widget.followingId,
       onError: () {
         isFollowed(true);
         widget.onUnFollowError();

@@ -88,6 +88,12 @@ class MapScreen extends GetView<MapScreenController> {
                     controller.nearbyFollowers.value,
                   ),
                 ]
+                else if (!controller.isLoading.value &&
+                    controller.currentMainFilter.value == 'Users') ...[
+                  UsersClusterlayer(
+                    controller.nearbyUsers.value,
+                  ),
+                ]
               ],
             ),
           ),

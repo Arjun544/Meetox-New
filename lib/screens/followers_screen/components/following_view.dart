@@ -29,7 +29,7 @@ class FollowingView extends GetView<FollowersController> {
               isPasswordVisible: true.obs,
               hasFocus: false.obs,
               autoFocus: false,
-                  isSearchField: true,
+              isSearchField: true,
               keyboardType: TextInputType.text,
               prefixIcon: FlutterRemix.search_2_fill,
               onChanged: (value) => controller.followingSearchQuery(value),

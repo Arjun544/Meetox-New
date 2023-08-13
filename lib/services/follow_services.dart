@@ -5,7 +5,8 @@ import 'package:meetox/models/user_model.dart';
 
 class FollowServices {
   static Future<bool> isFollowed({
-    required String targetUserId,
+    required String followerId,
+    required String followingId,
     required RxBool isLoading,
   }) async {
     try {
@@ -13,8 +14,8 @@ class FollowServices {
       final data = await supabase
           .from('follow')
           .select()
-          .eq('follower_user_id', targetUserId)
-          .eq('following_user_id', supabase.auth.currentUser!.id);
+          .eq('follower_user_id', followerId)
+          .eq('following_user_id', followingId);
 
       logSuccess(data.toString());
       isLoading.value = false;
@@ -32,14 +33,15 @@ class FollowServices {
   }
 
   static Future<void> followUser({
-    required String targetUserId,
+    required String followerId,
+    required String followingId,
     required void Function() onError,
   }) async {
     try {
       await supabase.from('follow').insert(
         {
-          'follower_user_id': targetUserId,
-          'following_user_id': supabase.auth.currentUser!.id,
+          'follower_user_id': followerId,
+          'following_user_id': followingId,
         },
       );
       logSuccess('followed user successfully');
@@ -51,15 +53,16 @@ class FollowServices {
   }
 
   static Future<void> unFollowUser({
-    required String targetUserId,
+    required String followerId,
+    required String followingId,
     required void Function() onError,
   }) async {
     try {
       await supabase
           .from('follow')
           .delete()
-          .eq('follower_user_id', targetUserId)
-          .eq('following_user_id', supabase.auth.currentUser!.id);
+          .eq('follower_user_id', followerId)
+          .eq('following_user_id', followingId);
       logSuccess('unfollowed user successfully');
     } catch (e) {
       onError();
@@ -136,7 +139,6 @@ class FollowServices {
               .withConverter((data) => List<UserModel>.from(
                     data!.map((x) => UserModel.fromJSON(x['profiles'])),
                   ));
-
       return followers;
     } catch (e) {
       logError(e.toString());

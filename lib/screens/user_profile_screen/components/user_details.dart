@@ -180,7 +180,8 @@ class UserDetails extends GetView<UserProfileController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             FollowButton(
-                              id: controller.profile.value.id!,
+                              followerId: controller.profile.value.id!,
+                              followingId: currentUser.value.id!,
                               onFollow: () {
                                 controller.profile.value.followers =
                                     controller.profile.value.followers! + 1;

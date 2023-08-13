@@ -1,4 +1,7 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:meetox/controllers/profile_controller.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/follow_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
@@ -18,6 +21,7 @@ class FollowerTile extends StatelessWidget {
       this.onTap});
   @override
   Widget build(BuildContext context) {
+    final isRegistered = Get.isRegistered<ProfileController>();
     return ListTile(
       onTap: onTap,
       splashColor: Colors.transparent,
@@ -62,11 +66,41 @@ class FollowerTile extends StatelessWidget {
       ),
       trailing: user.id != currentUser.value.id && showFollowButton
           ? FollowButton(
-              id: user.id!,
-              onFollow: () {},
-              onFollowError: () {},
-              onUnFollow: () {},
-              onUnFollowError: () {},
+              followerId: user.id!,
+              followingId: currentUser.value.id!,
+              onFollow: () {
+                if (isRegistered) {
+                  final ProfileController controller = Get.find();
+                  controller.profile.value.followings =
+                      controller.profile.value.followings! + 1;
+
+                  controller.profile.refresh();
+                }
+              },
+              onFollowError: () {
+                if (isRegistered) {
+                  final ProfileController controller = Get.find();
+                  controller.profile.value.followings =
+                      controller.profile.value.followings! - 1;
+                  controller.profile.refresh();
+                }
+              },
+              onUnFollow: () {
+                if (isRegistered) {
+                  final ProfileController controller = Get.find();
+                  controller.profile.value.followings =
+                      controller.profile.value.followings! - 1;
+                  controller.profile.refresh();
+                }
+              },
+              onUnFollowError: () {
+                if (isRegistered) {
+                  final ProfileController controller = Get.find();
+                  controller.profile.value.followings =
+                      controller.profile.value.followings! + 1;
+                  controller.profile.refresh();
+                }
+              },
             )
           : const SizedBox.shrink(),
     );
