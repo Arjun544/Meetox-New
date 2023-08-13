@@ -94,7 +94,7 @@ class CircleDetails extends GetView<AddCircleController> {
                       child: MiniMap(
                         latitude: currentUser.value.location!.latitude!,
                         longitude: currentUser.value.location!.longitude!,
-                        image: currentUser.value.photo!,
+                        image: currentUser.value.photo!.obs,
                         color: AppColors.primaryYellow,
                       ),
                     ),

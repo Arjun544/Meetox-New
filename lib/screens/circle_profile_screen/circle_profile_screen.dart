@@ -64,11 +64,13 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
                 child: SizedBox(
                   height: 200.h,
                   width: Get.width,
-                  child: MiniMap(
-                    latitude: circle.location!.latitude!,
-                    longitude: circle.location!.longitude!,
-                    image: circle.photo!,
-                    color: Colors.lightBlue,
+                  child: Obx(
+                    () => MiniMap(
+                      latitude: circle.location!.latitude!,
+                      longitude: circle.location!.longitude!,
+                      image: controller.circle.value.photo!.obs,
+                      color: Colors.lightBlue,
+                    ),
                   ),
                 ),
               ),

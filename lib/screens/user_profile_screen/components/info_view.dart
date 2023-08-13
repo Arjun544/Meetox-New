@@ -22,7 +22,7 @@ class InfoView extends GetView<UserProfileController> {
               child: MiniMap(
                 latitude: controller.user.value.location!.latitude!,
                 longitude: controller.user.value.location!.longitude!,
-                image: controller.user.value.photo!,
+                image: controller.user.value.photo!.obs,
                 color: AppColors.primaryYellow,
               ),
             ),

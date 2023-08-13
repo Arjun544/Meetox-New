@@ -85,7 +85,6 @@ class EditProfile extends GetView<ProfileController> {
                 () => CircleAvatar(
                   maxRadius: 60.sp,
                   backgroundColor: AppColors.primaryYellow,
-                  // If login provider is Facebook or Google, then show the profile image of Facebook or Google. otherwise, show the selected avatar or image.
                   backgroundImage: controller.socialProfile.value.isNotEmpty
                       ? CachedNetworkImageProvider(
                           controller.socialProfile.value)

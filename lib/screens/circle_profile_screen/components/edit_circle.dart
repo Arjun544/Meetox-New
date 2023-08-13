@@ -6,9 +6,11 @@ import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/widgets/custom_area_field.dart';
+import 'package:meetox/widgets/custom_button.dart';
 import 'package:meetox/widgets/custom_field.dart';
+import 'package:meetox/widgets/custom_sheet.dart';
+import 'package:meetox/widgets/sheets/avatars_sheet.dart';
 import 'package:meetox/widgets/unfocuser.dart';
-
 
 class EditCircle extends GetView<CircleProfileController> {
   const EditCircle({super.key});
@@ -18,6 +20,7 @@ class EditCircle extends GetView<CircleProfileController> {
     CircleProfileController controller = Get.find();
     final RxBool isLoading = false.obs;
 
+    controller.socialProfile.value = controller.circle.value.photo!;
     controller.nameController.text = controller.profile.value.name!;
     controller.descController.text = controller.profile.value.description!;
     controller.isPrivate.value = controller.profile.value.isPrivate!;
@@ -34,37 +37,38 @@ class EditCircle extends GetView<CircleProfileController> {
             style: context.theme.textTheme.labelMedium,
           ),
           actions: [
-            Padding(
-              padding: EdgeInsets.only(right: isLoading.value ? 24.0 : 8),
-              child: isLoading.value
-                  ? LoadingAnimationWidget.staggeredDotsWave(
-                      color: Colors.blueAccent,
-                      size: 20.w,
-                    )
-                  : TextButton(
-                      style: ElevatedButton.styleFrom(
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      // TODO: Handle delete done
-                      onPressed: () {},
-                      // onPressed: () => handleDone(),
-                      child: Obx(
-                        () => const Text(
+            Obx(
+              () => Padding(
+                padding: EdgeInsets.only(right: isLoading.value ? 24.0 : 8),
+                child: isLoading.value
+                    ? LoadingAnimationWidget.staggeredDotsWave(
+                        color: AppColors.primaryYellow,
+                        size: 20.sp,
+                      )
+                    : TextButton(
+                        style: ElevatedButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                        onPressed: () => controller.handleEdit(isLoading),
+                        child: Text(
                           'Done',
-                          // style: context.theme.textTheme.labelMedium!.copyWith(
-                          //     color: circleAvatar.value != circle.value.photo ||
-                          //             controller.nameText.value.toLowerCase() !=
-                          //                 circle.value.name!.toLowerCase() ||
-                          //             controller.descText.value.toLowerCase() !=
-                          //                 circle.value.description!
-                          //                     .toLowerCase() ||
-                          //             controller.isPrivate.value !=
-                          //                 circle.value.isPrivate
-                          //         ? Colors.blueAccent
-                          //         : context.theme.indicatorColor),
+                          style: context.theme.textTheme.labelSmall!.copyWith(
+                            color: controller.socialProfile.value !=
+                                        controller.circle.value.photo ||
+                                    controller.nameText.value.toLowerCase() !=
+                                        controller.profile.value.name!
+                                            .toLowerCase() ||
+                                    controller.descText.value.toLowerCase() !=
+                                        controller.profile.value.description!
+                                            .toLowerCase() ||
+                                    controller.isPrivate.value !=
+                                        controller.profile.value.isPrivate
+                                ? Colors.blueAccent
+                                : Colors.blueGrey,
+                          ),
                         ),
                       ),
-                    ),
+              ),
             ),
           ],
         ),
@@ -73,80 +77,118 @@ class EditCircle extends GetView<CircleProfileController> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20.h),
-                GestureDetector(
-                  // TODO: handle
-                  onTap: () {},
-                  // onTap: () => showCustomSheet(
-                  //   context: context,
-                  //   child: AvatarSheet(circleAvatar),
-                  // ),
-                  // child: Obx(
-                  //   () => CircleAvatar(
-                  //     maxRadius: 85.sp,
-                  //     backgroundColor: AppColors.primaryYellow,
-                  //     backgroundImage: controller
-                  //                 .selectedImage.value.files.isEmpty &&
-                  //             controller.capturedImage.value.path.isEmpty
-                  //         ? CachedNetworkImageProvider(
-                  //             circle.value.image!.image!,
-                  //           )
-                  //         : (controller.selectedImage.value.files.isNotEmpty &&
-                  //                 controller.capturedImage.value.path.isNotEmpty
-                  //             ? AssetImage(
-                  //                 controller.globalController.circleAvatars[
-                  //                     controller.selectedAvatar.value],
-                  //               )
-                  //             : controller.selectedImage.value.files.isEmpty
-                  //                 ? Image.file(
-                  //                     File(controller.capturedImage.value.path),
-                  //                   ).image
-                  //                 : Image.file(
-                  //                     File(controller
-                  //                         .selectedImage.value.files[0].path!),
-                  //                   ).image),
-                  //   ),
-                  // ),
+                Center(
                   child: Obx(
-                    () => Container(
-                      height: Get.height * 0.1,
-                      width: Get.width * 0.2,
-                      decoration: BoxDecoration(
-                        color: context.theme.indicatorColor,
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: controller.circle.value.photo!.isNotEmpty
-                              ? CachedNetworkImageProvider(
-                                  controller.circle.value.photo!,
+                    () => CircleAvatar(
+                      maxRadius: 60.sp,
+                      backgroundColor: Colors.blue,
+                      backgroundImage: controller.socialProfile.value.isNotEmpty
+                          ? CachedNetworkImageProvider(
+                              controller.socialProfile.value)
+                          : controller.selectedImage.value.files.isEmpty &&
+                                  controller.capturedImage.value.path.isEmpty
+                              ? AssetImage(
+                                  controller.globalController.circleAvatars[
+                                      controller.selectedAvatar.value],
                                 )
-                              : controller.selectedImage.value.files.isEmpty &&
-                                      controller
-                                          .capturedImage.value.path.isEmpty
-                                  ? AssetImage(
-                                      controller.globalController.circleAvatars[
-                                          controller.selectedAvatar.value],
-                                    )
-                                  : controller.selectedImage.value.files.isEmpty
-                                      ? Image.file(
-                                          File(controller
-                                              .capturedImage.value.path),
-                                        ).image
-                                      : Image.file(
-                                          File(controller.selectedImage.value
-                                              .files[0].path!),
-                                        ).image,
-                        ),
-                      ),
+                              : controller.selectedImage.value.files.isEmpty
+                                  ? Image.file(
+                                      File(controller.capturedImage.value.path),
+                                    ).image
+                                  : Image.file(
+                                      File(
+                                        controller
+                                            .selectedImage.value.files[0].path!,
+                                      ),
+                                    ).image,
                     ),
                   ),
                 ),
+                SizedBox(height: 30.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomButton(
+                      width: Get.width * 0.15,
+                      hasIcon: true,
+                      color: context.theme.indicatorColor,
+                      icon: IconTheme(
+                        data: context.theme.iconTheme,
+                        child: const Icon(
+                          FlutterRemix.user_4_fill,
+                        ),
+                      ),
+                      onPressed: () {
+                        showCustomSheet(
+                          context: context,
+                          child: AvatarsSheet(
+                            selectedAvatar: controller.selectedAvatar,
+                            avatars: controller.globalController.circleAvatars,
+                          ),
+                        );
+                        controller.capturedImage.value = XFile('');
+                        controller.selectedImage.value =
+                            const FilePickerResult([]);
+                        controller.socialProfile.value = '';
+                      },
+                    ),
+                    SizedBox(width: 20.w),
+                    CustomButton(
+                      width: Get.width * 0.15,
+                      hasIcon: true,
+                      color: context.theme.indicatorColor,
+                      icon: IconTheme(
+                        data: context.theme.iconTheme,
+                        child: const Icon(
+                          FlutterRemix.camera_3_fill,
+                        ),
+                      ),
+                      onPressed: () async {
+                        controller.capturedImage.value =
+                            (await ImagePicker().pickImage(
+                          source: ImageSource.camera,
+                          imageQuality: 50,
+                        ))!;
+                        controller.selectedImage.value =
+                            const FilePickerResult([]);
+                        controller.socialProfile.value = '';
+                      },
+                    ),
+                    SizedBox(width: 20.w),
+                    CustomButton(
+                      width: Get.width * 0.15,
+                      hasIcon: true,
+                      color: context.theme.indicatorColor,
+                      icon: IconTheme(
+                        data: context.theme.iconTheme,
+                        child: const Icon(
+                          FlutterRemix.image_2_fill,
+                        ),
+                      ),
+                      onPressed: () async {
+                        controller.selectedImage.value =
+                            (await FilePicker.platform.pickFiles(
+                          type: FileType.image,
+                          withData: true,
+                        ))!;
+                        controller.capturedImage.value = XFile('');
+                        controller.socialProfile.value = '';
+                      },
+                    ),
+                  ],
+                ),
                 SizedBox(height: 40.h),
+                Text(
+                  'Name',
+                  style: context.theme.textTheme.labelSmall,
+                ),
+                SizedBox(height: 10.h),
                 CustomField(
                   hintText: 'Name',
-                  autoFocus: true,
+                  autoFocus: false,
                   controller: controller.nameController,
                   focusNode: controller.nameFocusNode,
                   isPasswordVisible: true.obs,
@@ -170,7 +212,12 @@ class EditCircle extends GetView<CircleProfileController> {
                     return null;
                   },
                 ),
-                SizedBox(height: 15.h),
+                SizedBox(height: 20.h),
+                Text(
+                  'Description',
+                  style: context.theme.textTheme.labelSmall,
+                ),
+                SizedBox(height: 10.h),
                 CustomAreaField(
                   hintText: 'Description',
                   text: controller.nameText,

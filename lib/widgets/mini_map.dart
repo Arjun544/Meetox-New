@@ -9,7 +9,7 @@ import 'user_initials.dart';
 class MiniMap extends GetView<RootController> {
   final double latitude;
   final double longitude;
-  final String image;
+  final RxString image;
   final Color color;
 
   const MiniMap({
@@ -130,21 +130,24 @@ class MiniMap extends GetView<RootController> {
                             children: [
                               image.isEmpty
                                   ? const UserInititals(name: 'A')
-                                  : Container(
-                                      width: 40.h,
-                                      height: 40.w,
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.customGrey,
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                          width: 3,
-                                          color: color,
-                                        ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                            image,
+                                  : Obx(
+                                      () => Container(
+                                        width: 40.h,
+                                        height: 40.w,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.customGrey,
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                            width: 3,
+                                            color: color,
+                                          ),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: CachedNetworkImageProvider(
+                                              image.value,
+                                            ),
                                           ),
                                         ),
                                       ),

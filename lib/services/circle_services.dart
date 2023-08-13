@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
@@ -205,26 +206,65 @@ class CircleServices {
 
   static Future<void> editCircle({
     required RxBool isLoading,
-    required CircleModel circle,
-    required void Function(String) onSuccess,
+    required CircleProfileModel circle,
+    required File? file,
+    required void Function(CircleProfileModel) onSuccess,
   }) async {
     try {
       isLoading.value = true;
-      final PostgrestTransformBuilder data = await supabase
-          .from('circles')
-          .update(
-            circle.toJson(),
-          )
-          .eq('id', circle.id)
-          .select();
-      // await StorageServices.deleteImage(
-      //   folder: 'circle profiles',
-      //   name: getFileName(data[0]['photo']),
-      // );
+      CircleProfileModel? newCircle;
+      bool? isDeleteSuccess;
+      if (file != null) {
+        isDeleteSuccess = await StorageServices.deleteImage(
+          folder: 'circle profiles',
+          name: getFileName(circle.photo!),
+        );
+        if (isDeleteSuccess == true) {
+          final photoUrl = await StorageServices.uploadImage(
+            isLoading: isLoading,
+            folder: 'circle profiles',
+            subFolder: '${DateTime.now().millisecondsSinceEpoch}',
+            file: file,
+          );
+          if (photoUrl.isNotEmpty) {
+            await supabase.from('circles').update({
+              'photo': photoUrl,
+            }).eq('id', circle.id);
+          }
+          newCircle = await supabase
+              .from('circles')
+              .update({
+                'name': circle.name,
+                'description': circle.description,
+                'isprivate': circle.isPrivate,
+                'photo': photoUrl,
+              })
+              .eq('id', circle.id)
+              .select()
+              .withConverter(
+                (data) => CircleProfileModel.fromJson(data!.first),
+              );
+        }
+      } else {
+        newCircle = await supabase
+            .from('circles')
+            .update({
+              'name': circle.name,
+              'description': circle.description,
+              'isprivate': circle.isPrivate,
+            })
+            .eq('id', circle.id)
+            .select()
+            .withConverter(
+              (data) => CircleProfileModel.fromJson(data!.first),
+            );
+      }
       isLoading.value = false;
-      onSuccess(data.toString());
+      onSuccess(newCircle!);
     } catch (e) {
+      isLoading.value = false;
       logError(e.toString());
+      showToast('Edit circle failed');
     }
   }
 

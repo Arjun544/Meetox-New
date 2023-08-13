@@ -113,11 +113,9 @@ class UserServices {
           await supabase.from('profiles').update({
             'photo': photoUrl,
           }).eq('id', supabase.auth.currentUser!.id);
-          await userById();
         }
       }
       isLoading(false);
-
       return true;
     } catch (e) {
       isLoading(false);
