@@ -35,9 +35,9 @@ class UserServices {
   static Future<ProfileModel> profileDetails(RxBool isLoading) async {
     try {
       isLoading(true);
-      final profile = await supabase
-          .rpc('profile_details')
-          .withConverter((data) => ProfileModel.fromJson(data[0]));
+      final profile = await supabase.rpc('profile_details').withConverter(
+            (data) => ProfileModel.fromJson(data[0]),
+          );
       isLoading(false);
       return profile;
     } catch (e) {

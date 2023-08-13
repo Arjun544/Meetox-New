@@ -26,6 +26,14 @@ class MyDetails extends GetView<ProfileController> {
           style: context.theme.textTheme.labelMedium,
         ),
       ),
+      actions: [
+        IconButton(
+          onPressed: () => controller.getProfile(),
+          icon: const Icon(
+            FlutterRemix.restart_line,
+          ),
+        )
+      ],
       bottom: PreferredSize(
         preferredSize: Size(Get.width, 0),
         child: const PremiumButton(),

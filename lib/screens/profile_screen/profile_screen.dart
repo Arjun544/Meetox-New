@@ -45,7 +45,8 @@ class ProfileScreen extends GetView<ProfileController> {
                           child: Row(
                             children: [
                               Text(
-                                controller.profile.value.crosspaths.toString(),
+                                controller.profile.value.crosspaths
+                                    .toString(),
                                 style: context.theme.textTheme.labelMedium,
                               ),
                               SizedBox(width: 10.w),
