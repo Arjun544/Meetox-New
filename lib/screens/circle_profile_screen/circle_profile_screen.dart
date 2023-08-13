@@ -40,16 +40,19 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
                 ),
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: ReadMoreText(
-                    '', // "${profileCircle.value.description!.capitalizeFirst!}Amet pariatur irure velit non sit dolore est. Ipsum nulla ad cillum aliquip velit labore reprehenderit ut duis. Esse adipisicing nulla deserunt pariatur anim quis aliquip. Ut Lorem aute voluptate fugiat mollit quis est labore quis commodo elit consequat non. Sunt ad nulla proident ex dolor ea veniam. Duis proident anim ut laboris incididunt est laboris amet ullamco deserunt dolore.",
-                    style: context.theme.textTheme.labelSmall,
-                    trimLines: 3,
-                    colorClickableText: Colors.redAccent,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: ' Read more',
-                    trimExpandedText: ' Read less',
-                    moreStyle: context.theme.textTheme.labelSmall!.copyWith(
-                      color: Colors.blueAccent,
+                  title: Obx(
+                    () => ReadMoreText(
+                      controller.profile.value.description?.capitalizeFirst ??
+                          '',
+                      style: context.theme.textTheme.labelSmall,
+                      trimLines: 3,
+                      colorClickableText: Colors.redAccent,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: ' Read more',
+                      trimExpandedText: ' Read less',
+                      moreStyle: context.theme.textTheme.labelSmall!.copyWith(
+                        color: Colors.blueAccent,
+                      ),
                     ),
                   ),
                   splashColor: Colors.transparent,
@@ -76,7 +79,7 @@ class CircleProfileScreen extends GetView<CircleProfileController> {
                     () => controller.profile.value.id == null
                         ? const SizedBox.shrink()
                         : Text(
-                            'Created by ${circle.adminId == currentUser.value.id ? 'YOU' : controller.profile.value.admin!.name!.capitalizeFirst!} ${timeago.format(
+                            'Created by ${controller.profile.value.admin!.id == currentUser.value.id ? 'YOU' : controller.profile.value.admin!.name!.capitalizeFirst!} ${timeago.format(
                               controller.profile.value.createdAt!,
                               locale: 'en',
                               allowFromNow: true,

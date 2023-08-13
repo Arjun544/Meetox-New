@@ -87,13 +87,6 @@ class CircleDetails extends GetView<CircleProfileController> {
                   ),
                 ],
               ),
-              // if (controller.profile.value.id == null
-              //     ? false
-              //     : controller.profile.value.admin!.id ==
-              //         currentUser.value.id) ...[
-              //   SizedBox(height: 30.h),
-
-              // ],
               SizedBox(height: 30.h),
               Obx(
                 () => controller.profile.value.id != null
