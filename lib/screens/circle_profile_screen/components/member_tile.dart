@@ -3,28 +3,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/models/user_model.dart';
-import 'package:meetox/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:meetox/widgets/join_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 
 import '../../../core/imports/core_imports.dart';
 import '../../../core/imports/packages_imports.dart';
 
-class FollowerTile extends GetView<CircleProfileController> {
+class MemberTile extends GetView<CircleProfileController> {
   final UserModel user;
 
-  const FollowerTile({
+  const MemberTile({
     super.key,
     required this.user,
   });
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => Get.to(
-        () => UserProfileScreen(
-          user: user,
-        ),
-      ),
       splashColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       leading: Stack(
@@ -70,6 +64,8 @@ class FollowerTile extends GetView<CircleProfileController> {
               id: controller.profile.value.id!,
               isPrivate: controller.profile.value.isPrivate!,
               isAdmin: true,
+              joinText: 'Add',
+              leaveText: 'Remove',
               hasLimitReached: controller.profile.value.members ==
                   controller.profile.value.limit!,
               onJoin: () {

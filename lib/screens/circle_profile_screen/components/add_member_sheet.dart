@@ -7,7 +7,7 @@ import 'package:meetox/widgets/custom_error_widget.dart';
 import 'package:meetox/widgets/custom_field.dart';
 import 'package:meetox/widgets/loaders/followers_loader.dart';
 
-import 'follower_tile.dart';
+import 'member_tile.dart';
 
 class AddMemberSheet extends GetView<CircleProfileController> {
   const AddMemberSheet({
@@ -90,7 +90,7 @@ class AddMemberSheet extends GetView<CircleProfileController> {
                   isWarining: true,
                   onPressed: () {},
                 ),
-                itemBuilder: (context, item, index) => FollowerTile(
+                itemBuilder: (context, item, index) => MemberTile(
                   user: item,
                 ),
               ),

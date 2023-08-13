@@ -94,7 +94,7 @@ class MyDetails extends GetView<MyProfileController> {
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followers != 0) {
-                        Get.to(() => const MyFollowersScreen(false));
+                        Get.to(() => const MyFollowersScreen(0));
                       }
                     },
                     child: Column(
@@ -118,7 +118,7 @@ class MyDetails extends GetView<MyProfileController> {
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followings != 0) {
-                        Get.to(() => const MyFollowersScreen(true));
+                        Get.to(() => const MyFollowersScreen(1));
                       }
                     },
                     child: Column(

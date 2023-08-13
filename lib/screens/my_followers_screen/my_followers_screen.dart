@@ -7,14 +7,13 @@ import 'components/my_followers_view.dart';
 import 'components/my_followings_view.dart';
 
 class MyFollowersScreen extends GetView<MyFollowersController> {
-  final bool isFollowing;
+  final int initialIndex;
 
-  const MyFollowersScreen(this.isFollowing, {super.key});
+  const MyFollowersScreen(this.initialIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(MyFollowersController());
-    controller.currentIndex.value = isFollowing ? 1 : 0;
+    Get.put(MyFollowersController(initialIndex));
 
     return Scaffold(
       appBar: AppBar(

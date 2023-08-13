@@ -9,13 +9,13 @@ import 'components/following_view.dart';
 
 class FollowersScreen extends GetView<FollowersController> {
   final UserModel user;
-  final bool isFollowing;
+  final int initialIndex;
 
-  const FollowersScreen(this.user, this.isFollowing, {super.key});
+  const FollowersScreen(this.user, this.initialIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(FollowersController(user.id!, isFollowing));
+    Get.put(FollowersController(user.id!, initialIndex));
 
     return Scaffold(
       appBar: AppBar(

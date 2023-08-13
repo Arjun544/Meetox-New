@@ -7,6 +7,8 @@ class JoinButton extends StatefulWidget {
   final bool isPrivate;
   final bool isAdmin;
   final bool hasLimitReached;
+  final String? joinText;
+  final String? leaveText;
   final void Function() onJoin;
   final void Function() onJoinError;
   final void Function() onLeave;
@@ -16,6 +18,8 @@ class JoinButton extends StatefulWidget {
     super.key,
     required this.id,
     required this.isAdmin,
+    this.joinText,
+    this.leaveText,
     required this.isPrivate,
     required this.hasLimitReached,
     required this.onJoin,
@@ -125,7 +129,9 @@ class _JoinButtonState extends State<JoinButton> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              isMember.value ? 'Leave' : 'Join',
+                              isMember.value
+                                  ? widget.leaveText ?? 'Leave'
+                                  : widget.joinText ?? 'Join',
                               style: context.theme.textTheme.labelSmall,
                             ),
                           ],

@@ -108,7 +108,7 @@ class UserDetails extends GetView<UserProfileController> {
                                 id: controller.profile.value.id,
                                 name: controller.profile.value.name,
                               ),
-                              false,
+                              0,
                             ));
                       }
                     },
@@ -139,7 +139,7 @@ class UserDetails extends GetView<UserProfileController> {
                               id: controller.profile.value.id,
                               name: controller.profile.value.name,
                             ),
-                            true,
+                            1,
                           ),
                         );
                       }

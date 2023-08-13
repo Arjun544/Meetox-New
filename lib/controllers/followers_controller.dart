@@ -6,8 +6,8 @@ import 'package:meetox/services/follow_services.dart';
 class FollowersController extends GetxController
     with GetSingleTickerProviderStateMixin {
   final String id;
-  final bool isFollowing;
-  FollowersController(this.id, this.isFollowing);
+  final int initialIndex;
+  FollowersController(this.id, this.initialIndex);
 
   late TabController tabController;
 
@@ -25,7 +25,7 @@ class FollowersController extends GetxController
   void onInit() {
     super.onInit();
     tabController = TabController(
-        initialIndex: isFollowing ? 1 : 0, length: 2, vsync: this);
+        initialIndex: initialIndex, length: 2, vsync: this);
     followersPagingController.addPageRequestListener((page) async {
       await fetchFollowers(page);
       followersSearchDebounce = debounce(

@@ -2,6 +2,8 @@ import 'package:meetox/controllers/followers_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/screens/my_profile_screen/my_profile_screen.dart';
+import 'package:meetox/screens/user_profile_screen/user_profile_screen.dart';
 import 'package:meetox/widgets/custom_error_widget.dart';
 import 'package:meetox/widgets/custom_field.dart';
 import 'package:meetox/widgets/loaders/followers_loader.dart';
@@ -72,6 +74,11 @@ class FollowersView extends GetView<FollowersController> {
                 ),
                 itemBuilder: (context, item, index) => FollowerTile(
                   user: item,
+                  onTap: () => Get.to(
+                    () => item.id == currentUser.value.id!
+                        ? const MyProfileScreen()
+                        : UserProfileScreen(user: item),
+                  ),
                 ),
               ),
             ),

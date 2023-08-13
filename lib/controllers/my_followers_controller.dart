@@ -5,9 +5,10 @@ import 'package:meetox/services/follow_services.dart';
 
 class MyFollowersController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  late TabController tabController;
+  final int initialIndex;
+  MyFollowersController(this.initialIndex);
 
-  final RxInt currentIndex = 0.obs;
+  late TabController tabController;
 
   final followersPagingController =
       PagingController<int, UserModel>(firstPageKey: 1);
@@ -22,8 +23,8 @@ class MyFollowersController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(
-        initialIndex: currentIndex.value, length: 2, vsync: this);
+    tabController =
+        TabController(initialIndex: initialIndex, length: 2, vsync: this);
     followersPagingController.addPageRequestListener((page) async {
       await fetchFollowers(page);
       followersSearchDebounce = debounce(
@@ -99,7 +100,7 @@ class MyFollowersController extends GetxController
     followersPagingController.dispose();
     followingPagingController.dispose();
     tabController.dispose();
-   if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
+    if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
     if (followingSearchDebounce != null) followingSearchDebounce!.dispose();
     super.dispose();
   }
