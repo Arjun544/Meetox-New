@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 
 import '../../../core/imports/core_imports.dart';
 import '../../../core/imports/packages_imports.dart';
@@ -9,7 +9,7 @@ import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_sheet.dart';
 import '../../../widgets/sheets/avatars_sheet.dart';
 
-class EditProfile extends GetView<ProfileController> {
+class EditProfile extends GetView<MyProfileController> {
   const EditProfile({super.key});
 
   @override

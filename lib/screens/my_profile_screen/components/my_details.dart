@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
-import 'package:meetox/screens/followers_screen/followers_screen.dart';
-import 'package:meetox/screens/profile_screen/components/date_picker_sheet.dart';
+import 'package:meetox/screens/my_followers_screen/my_followers_screen.dart';
+import 'package:meetox/screens/my_profile_screen/components/date_picker_sheet.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 import 'package:meetox/widgets/premium_button.dart';
 
 import 'edit_image.dart';
 import 'social_item.dart';
 
-class MyDetails extends GetView<ProfileController> {
+class MyDetails extends GetView<MyProfileController> {
   const MyDetails({super.key});
 
   @override
@@ -91,35 +91,10 @@ class MyDetails extends GetView<ProfileController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.w),
-                  GestureDetector(
-                    onTap: () {
-                      if (controller.profile.value.followings != 0) {
-                        Get.to(() => FollowersScreen(currentUser.value, true));
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        Obx(
-                          () => Text(
-                            controller.profile.value.feeds == null
-                                ? '0'
-                                : controller.profile.value.feeds.toString(),
-                            style: context.theme.textTheme.labelMedium,
-                          ),
-                        ),
-                        Text(
-                          'Feeds',
-                          style: context.theme.textTheme.labelSmall!
-                              .copyWith(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followers != 0) {
-                        Get.to(() => FollowersScreen(currentUser.value, false));
+                        Get.to(() => const MyFollowersScreen(false));
                       }
                     },
                     child: Column(
@@ -143,7 +118,7 @@ class MyDetails extends GetView<ProfileController> {
                   GestureDetector(
                     onTap: () {
                       if (controller.profile.value.followings != 0) {
-                        Get.to(() => FollowersScreen(currentUser.value, true));
+                        Get.to(() => const MyFollowersScreen(true));
                       }
                     },
                     child: Column(
@@ -165,7 +140,6 @@ class MyDetails extends GetView<ProfileController> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20.w),
                 ],
               ),
               SizedBox(height: 30.h),

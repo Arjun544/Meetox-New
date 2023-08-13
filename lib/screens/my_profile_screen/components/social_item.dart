@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_social.dart';
 import 'package:meetox/helpers/launch_url.dart';
-import 'package:meetox/screens/profile_screen/components/add_social_sheet.dart';
+import 'package:meetox/screens/my_profile_screen/components/add_social_sheet.dart';
 import 'package:meetox/widgets/custom_sheet.dart';
 
-class SocialItem extends GetView<ProfileController> {
+class SocialItem extends GetView<MyProfileController> {
   final String type;
 
   const SocialItem({super.key, required this.type});

@@ -1,7 +1,7 @@
 // ignore_for_file: invalid_use_of_protected_member
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/widgets/follow_button.dart';
 import 'package:meetox/widgets/online_indicator.dart';
@@ -21,7 +21,7 @@ class FollowerTile extends StatelessWidget {
       this.onTap});
   @override
   Widget build(BuildContext context) {
-    final isRegistered = Get.isRegistered<ProfileController>();
+    final isRegistered = Get.isRegistered<MyProfileController>();
     return ListTile(
       onTap: onTap,
       splashColor: Colors.transparent,
@@ -70,7 +70,7 @@ class FollowerTile extends StatelessWidget {
               followingId: currentUser.value.id!,
               onFollow: () {
                 if (isRegistered) {
-                  final ProfileController controller = Get.find();
+                  final MyProfileController controller = Get.find();
                   controller.profile.value.followings =
                       controller.profile.value.followings! + 1;
 
@@ -79,7 +79,7 @@ class FollowerTile extends StatelessWidget {
               },
               onFollowError: () {
                 if (isRegistered) {
-                  final ProfileController controller = Get.find();
+                  final MyProfileController controller = Get.find();
                   controller.profile.value.followings =
                       controller.profile.value.followings! - 1;
                   controller.profile.refresh();
@@ -87,7 +87,7 @@ class FollowerTile extends StatelessWidget {
               },
               onUnFollow: () {
                 if (isRegistered) {
-                  final ProfileController controller = Get.find();
+                  final MyProfileController controller = Get.find();
                   controller.profile.value.followings =
                       controller.profile.value.followings! - 1;
                   controller.profile.refresh();
@@ -95,7 +95,7 @@ class FollowerTile extends StatelessWidget {
               },
               onUnFollowError: () {
                 if (isRegistered) {
-                  final ProfileController controller = Get.find();
+                  final MyProfileController controller = Get.find();
                   controller.profile.value.followings =
                       controller.profile.value.followings! + 1;
                   controller.profile.refresh();

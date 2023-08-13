@@ -1,4 +1,4 @@
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/screens/circles_screen/circles_screen.dart';
@@ -7,12 +7,12 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'components/my_details.dart';
 
-class ProfileScreen extends GetView<ProfileController> {
-  const ProfileScreen({super.key});
+class MyProfileScreen extends GetView<MyProfileController> {
+  const MyProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(ProfileController());
+    Get.put(MyProfileController());
 
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -45,8 +45,32 @@ class ProfileScreen extends GetView<ProfileController> {
                           child: Row(
                             children: [
                               Text(
-                                controller.profile.value.crosspaths
-                                    .toString(),
+                                controller.profile.value.crosspaths.toString(),
+                                style: context.theme.textTheme.labelMedium,
+                              ),
+                              SizedBox(width: 10.w),
+                              const Icon(FlutterRemix.arrow_right_s_line),
+                            ],
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () => Get.to(() => const CirclesScreen()),
+                        minLeadingWidth: 0,
+                        leading: const Icon(
+                          FlutterRemix.fire_fill,
+                          color: AppColors.primaryYellow,
+                        ),
+                        title: Text(
+                          'Feeds',
+                          style: context.theme.textTheme.labelMedium,
+                        ),
+                        trailing: SizedBox(
+                          width: 40.w,
+                          child: Row(
+                            children: [
+                              Text(
+                                controller.profile.value.feeds.toString(),
                                 style: context.theme.textTheme.labelMedium,
                               ),
                               SizedBox(width: 10.w),

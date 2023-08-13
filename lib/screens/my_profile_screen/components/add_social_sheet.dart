@@ -1,11 +1,11 @@
-import 'package:meetox/controllers/profile_controller.dart';
+import 'package:meetox/controllers/my_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/helpers/get_social.dart';
 import 'package:meetox/helpers/is_social_url.dart';
 import 'package:meetox/widgets/custom_field.dart';
 
-class AddSocialSheet extends GetView<ProfileController> {
+class AddSocialSheet extends GetView<MyProfileController> {
   final String type;
   final String? url;
 

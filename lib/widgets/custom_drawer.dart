@@ -1,7 +1,7 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/screens/circles_screen/circles_screen.dart';
-import 'package:meetox/screens/profile_screen/profile_screen.dart';
+import 'package:meetox/screens/my_profile_screen/my_profile_screen.dart';
 import 'package:meetox/services/auth_services.dart';
 import 'package:meetox/widgets/drawer_tile.dart';
 
@@ -39,7 +39,7 @@ class CustomDrawer extends StatelessWidget {
                 DrawerTile(
                   title: 'View profile',
                   icon: FlutterRemix.profile_fill,
-                  onPressed: () => Get.to(() => const ProfileScreen()),
+                  onPressed: () => Get.to(() => const MyProfileScreen()),
                 ),
                 DrawerTile(
                   icon: FlutterRemix.footprint_fill,

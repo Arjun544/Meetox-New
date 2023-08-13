@@ -62,6 +62,50 @@ class ListTilesLoader extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 12.h),
+            Container(
+              height: 50.h,
+              padding: EdgeInsets.symmetric(horizontal: 15.sp),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    height: 30.h,
+                    width: 30.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryYellow,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(width: 30.sp),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 100.sp,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryYellow,
+                          ),
+                        ),
+                        Container(
+                          height: 20.h,
+                          width: 20.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryYellow,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 24.h),
             Container(
               height: 50.h,

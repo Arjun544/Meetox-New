@@ -10,7 +10,7 @@ import 'package:meetox/services/user_services.dart';
 
 import 'global_controller.dart';
 
-class ProfileController extends GetxController {
+class MyProfileController extends GetxController {
   final socialFormKey = GlobalKey<FormState>();
   final GlobalController globalController = Get.find();
 
