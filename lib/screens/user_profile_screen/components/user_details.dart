@@ -181,15 +181,25 @@ class UserDetails extends GetView<UserProfileController> {
                           children: [
                             FollowButton(
                               id: controller.profile.value.id!,
-                              onFollow: (data) {
+                              onFollow: () {
                                 controller.profile.value.followers =
                                     controller.profile.value.followers! + 1;
                                 controller.profile.refresh();
                               },
-                              onUnFollow: (data) {
+                              onFollowError: () {
+                                controller.profile.value.followers =
+                                    controller.profile.value.followers! - 1;
+                                controller.profile.refresh();
+                              },
+                              onUnFollow: () {
                                 controller.profile.value.followers =
                                     controller.profile.value.followers! - 1;
 
+                                controller.profile.refresh();
+                              },
+                              onUnFollowError: () {
+                                controller.profile.value.followers =
+                                    controller.profile.value.followers! + 1;
                                 controller.profile.refresh();
                               },
                             ),

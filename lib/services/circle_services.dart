@@ -173,42 +173,33 @@ class CircleServices {
 
   static Future<void> join({
     required String id,
-    required RxBool isLoading,
-    required void Function(bool) onSuccess,
+    required void Function() onError,
   }) async {
     try {
-      isLoading.value = true;
       await supabase
           .from('circle_members')
           .insert({'member_id': currentUser.value.id, 'circle_id': id});
-
-      isLoading.value = false;
-      onSuccess(true);
+      logSuccess('Joined circle');
     } catch (e) {
-      isLoading.value = false;
+      onError();
       logError(e.toString());
     }
   }
 
   static Future<void> leave({
     required String id,
-    required RxBool isLoading,
-    required void Function(bool) onSuccess,
+    required void Function() onError,
   }) async {
     try {
-      isLoading.value = true;
       await supabase
           .from('circle_members')
           .delete()
           .eq('member_id', currentUser.value.id)
           .eq('circle_id', id);
-
-      isLoading.value = false;
-      onSuccess(true);
+      logSuccess('Left circle');
     } catch (e) {
-      isLoading.value = false;
+      onError();
       logError(e.toString());
-      rethrow;
     }
   }
 

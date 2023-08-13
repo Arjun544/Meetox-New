@@ -7,8 +7,10 @@ class JoinButton extends StatefulWidget {
   final bool isPrivate;
   final bool isAdmin;
   final bool hasLimitReached;
-  final void Function(bool) onJoin;
-  final void Function(bool) onLeave;
+  final void Function() onJoin;
+  final void Function() onJoinError;
+  final void Function() onLeave;
+  final void Function() onLeaveError;
 
   const JoinButton({
     super.key,
@@ -17,7 +19,9 @@ class JoinButton extends StatefulWidget {
     required this.isPrivate,
     required this.hasLimitReached,
     required this.onJoin,
+    required this.onJoinError,
     required this.onLeave,
+    required this.onLeaveError,
   });
 
   @override
@@ -42,23 +46,25 @@ class _JoinButtonState extends State<JoinButton> {
   }
 
   void handleJoin() async {
+    isMember(true);
+    widget.onJoin();
     await CircleServices.join(
-      isLoading: isLoading,
       id: widget.id,
-      onSuccess: (data) {
-        isMember(true);
-        widget.onJoin(data);
+      onError: () {
+        isMember(false);
+        widget.onJoinError();
       },
     );
   }
 
   void handleLeave() async {
+    isMember(false);
+    widget.onLeave();
     await CircleServices.leave(
-      isLoading: isLoading,
       id: widget.id,
-      onSuccess: (data) {
-        isMember(false);
-        widget.onLeave(data);
+      onError: () {
+        isMember(true);
+        widget.onLeaveError();
       },
     );
   }

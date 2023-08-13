@@ -15,24 +15,33 @@ class NonAdminOptions extends GetView<CircleProfileController> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           JoinButton(
-            isAdmin: controller.profile.value.id == null
-                ? false
-                : controller.profile.value.admin!.id == currentUser.value.id,
-            id: controller.circle.value.id!,
-            isPrivate: controller.profile.value.isPrivate!,
-            hasLimitReached: controller.profile.value.members ==
-                controller.profile.value.limit!,
-            onJoin: (data) {
-              controller.profile.value.members =
-                  controller.profile.value.members! + 1;
-              controller.profile.refresh();
-            },
-            onLeave: (data) {
-              controller.profile.value.members =
-                  controller.profile.value.members! - 1;
-              controller.profile.refresh();
-            },
-          ),
+              isAdmin: controller.profile.value.id == null
+                  ? false
+                  : controller.profile.value.admin!.id == currentUser.value.id,
+              id: controller.circle.value.id!,
+              isPrivate: controller.profile.value.isPrivate!,
+              hasLimitReached: controller.profile.value.members ==
+                  controller.profile.value.limit!,
+              onJoin: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! + 1;
+                controller.profile.refresh();
+              },
+              onJoinError: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! - 1;
+                controller.profile.refresh();
+              },
+              onLeave: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! - 1;
+                controller.profile.refresh();
+              },
+              onLeaveError: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! + 1;
+                controller.profile.refresh();
+              }),
           VerticalDivider(
             color: context.theme.indicatorColor,
             width: 40.w,

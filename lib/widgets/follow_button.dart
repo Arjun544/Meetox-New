@@ -7,14 +7,18 @@ import '../services/follow_services.dart';
 
 class FollowButton extends StatefulWidget {
   final String id;
-  final void Function(bool) onFollow;
-  final void Function(bool) onUnFollow;
+  final void Function() onFollow;
+  final void Function() onFollowError;
+  final void Function() onUnFollow;
+  final void Function() onUnFollowError;
 
   const FollowButton({
     super.key,
     required this.id,
     required this.onFollow,
+    required this.onFollowError,
     required this.onUnFollow,
+    required this.onUnFollowError,
   });
 
   @override
@@ -39,23 +43,28 @@ class _FollowButtonState extends State<FollowButton> {
   }
 
   void handleFollow() async {
+    isFollowed(true);
+    widget.onFollow();
     await FollowServices.followUser(
-      isLoading: isLoading,
       targetUserId: widget.id,
-      onSuccess: (data) {
-        isFollowed(true);
-        widget.onFollow(data);
+      onError: () {
+        isFollowed(false);
+        widget.onFollowError();
+        showToast('Follow failed');
       },
     );
   }
 
   void handleUnFollow() async {
+     isFollowed(false);
+    widget.onUnFollow();
     await FollowServices.unFollowUser(
-      isLoading: isLoading,
       targetUserId: widget.id,
-      onSuccess: (data) {
-        isFollowed(false);
-        widget.onUnFollow(data);
+     
+      onError: () {
+        isFollowed(true);
+        widget.onUnFollowError();
+        showToast('Unfollow failed');
       },
     );
   }

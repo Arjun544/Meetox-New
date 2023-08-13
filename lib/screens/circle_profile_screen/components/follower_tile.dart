@@ -72,17 +72,26 @@ class FollowerTile extends GetView<CircleProfileController> {
               isAdmin: true,
               hasLimitReached: controller.profile.value.members ==
                   controller.profile.value.limit!,
-              onJoin: (data) {
+              onJoin: () {
                 controller.profile.value.members =
                     controller.profile.value.members! + 1;
                 controller.profile.refresh();
               },
-              onLeave: (data) {
+              onJoinError: () {
                 controller.profile.value.members =
                     controller.profile.value.members! - 1;
                 controller.profile.refresh();
               },
-            )
+              onLeave: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! - 1;
+                controller.profile.refresh();
+              },
+              onLeaveError: () {
+                controller.profile.value.members =
+                    controller.profile.value.members! + 1;
+                controller.profile.refresh();
+              })
           : const SizedBox.shrink(),
     );
   }

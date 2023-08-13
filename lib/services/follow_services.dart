@@ -32,45 +32,37 @@ class FollowServices {
   }
 
   static Future<void> followUser({
-    required RxBool isLoading,
     required String targetUserId,
-    required void Function(bool) onSuccess,
+    required void Function() onError,
   }) async {
     try {
-      isLoading.value = true;
       await supabase.from('follow').insert(
         {
           'follower_user_id': targetUserId,
           'following_user_id': supabase.auth.currentUser!.id,
         },
       );
-      isLoading.value = false;
-      onSuccess(true);
       logSuccess('followed user successfully');
     } catch (e) {
-      isLoading.value = false;
+      onError();
       logError(e.toString());
       rethrow;
     }
   }
 
   static Future<void> unFollowUser({
-    required RxBool isLoading,
     required String targetUserId,
-    required void Function(bool) onSuccess,
+    required void Function() onError,
   }) async {
     try {
-      isLoading.value = true;
       await supabase
           .from('follow')
           .delete()
           .eq('follower_user_id', targetUserId)
           .eq('following_user_id', supabase.auth.currentUser!.id);
-      isLoading.value = false;
-      onSuccess(true);
       logSuccess('unfollowed user successfully');
     } catch (e) {
-      isLoading.value = false;
+      onError();
       logError(e.toString());
       rethrow;
     }
