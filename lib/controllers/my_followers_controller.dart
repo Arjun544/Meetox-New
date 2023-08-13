@@ -93,4 +93,14 @@ class MyFollowersController extends GetxController
       followingPagingController.error = e;
     }
   }
+
+  @override
+  void dispose() {
+    followersPagingController.dispose();
+    followingPagingController.dispose();
+    tabController.dispose();
+   if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
+    if (followingSearchDebounce != null) followingSearchDebounce!.dispose();
+    super.dispose();
+  }
 }

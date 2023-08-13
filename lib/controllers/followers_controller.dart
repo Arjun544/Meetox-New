@@ -96,18 +96,6 @@ class FollowersController extends GetxController
     }
   }
 
-  // void onDeleteCompleted(
-  //     Map<String, dynamic>? resultData, BuildContext context) {
-  //   if (resultData != null) {
-  //     final circle_model.Circle newCircle = circle_model.Circle.fromJson(
-  //         resultData['deleteCircle'] as Map<String, dynamic>);
-
-  //     followersPagingController.itemList!.remove(newCircle);
-  //     followersPagingController.refresh();
-  //     Navigator.pop(context);
-  //   }
-  // }
-
   @override
   void onClose() {
     if (followersSearchDebounce != null) followersSearchDebounce!.dispose();
