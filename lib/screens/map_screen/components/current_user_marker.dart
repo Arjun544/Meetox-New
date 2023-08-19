@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/user_model.dart';
+import 'package:meetox/screens/my_profile_screen/my_profile_screen.dart';
 import 'package:meetox/widgets/user_initials.dart';
 
 class CurrentUserMarker extends StatelessWidget {
@@ -15,9 +16,7 @@ class CurrentUserMarker extends StatelessWidget {
       // ignore: avoid_bool_literals_in_conditional_expressions
       animate: true,
       child: InkWell(
-        onTap: () {},
-        // TODO:
-        // onTap: () => Get.to(() => ProfileScreen()),
+        onTap: () => Get.to(() => const MyProfileScreen()),
         child: Container(
           width: 70.sp,
           height: 70.sp,
