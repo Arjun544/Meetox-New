@@ -9,6 +9,7 @@ import 'package:meetox/services/user_services.dart';
 
 import '../core/imports/core_imports.dart';
 import '../helpers/has_location_permission.dart';
+import '../screens/conversation_screen/conversation_screen.dart';
 import '../screens/feed_screen/feed_screen.dart';
 import '../screens/notification_screen/notification_screen.dart';
 
@@ -21,8 +22,7 @@ class RootController extends GetxController {
     const MapScreen(),
     const FeedScreen(),
     const SizedBox.shrink(),
-    const SizedBox.shrink(),
-    // const ConversationScreen(),
+    const ConversationScreen(),
     const NotificationScreen(),
   ];
 

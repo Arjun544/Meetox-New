@@ -211,34 +211,31 @@ class UserDetails extends GetView<UserProfileController> {
                               indent: 5.h,
                               endIndent: 5.h,
                             ),
-                            Container(
-                              height: 30.h,
-                              width: 40.w,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 0,
-                                // horizontal: checkHasConversation.result.isLoading
-                                //     ? 25.w
-                                //     : 0
+                            GestureDetector(
+                              onTap: () => controller.handleCheckConversation(),
+                              child: Container(
+                                height: 30.h,
+                                width: 40.w,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        controller.hasConversationLoading.value
+                                            ? 25.w
+                                            : 0),
+                                decoration: BoxDecoration(
+                                  color: context.theme.indicatorColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: controller.hasConversationLoading.value
+                                    ? LoadingAnimationWidget.staggeredDotsWave(
+                                        color: AppColors.primaryYellow,
+                                        size: 20.w,
+                                      )
+                                    : Icon(
+                                        FlutterRemix.chat_3_fill,
+                                        size: 22.sp,
+                                        color: context.theme.iconTheme.color,
+                                      ),
                               ),
-                              decoration: BoxDecoration(
-                                color: context.theme.indicatorColor,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
-                                FlutterRemix.chat_3_fill,
-                                size: 20.h,
-                                color: context.theme.iconTheme.color,
-                              ),
-                              // child: checkHasConversation.result.isLoading
-                              //     ? LoadingAnimationWidget.staggeredDotsWave(
-                              //         color: AppColors.primaryYellow,
-                              //         size: 20.w,
-                              //       )
-                              //     : Icon(
-                              //         FlutterRemix.chat_3_fill,
-                              //         size: 22.sp,
-                              //         color: context.theme.iconTheme.color,
-                              //       ),
                             ),
                             controller.profile.value.socials!.isEmpty
                                 ? const SizedBox.shrink()
