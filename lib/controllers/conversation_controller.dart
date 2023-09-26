@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:meetox/core/imports/core_imports.dart';
+import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/conversation_model.dart';
 import 'package:meetox/services/conversation_services.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class ConversationController extends GetxController {
   final conversationsPagingController =
       PagingController<int, ConversationModel>(firstPageKey: 1);
+
+  
 
   final RxString searchQuery = ''.obs;
   late Worker searchDebounce;
@@ -33,6 +35,8 @@ class ConversationController extends GetxController {
         limit: pageKey,
         query: searchQuery.value.isEmpty ? null : searchQuery.value,
       );
+
+      logSuccess(newPage[0].toJson().toString());
 
       final newItems = newPage;
       final hasNextPage = newPage.isEmpty;

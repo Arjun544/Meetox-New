@@ -1,9 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'core/imports/core_imports.dart';
 import 'core/imports/packages_imports.dart';
 import 'core/time_ago_messages.dart';
-import 'package:timeago/timeago.dart' as timeago;
-
 import 'models/user_model.dart';
 import 'screens/splash_screen.dart';
 
@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       useInheritedMediaQuery: true,
       builder: (context, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () => FocusScope.of(context).unfocus(),
         child: GetMaterialApp(
           title: 'Meetox',
           debugShowCheckedModeBanner: false,

@@ -35,7 +35,7 @@ class AuthScreen extends GetView<AuthController> {
                       AssetsManager.appLogo,
                       height: 70.h,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.primaryYellow,
+                        AppColors.customBlack,
                         BlendMode.darken,
                       ),
                     ),

@@ -9,6 +9,7 @@ import 'package:meetox/widgets/unfocuser.dart';
 import '../../core/imports/core_imports.dart';
 import '../../core/imports/packages_imports.dart';
 import '../../widgets/loaders/circles_loader.dart';
+import 'components/conversation_tile.dart';
 
 class ConversationScreen extends GetView<ConversationController> {
   const ConversationScreen({super.key});
@@ -99,8 +100,8 @@ class ConversationScreen extends GetView<ConversationController> {
                       isWarining: true,
                       onPressed: () {},
                     ),
-                    itemBuilder: (context, item, index) => Text(
-                      item.id.toString(),
+                    itemBuilder: (context, item, index) => ConversationTile(
+                      conversation: item,
                     ),
                   ),
                 ),

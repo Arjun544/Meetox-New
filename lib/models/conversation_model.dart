@@ -9,17 +9,19 @@ enum ConversationType {
 
 class ConversationModel {
   String? id;
+  String? circleId; // Only for group conversations
   ConversationType? type;
   DateTime? createdAt;
   MessageModel? lastMessage;
-  MetaData? metaData;
+  List<String>? participants;
 
   ConversationModel({
     this.id,
+    this.circleId,
     this.type,
     this.createdAt,
     this.lastMessage,
-    this.metaData,
+    this.participants,
   });
 
   factory ConversationModel.fromRawJson(String str) =>
@@ -30,52 +32,29 @@ class ConversationModel {
   factory ConversationModel.fromJson(Map<String, dynamic> json) =>
       ConversationModel(
         id: json["id"],
-        type: json["type"],
-        metaData: json["metaData"] == null
-            ? null
-            : MetaData.fromJson(json["metaData"]),
+        circleId: json["circle_id"],
+        type: json["type"] == 'oneToOne'
+            ? ConversationType.oneToOne
+            : ConversationType.group,
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
         lastMessage: json["lastMessage"] == null
             ? null
             : MessageModel.fromJson(json["lastMessage"]),
+        participants: List<String>.from(
+          json["allParticipants"].map(
+            (x) => x['user_id'],
+          ),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "circle_id": circleId,
         "type": type,
-        "metaData": metaData == null ? null : metaData!.toJson(),
         "createdAt": createdAt,
-        "lastMessage": lastMessage
-      };
-}
-
-class MetaData {
-  String? participant;
-  bool? hasSeenLastMessage;
-  String? id;
-
-  MetaData({
-    this.participant,
-    this.hasSeenLastMessage,
-    this.id,
-  });
-
-  factory MetaData.fromRawJson(String str) =>
-      MetaData.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory MetaData.fromJson(Map<String, dynamic> json) => MetaData(
-        participant: json["participant"],
-        hasSeenLastMessage: json["hasSeenLastMessage"],
-        id: json["_id"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "participant": participant!,
-        "hasSeenLastMessage": hasSeenLastMessage,
-        "_id": id,
+        "lastMessage": lastMessage,
+        "participants": participants,
       };
 }

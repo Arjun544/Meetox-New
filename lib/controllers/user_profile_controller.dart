@@ -1,7 +1,8 @@
 import 'package:meetox/core/imports/core_imports.dart';
+import 'package:meetox/models/conversation_model.dart';
 import 'package:meetox/models/profile_model.dart';
 import 'package:meetox/models/user_model.dart';
-import 'package:meetox/services/conversation_services.dart';
+import 'package:meetox/screens/chat_screen/chat_screen.dart';
 import 'package:meetox/services/user_services.dart';
 
 class UserProfileController extends GetxController
@@ -31,7 +32,15 @@ class UserProfileController extends GetxController
     );
   }
 
-  void handleCheckConversation() async {
+  void handleCheckConversation(String userId) async {
+    Get.to(
+      () => ChatScreen(
+        conversation: ConversationModel(
+          type: ConversationType.oneToOne,
+        ),
+        user: userId,
+      ),
+    );
     // hasConversation.value = await ConversationServices.hasConversation(
     //   senderId: user.value.id!,
     //   receiverId: currentUser.value.id!,

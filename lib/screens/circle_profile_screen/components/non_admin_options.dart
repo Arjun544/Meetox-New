@@ -3,6 +3,8 @@
 import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/models/conversation_model.dart';
+import 'package:meetox/screens/chat_screen/chat_screen.dart';
 import 'package:meetox/widgets/join_button.dart';
 
 class NonAdminOptions extends GetView<CircleProfileController> {
@@ -49,34 +51,41 @@ class NonAdminOptions extends GetView<CircleProfileController> {
             indent: 5.h,
             endIndent: 5.h,
           ),
-          Container(
-            height: 30.h,
-            width: 40.w,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 0,
-              // horizontal: checkHasConversation.result.isLoading
-              //     ? 25.w
-              //     : 0
+          GestureDetector(
+            onTap: () => Get.to(
+              () => ChatScreen(
+                conversation: ConversationModel(
+                  type: ConversationType.group,
+                ),
+                user: controller.profile.value.id!,
+              ),
             ),
-            decoration: BoxDecoration(
-              color: context.theme.indicatorColor,
-              borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 30.h,
+              width: 40.w,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 0,
+              ),
+              decoration: BoxDecoration(
+                color: context.theme.indicatorColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                FlutterRemix.chat_3_fill,
+                size: 20.h,
+                color: context.theme.iconTheme.color,
+              ),
+              // child: checkHasConversation.result.isLoading
+              //     ? LoadingAnimationWidget.staggeredDotsWave(
+              //         color: AppColors.primaryYellow,
+              //         size: 20.w,
+              //       )
+              //     : Icon(
+              //         FlutterRemix.chat_3_fill,
+              //         size: 22.sp,
+              //         color: context.theme.iconTheme.color,
+              //       ),
             ),
-            child: Icon(
-              FlutterRemix.chat_3_fill,
-              size: 20.h,
-              color: context.theme.iconTheme.color,
-            ),
-            // child: checkHasConversation.result.isLoading
-            //     ? LoadingAnimationWidget.staggeredDotsWave(
-            //         color: AppColors.primaryYellow,
-            //         size: 20.w,
-            //       )
-            //     : Icon(
-            //         FlutterRemix.chat_3_fill,
-            //         size: 22.sp,
-            //         color: context.theme.iconTheme.color,
-            //       ),
           ),
         ],
       ),
