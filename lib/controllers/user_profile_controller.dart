@@ -32,13 +32,13 @@ class UserProfileController extends GetxController
     );
   }
 
-  void handleCheckConversation(String userId) async {
+  void handleCheckConversation(UserModel user) async {
     Get.to(
       () => ChatScreen(
         conversation: ConversationModel(
           type: ConversationType.oneToOne,
         ),
-        user: userId,
+        user: user,
       ),
     );
     // hasConversation.value = await ConversationServices.hasConversation(

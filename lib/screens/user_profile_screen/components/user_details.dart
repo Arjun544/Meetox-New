@@ -213,7 +213,11 @@ class UserDetails extends GetView<UserProfileController> {
                             ),
                             GestureDetector(
                               onTap: () => controller.handleCheckConversation(
-                                controller.profile.value.id!,
+                                UserModel(
+                                  id: controller.profile.value.id!,
+                                  name: controller.profile.value.name!,
+                                  photo: controller.user.value.photo!,
+                                ),
                               ),
                               child: Container(
                                 height: 30.h,

@@ -18,7 +18,7 @@ import 'components/message_input.dart';
 
 class ChatScreen extends GetView<ChatController> {
   final ConversationModel conversation;
-  final String user;
+  final UserModel user;
 
   const ChatScreen({
     super.key,
@@ -47,12 +47,7 @@ class ChatScreen extends GetView<ChatController> {
         child: Scaffold(
           appBar: chatHeader(
             context,
-            // TODO: Add dynamic user
-            UserModel(
-              id: '1',
-              name: 'Test',
-              photo: '',
-            ),
+            user,
           ),
           body: conversation.id == null
               ? Center(
@@ -119,7 +114,7 @@ class ChatScreen extends GetView<ChatController> {
             ),
           ),
           bottomNavigationBar: MessageInput(
-            userId: user,
+            userId: user.id!,
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:meetox/controllers/circle_profile_controller.dart';
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/conversation_model.dart';
+import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/chat_screen/chat_screen.dart';
 import 'package:meetox/widgets/join_button.dart';
 
@@ -57,7 +58,11 @@ class NonAdminOptions extends GetView<CircleProfileController> {
                 conversation: ConversationModel(
                   type: ConversationType.group,
                 ),
-                user: controller.profile.value.id!,
+                user: UserModel(
+                  id: controller.profile.value.id!,
+                  name: controller.profile.value.name!,
+                  photo: controller.profile.value.photo!,
+                ),
               ),
             ),
             child: Container(

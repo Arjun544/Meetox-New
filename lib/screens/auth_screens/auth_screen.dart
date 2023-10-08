@@ -34,10 +34,10 @@ class AuthScreen extends GetView<AuthController> {
                     child: SvgPicture.asset(
                       AssetsManager.appLogo,
                       height: 70.h,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.customBlack,
-                        BlendMode.darken,
-                      ),
+                      // colorFilter: const ColorFilter.mode(
+                      //   AppColors.customBlack,
+                      //   BlendMode.darken,
+                      // ),
                     ),
                   ),
                   SizedBox(height: 50.sp),

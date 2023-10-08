@@ -3,6 +3,7 @@ import 'package:meetox/controllers/conversation_controller.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
 import 'package:meetox/models/conversation_model.dart';
 import 'package:meetox/models/message_model.dart';
+import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/chat_screen/chat_screen.dart';
 import 'package:meetox/widgets/online_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -21,19 +22,20 @@ class ConversationTile extends StatefulWidget {
 class _ConversationTileState extends State<ConversationTile> {
   final ConversationController controller = Get.find();
   final RxString conversationName = ''.obs;
+  final RxString conversationPhoto = ''.obs;
   final RxString participantId = ''.obs;
   final bool hasLastMessageSeen = true;
 
-  late PostgrestFilterBuilder userDetails;
-  late PostgrestFilterBuilder circleDetails;
+  late PostgrestFilterBuilder userDetailsFuture;
+  late PostgrestFilterBuilder circleDetailsFuture;
 
   @override
   void initState() {
-    userDetails = supabase.from('profiles').select('id, name, photo').eq(
+    userDetailsFuture = supabase.from('profiles').select('id, name, photo').eq(
         'id',
         widget.conversation.participants!
             .firstWhere((participant) => participant != currentUser.value.id));
-    circleDetails = supabase
+    circleDetailsFuture = supabase
         .from('profiles')
         .select('id, name, photo')
         .eq('id', widget.conversation.circleId);
@@ -51,7 +53,12 @@ class _ConversationTileState extends State<ConversationTile> {
         Get.to(
           () => ChatScreen(
             conversation: widget.conversation,
-            user: currentUser.value.id!,
+            user: UserModel(
+              id: widget.conversation.participants!.firstWhere(
+                  (participant) => participant != currentUser.value.id),
+              name: conversationName.value,
+              photo: conversationPhoto.value,
+            ),
           ),
         );
       },
@@ -61,13 +68,14 @@ class _ConversationTileState extends State<ConversationTile> {
           children: [
             FutureBuilder(
               future: widget.conversation.type == ConversationType.oneToOne
-                  ? userDetails
-                  : circleDetails,
+                  ? userDetailsFuture
+                  : circleDetailsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   logInfo(snapshot.data.toString());
                   participantId(snapshot.data![0]['id']);
                   conversationName(snapshot.data![0]['name']);
+                  conversationPhoto(snapshot.data![0]['photo']);
                 }
 
                 return Container(
@@ -132,7 +140,7 @@ class _ConversationTileState extends State<ConversationTile> {
                     ? ''
                     : widget.conversation.lastMessage!.senderId ==
                             currentUser.value.id
-                        ? "You: ${widget.conversation.lastMessage!.senderId!.capitalizeFirst!}"
+                        ? "You: ${widget.conversation.lastMessage!.content!.capitalizeFirst!}"
                         : widget.conversation.lastMessage!.content!
                             .capitalizeFirst!,
                 maxLines: 2,
