@@ -10,27 +10,27 @@ class TimeAgoMessages implements LookupMessages {
   @override
   String suffixFromNow() => '';
   @override
-  String lessThanOneMinute(int seconds) => 'just now';
+  String lessThanOneMinute(int seconds) => '${seconds}s';
   @override
-  String aboutAMinute(int minutes) => '${minutes}m ago';
+  String aboutAMinute(int minutes) => '${minutes}m';
   @override
-  String minutes(int minutes) => '${minutes}m ago';
+  String minutes(int minutes) => '${minutes}m';
   @override
-  String aboutAnHour(int minutes) => '${minutes}m ago';
+  String aboutAnHour(int minutes) => '${minutes}m';
   @override
-  String hours(int hours) => '${hours}h ago';
+  String hours(int hours) => '${hours}h';
   @override
-  String aDay(int hours) => '${hours}h ago';
+  String aDay(int hours) => '${hours}h';
   @override
-  String days(int days) => '${days}d ago';
+  String days(int days) => '${days}d';
   @override
-  String aboutAMonth(int days) => '${days}d ago';
+  String aboutAMonth(int days) => '${days}d';
   @override
-  String months(int months) => '${months}mo ago';
+  String months(int months) => '${months}mo';
   @override
-  String aboutAYear(int year) => '${year}y ago';
+  String aboutAYear(int year) => '${year}y';
   @override
-  String years(int years) => '${years}y ago';
+  String years(int years) => '${years}y';
   @override
   String wordSeparator() => ' ';
 }

@@ -66,7 +66,6 @@ class TopBar extends GetView<MapScreenController> {
     return Container(
       height: 55.sp,
       width: Get.width,
-      // color: Colors.white,
       margin: EdgeInsets.only(
         top: Platform.isIOS ? topPadding.sp : 40.sp,
         right: 15.sp,

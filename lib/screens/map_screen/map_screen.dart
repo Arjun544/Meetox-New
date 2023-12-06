@@ -101,7 +101,7 @@ class MapScreen extends GetView<MapScreenController> {
                 ? SlideInDown(
                     child: TopBar(
                       isMapScreen: true,
-                      isPrecise: controller.isLocationPrecise,
+                      isPrecise: controller.rootController.isLocationPrecise,
                     ),
                   )
                 : const SizedBox.shrink(),

@@ -21,7 +21,6 @@ class MapScreenController extends GetxController
 
   final RxBool isLoading = false.obs;
   final RxBool hasAppliedFilters = false.obs;
-  final RxBool isLocationPrecise = false.obs;
   final RxString currentMainFilter = 'All'.obs;
   final RxBool isCurrentFilterMarkVisible = false.obs;
   final RxBool isDraggingMap = false.obs;
@@ -38,7 +37,8 @@ class MapScreenController extends GetxController
   Future<void> onInit() async {
     super.onInit();
     await hasLocationPermission();
-    isLocationPrecise.value = getStorage.read('isPrecise') ?? false;
+    rootController.isLocationPrecise.value =
+        getStorage.read('isPrecise') ?? false;
     stylesTabController = TabController(
         initialIndex: rootController.currentMapStyle.value == 'default'
             ? 0

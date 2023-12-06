@@ -1,6 +1,8 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'imports/packages_imports.dart';
 
-// const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 // final FacebookAuth facebookAuth = FacebookAuth.instance;
 final GetStorage getStorage = GetStorage();

@@ -10,7 +10,7 @@ import 'package:meetox/services/user_services.dart';
 import '../core/imports/core_imports.dart';
 import '../helpers/has_location_permission.dart';
 import '../screens/conversation_screen/conversation_screen.dart';
-import '../screens/feed_screen/feed_screen.dart';
+import '../screens/feeds_screen/feeds_screen.dart';
 import '../screens/notification_screen/notification_screen.dart';
 
 class RootController extends GetxController {
@@ -26,6 +26,7 @@ class RootController extends GetxController {
     const NotificationScreen(),
   ];
 
+  final RxBool isLocationPrecise = false.obs;
   Rx<LatLngBounds> mapBounds = LatLngBounds(LatLng(0, 0), LatLng(0, 0)).obs;
   Rx<LocationPermission> locationPermission = LocationPermission.denied.obs;
   final RxString currentMapStyle = 'default'.obs;
@@ -39,6 +40,8 @@ class RootController extends GetxController {
     speed: 0,
     heading: 0,
     speedAccuracy: 0,
+    altitudeAccuracy: 0.0,
+    headingAccuracy: 0.0,
     timestamp: DateTime.now(),
   ).obs;
 
@@ -126,6 +129,8 @@ class RootController extends GetxController {
         altitude: 0,
         heading: 0,
         speed: 0,
+        altitudeAccuracy: 0.0,
+        headingAccuracy: 0.0,
         speedAccuracy: 0,
       );
       mapBounds.value = !currentUser.value.isPremium!

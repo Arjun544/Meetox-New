@@ -1,4 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:meetox/screens/on_boarding_screen/on_boarding_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'core/imports/core_imports.dart';
@@ -51,7 +52,6 @@ final Rx<UserModel> currentUser = UserModel(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final currentTheme = getStorage.read('theme') ?? 'system';

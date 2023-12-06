@@ -1,5 +1,6 @@
 import 'package:meetox/core/imports/core_imports.dart';
 import 'package:meetox/core/imports/packages_imports.dart';
+import 'package:meetox/screens/add_feed_screen/add_feed_screen.dart';
 import 'package:meetox/services/circle_services.dart';
 
 import '../../screens/add_circle_screen/add_circle_screen.dart';
@@ -38,6 +39,7 @@ class AddOptionsSheet extends StatelessWidget {
               'Add post',
               style: context.theme.textTheme.labelMedium,
             ),
+            onTap: () => Get.to(() => const AddFeedScreen()),
           ),
           SizedBox(height: 20.sp),
           ListTile(

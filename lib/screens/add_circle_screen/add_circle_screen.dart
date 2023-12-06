@@ -99,7 +99,7 @@ class AddCircleScreen extends GetView<AddCircleController> {
                                 padding: EdgeInsets.all(12.sp),
                                 decoration: BoxDecoration(
                                   color: context.theme.cardColor,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Icon(
                                   FlutterRemix.arrow_left_s_line,

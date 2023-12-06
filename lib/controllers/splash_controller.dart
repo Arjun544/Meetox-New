@@ -1,6 +1,7 @@
 import 'package:meetox/models/user_model.dart';
 import 'package:meetox/screens/add_profile_screen/add_profile_screen.dart';
 import 'package:meetox/screens/auth_screens/auth_screen.dart';
+import 'package:meetox/screens/on_boarding_screen/on_boarding_screen.dart';
 import 'package:meetox/screens/root_screen.dart';
 import 'package:meetox/services/user_services.dart';
 
@@ -33,7 +34,7 @@ class SplashController extends GetxController {
       }
     } catch (e) {
       logError(e.toString());
-      Get.offAll(() => const AuthScreen());
+      Get.offAll(() => const OnBoardingScreen());
     }
   }
 
